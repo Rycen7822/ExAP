@@ -43,7 +43,7 @@ It answers five questions:
 4. How an Attention Event carries reason, evidence, severity, delivery action, and acknowledgement requirements.
 5. How PrivacyPolicy constrains authorization, field-level redaction, data minimization, retention, audit, and agent memory.
 
-ExAP currently ships the protocol specification, JSON Schemas, examples, domain profiles, binding references, and conformance tests. It is not yet a packaged runtime daemon; `docs/14-reference-implementation.md` defines the reference implementation boundaries for `exapd`, `exapctl`, `exap-mcp-server`, and `exap-a2a-agent`.
+ExAP currently ships the protocol specification, JSON Schemas, examples, domain profiles, binding references, and conformance tests. The current package focuses on the protocol surface; `docs/14-reference-implementation.md` defines the reference implementation boundaries for `exapd`, `exapctl`, `exap-mcp-server`, and `exap-a2a-agent`.
 
 ## Why ExAP exists
 
@@ -67,19 +67,19 @@ Consumer acknowledges, snoozes, dismisses, escalates, or revokes
 
 This changes external awareness from “keep asking what happened” into “deliver a constrained event only when the declared condition is satisfied”.
 
-## What ExAP does not replace
+## Standards and bindings
 
-ExAP sits above existing systems and does not replace them:
+ExAP defines the attention-contract layer and maps cleanly onto common event, telemetry, transport, security, and agent protocols:
 
-| Category | ExAP boundary |
+| Category | ExAP integration role |
 |---|---|
-| CloudEvents | ExAP Attention Event uses a CloudEvents-compatible envelope; CloudEvents remains the general event envelope standard. |
-| AsyncAPI / OpenAPI | ExAP can be described through them, but does not replace API description standards. |
-| OpenTelemetry | ExAP can consume metrics, logs, and traces as Observation, Event, or Evidence; telemetry collection stays outside ExAP Core. |
-| MQTT / NATS / Kafka / Webhook | ExAP defines delivery semantics; the underlying transport remains responsible for transport behavior. |
-| OAuth / mTLS / API key / IAM | ExAP binds scope, consent, redaction, retention, and audit; existing security systems perform authentication and authorization. |
-| MCP | MCP handles agent-to-tool/resource interaction; ExAP exposes Lifecycle API through MCP tools. |
-| A2A | A2A handles agent-to-agent tasks; ExAP carries `application/exap+json` Attention Events as A2A artifacts. |
+| CloudEvents | ExAP Attention Event uses a CloudEvents-compatible envelope while adding attention-specific reason, evidence, privacy report, and delivery report fields. |
+| AsyncAPI / OpenAPI | AsyncAPI and OpenAPI describe ExAP message channels, HTTP bindings, lifecycle requests, and event streams. |
+| OpenTelemetry | Metrics, logs, and traces can feed ExAP Observation, Event, or Evidence records. |
+| MQTT / NATS / Kafka / Webhook | These transports can carry ExAP delivery modes; ExAP supplies contract, rule, delivery, and acknowledgement semantics. |
+| OAuth / mTLS / API key / IAM | Existing security systems provide identity and authorization; ExAP binds scope, consent, redaction, retention, and audit to each contract. |
+| MCP | MCP exposes ExAP Lifecycle API as tools and publishes capability, active contracts, recent attention, and profiles as resources. |
+| A2A | A2A maps create-contract and wait flows to tasks, with `application/exap+json` Attention Events returned as artifacts. |
 
 ## What this package contains
 
@@ -171,7 +171,7 @@ A Consumer creates Contracts and receives Attention Events. A Consumer-Minimal o
 4. Validate Attention Event schema, treat payload as untrusted input, and rely on evidence plus privacy report for usable context.
 5. Execute `exap.attention.ack` for events with `requires_ack=true`.
 6. Execute `exap.contract.revoke` when the attention need is over.
-7. Respect the Contract `memory` policy; when `memory.allowed=false`, do not store payload, evidence, or summary in long-term memory.
+7. Respect the Contract `memory` policy; when `memory.allowed=false`, keep payload, evidence, and summary within short-lived processing, with long-term memory limited to policy-approved information.
 
 See `templates/consumer-checklist.md` for the Consumer checklist.
 
@@ -188,7 +188,7 @@ This keeps MCP tool/resource semantics and A2A task lifecycle intact while ExAP 
 
 ## Scenario coverage
 
-ExAP is not limited to coding agents. These objects can be Subjects or part of an Environment:
+ExAP spans coding agents, automation systems, local machines, SaaS surfaces, and physical environments. These objects can be Subjects or part of an Environment:
 
 - email, threads, contacts, and inboxes;
 - local processes, process groups, logs, and jobs;

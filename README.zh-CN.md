@@ -43,7 +43,7 @@ ExAP 关注的是 agent、应用、服务或自动化系统与外部世界之间
 4. Attention Event 如何携带原因、证据、严重级别、交付动作和确认要求。
 5. PrivacyPolicy 如何约束授权、字段级脱敏、数据最小化、保留期、审计和 agent memory。
 
-ExAP 当前交付的是协议规范、JSON Schema、示例、领域 Profile、绑定参考和一致性测试。它不是一个已经打包的运行时守护进程；`docs/14-reference-implementation.md` 固定了未来参考实现的组件边界，包括 `exapd`、`exapctl`、`exap-mcp-server` 和 `exap-a2a-agent`。
+ExAP 当前交付协议规范、JSON Schema、示例、领域 Profile、绑定参考和一致性测试。当前包聚焦协议表面；`docs/14-reference-implementation.md` 固定未来参考实现的组件边界，包括 `exapd`、`exapctl`、`exap-mcp-server` 和 `exap-a2a-agent`。
 
 ## 为什么需要 ExAP
 
@@ -65,21 +65,21 @@ Provider 交付 Attention Event、Evidence、PrivacyReport、DeliveryReport
 Consumer ack、snooze、dismiss、escalate 或 revoke
 ```
 
-这使外部感知从“不断问现在怎么样了”变成“只在明确条件满足时交付经过约束的事件”。
+这使外部感知从“持续询问现在怎么样了”变成“只在明确条件满足时交付经过约束的事件”。
 
-## ExAP 不替代什么
+## 标准与绑定位置
 
-ExAP 位于现有系统之上，不取代它们：
+ExAP 作为关注契约层，与现有事件、遥测、传输、安全和 agent 协议配合使用：
 
-| 类别 | ExAP 的边界 |
+| 类别 | ExAP 的接入方式 |
 |---|---|
-| CloudEvents | ExAP Attention Event 使用 CloudEvents-compatible envelope，但 CloudEvents 仍负责通用事件 envelope。 |
-| AsyncAPI / OpenAPI | ExAP 可用它们描述接口和 message channel，但不取代 API 描述标准。 |
-| OpenTelemetry | ExAP 可消费 metrics、logs、traces 作为 Observation、Event 或 Evidence，但不取代遥测采集。 |
-| MQTT / NATS / Kafka / Webhook | ExAP 定义交付语义，底层传输仍由这些系统负责。 |
-| OAuth / mTLS / API key / IAM | ExAP 绑定 scope、consent、redaction、retention、audit，但认证授权仍由现有安全系统执行。 |
-| MCP | MCP 负责 agent-to-tool/resource；ExAP 通过 MCP tools 暴露 Lifecycle API。 |
-| A2A | A2A 负责 agent-to-agent task；ExAP 通过 A2A artifact 传递 `application/exap+json` Attention Event。 |
+| CloudEvents | ExAP Attention Event 使用 CloudEvents-compatible envelope，并补充 attention reason、evidence、privacy report 和 delivery report。 |
+| AsyncAPI / OpenAPI | AsyncAPI 和 OpenAPI 描述 ExAP message channel、HTTP binding、lifecycle request 和 event stream。 |
+| OpenTelemetry | metrics、logs、traces 可进入 ExAP Observation、Event 或 Evidence。 |
+| MQTT / NATS / Kafka / Webhook | 这些传输承载 ExAP delivery mode；ExAP 提供 contract、rule、delivery 和 acknowledgement 语义。 |
+| OAuth / mTLS / API key / IAM | 现有安全系统提供 identity 与 authorization；ExAP 将 scope、consent、redaction、retention 和 audit 绑定到每个 Contract。 |
+| MCP | MCP 将 ExAP Lifecycle API 暴露为 tools，并将 capability、active contracts、recent attention 和 profiles 发布为 resources。 |
+| A2A | A2A 将 create-contract 与 wait 流程映射为 tasks，并以 `application/exap+json` artifact 返回 Attention Event。 |
 
 ## 当前包内容
 
@@ -168,10 +168,10 @@ Consumer 是创建 Contract 并接收 Attention Event 的一方。一个 Consume
 1. 调用 `exap.discover`，读取 Provider capability。
 2. 选择 Provider 支持的 ExAP 版本，创建满足 capability、authorization 和 privacy 限制的 Contract。
 3. 使用 `blocking_wait`、`stream`、`push` 或 `pull_with_state_compression` 接收结果。
-4. 对 Attention Event 执行 schema 校验，把 payload 视为不可信输入，只按 evidence 和 privacy report 处理可用信息。
+4. 对 Attention Event 执行 schema 校验，把 payload 作为未信任输入处理，仅按 evidence 和 privacy report 处理可用信息。
 5. 对 `requires_ack=true` 的事件执行 `exap.attention.ack`。
 6. 关注结束后执行 `exap.contract.revoke`。
-7. 遵守 Contract 的 `memory` policy；`memory.allowed=false` 时不把 payload、evidence 或 summary 写入长期记忆。
+7. 遵守 Contract 的 `memory` policy；`memory.allowed=false` 时，将 payload、evidence 或 summary 限定在短期处理流程内，长期记忆只保存策略允许的信息。
 
 Consumer 检查清单见 `templates/consumer-checklist.md`。
 
@@ -188,7 +188,7 @@ ExAP 为主流 agent 协议提供明确绑定点：
 
 ## 场景覆盖
 
-ExAP 不限定于 coding agent。以下对象都可作为 Subject 或 Environment 的一部分：
+ExAP 覆盖 coding agent、自动化系统、本地机器、SaaS 表面和物理环境。以下对象都可作为 Subject 或 Environment 的一部分：
 
 - 邮件、会话、联系人和 inbox；
 - 本地进程、进程组、日志和 job；
