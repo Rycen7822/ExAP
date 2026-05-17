@@ -1,10 +1,11 @@
-# EAP Spec Package Manifest
+# ExAP Spec Package Manifest
 
 ## Root
 
 | 文件 | 内容 |
 |---|---|
-| `README.md` | 包概览和最小开发路径。 |
+| `README.md` | 英文默认概览和最小开发路径。 |
+| `README.zh-CN.md` | 中文概览和最小开发路径。 |
 | `VERSION.md` | 版本规则。 |
 | `GLOSSARY.md` | 术语表。 |
 | `CONTRIBUTING.md` | 贡献和变更规则。 |
