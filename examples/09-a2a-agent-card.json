@@ -1,0 +1,58 @@
+{
+  "name": "EAP Awareness Agent",
+  "description": "A remote agent that creates and evaluates EAP Attention Contracts and returns Attention Events as artifacts.",
+  "url": "https://eap-agent.example.com/a2a",
+  "version": "0.2.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true
+  },
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/eap+json",
+    "application/json",
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "create_attention_contract",
+      "name": "Create Attention Contract",
+      "description": "Create an EAP contract from structured parameters or a natural language monitoring intent.",
+      "inputModes": [
+        "application/json",
+        "text/plain"
+      ],
+      "outputModes": [
+        "application/eap+json"
+      ],
+      "examples": [
+        "Monitor this training process and interrupt me only for failures or GPU idle."
+      ]
+    },
+    {
+      "id": "wait_for_attention",
+      "name": "Wait for Attention Event",
+      "description": "Wait for an EAP Attention Event or contract terminal state.",
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/eap+json"
+      ]
+    }
+  ],
+  "securitySchemes": {
+    "bearer": {
+      "type": "http",
+      "scheme": "bearer"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}

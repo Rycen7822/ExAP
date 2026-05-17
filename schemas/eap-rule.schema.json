@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-rule.schema.json",
+  "title": "EAP Rule",
+  "type": "object",
+  "required": [
+    "rule_id",
+    "name",
+    "condition",
+    "severity"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "rule_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.:-]+$"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "description": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "condition": {
+      "$ref": "#/$defs/Condition"
+    },
+    "severity": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Severity"
+    },
+    "category": {
+      "type": "string"
+    },
+    "delivery_action": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DeliveryAction"
+    },
+    "debounce": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+    },
+    "cooldown": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+    },
+    "hysteresis": {
+      "type": "object",
+      "required": [
+        "recover_when",
+        "emit_recovery_event"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "recover_when": {
+          "$ref": "#/$defs/Condition"
+        },
+        "emit_recovery_event": {
+          "type": "boolean"
+        }
+      }
+    },
+    "evidence": {
+      "$ref": "#/$defs/EvidencePolicy"
+    },
+    "labels": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/KeyValue"
+    },
+    "metadata": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/ExtensionMap"
+    }
+  },
+  "$defs": {
+    "Condition": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AllCondition"
+        },
+        {
+          "$ref": "#/$defs/AnyCondition"
+        },
+        {
+          "$ref": "#/$defs/NotCondition"
+        },
+        {
+          "$ref": "#/$defs/SignalCondition"
+        },
+        {
+          "$ref": "#/$defs/EventCondition"
+        },
+        {
+          "$ref": "#/$defs/StateCondition"
+        },
+        {
+          "$ref": "#/$defs/CorrelationCondition"
+        }
+      ]
+    },
+    "AllCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "conditions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "all"
+        },
+        "conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        }
+      }
+    },
+    "AnyCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "conditions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "any"
+        },
+        "conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Condition"
+          }
+        }
+      }
+    },
+    "NotCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "condition"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "not"
+        },
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        }
+      }
+    },
+    "SignalOperator": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "exists",
+        "not_exists",
+        "changed",
+        "unchanged",
+        "regex",
+        "contains",
+        "in",
+        "not_in",
+        "rate_gt",
+        "rate_lt",
+        "relative_change_gt",
+        "relative_change_lt",
+        "relative_drop_gt",
+        "semantic_match"
+      ]
+    },
+    "Aggregate": {
+      "type": "string",
+      "enum": [
+        "last",
+        "min",
+        "max",
+        "avg",
+        "sum",
+        "count",
+        "p50",
+        "p90",
+        "p95",
+        "p99",
+        "delta",
+        "rate"
+      ]
+    },
+    "SignalCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "signal",
+        "operator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "signal"
+        },
+        "subject_ref": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+        },
+        "signal": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+        },
+        "operator": {
+          "$ref": "#/$defs/SignalOperator"
+        },
+        "value": {},
+        "window": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        },
+        "aggregate": {
+          "$ref": "#/$defs/Aggregate"
+        },
+        "duration": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        },
+        "missing": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "false",
+            "true",
+            "error"
+          ]
+        },
+        "case_sensitive": {
+          "type": "boolean"
+        },
+        "semantic_model_ref": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "operator": {
+                "enum": [
+                  "eq",
+                  "ne",
+                  "gt",
+                  "gte",
+                  "lt",
+                  "lte",
+                  "regex",
+                  "contains",
+                  "in",
+                  "not_in",
+                  "rate_gt",
+                  "rate_lt",
+                  "relative_change_gt",
+                  "relative_change_lt",
+                  "relative_drop_gt",
+                  "semantic_match"
+                ]
+              }
+            },
+            "required": [
+              "operator"
+            ]
+          },
+          "then": {
+            "required": [
+              "value"
+            ]
+          }
+        }
+      ]
+    },
+    "EventOperator": {
+      "type": "string",
+      "enum": [
+        "exists",
+        "count_eq",
+        "count_gt",
+        "count_gte",
+        "count_lt",
+        "count_lte",
+        "field_eq",
+        "field_regex",
+        "field_contains",
+        "semantic_match"
+      ]
+    },
+    "FieldFilter": {
+      "type": "object",
+      "required": [
+        "path",
+        "operator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "eq",
+            "ne",
+            "regex",
+            "contains",
+            "in",
+            "not_in",
+            "semantic_match"
+          ]
+        },
+        "value": {},
+        "case_sensitive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EventCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "event_type",
+        "operator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "event"
+        },
+        "subject_ref": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+        },
+        "event_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+        },
+        "operator": {
+          "$ref": "#/$defs/EventOperator"
+        },
+        "value": {},
+        "window": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FieldFilter"
+          }
+        }
+      }
+    },
+    "StateCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "state_path",
+        "operator"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "state"
+        },
+        "state_path": {
+          "type": "string"
+        },
+        "operator": {
+          "$ref": "#/$defs/SignalOperator"
+        },
+        "value": {}
+      }
+    },
+    "CorrelationCondition": {
+      "type": "object",
+      "required": [
+        "type",
+        "mode",
+        "within",
+        "conditions"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "correlation"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "all_within_window",
+            "any_within_window",
+            "ordered_sequence"
+          ]
+        },
+        "within": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        },
+        "conditions": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": [
+              "alias",
+              "condition"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "alias": {
+                "type": "string"
+              },
+              "condition": {
+                "$ref": "#/$defs/Condition"
+              }
+            }
+          }
+        }
+      }
+    },
+    "EvidencePolicy": {
+      "type": "object",
+      "required": [
+        "include"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "matched_values",
+              "window_stats",
+              "event_excerpt",
+              "log_excerpt",
+              "subject_snapshot",
+              "trace_link",
+              "redaction_report",
+              "semantic_score"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "max_items": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_excerpt_chars": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "include_subject_attributes": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

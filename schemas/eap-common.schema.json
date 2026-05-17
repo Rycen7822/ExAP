@@ -1,0 +1,468 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-common.schema.json",
+  "title": "EAP Common Definitions",
+  "type": "object",
+  "$defs": {
+    "EapVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.-]+)?$"
+    },
+    "EapUri": {
+      "type": "string",
+      "pattern": "^eap://[a-z0-9][a-z0-9._-]*/[a-z][a-z0-9._-]*/[^\\s]+$"
+    },
+    "DateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "Duration": {
+      "type": "string",
+      "pattern": "^P(?!$)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)W)?(?:(\\d+)D)?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
+    },
+    "Severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "notice",
+        "warning",
+        "critical",
+        "emergency"
+      ]
+    },
+    "Sensitivity": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "secret",
+        "restricted"
+      ]
+    },
+    "DeliveryAction": {
+      "type": "string",
+      "enum": [
+        "record_only",
+        "include_in_summary",
+        "deliver",
+        "deliver_and_interrupt_wait"
+      ]
+    },
+    "Status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "revoked",
+        "expired",
+        "completed",
+        "failed"
+      ]
+    },
+    "KeyValue": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "null"
+        ]
+      }
+    },
+    "ExtensionMap": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "Consumer": {
+      "type": "object",
+      "required": [
+        "consumer_id",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "consumer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent",
+            "application",
+            "service",
+            "user_interface",
+            "automation",
+            "human_proxy",
+            "custom"
+          ]
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "instance_id": {
+          "type": "string"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/ExtensionMap"
+        },
+        "auth_context": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "metadata": {
+          "$ref": "#/$defs/ExtensionMap"
+        }
+      }
+    },
+    "Provider": {
+      "type": "object",
+      "required": [
+        "provider_id",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "provider_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "local_daemon",
+            "connector",
+            "monitoring_service",
+            "broker",
+            "iot_gateway",
+            "cloud_service",
+            "agent_runtime",
+            "custom"
+          ]
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "capability_ref": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ExtensionMap"
+        }
+      }
+    },
+    "Environment": {
+      "type": "object",
+      "required": [
+        "ref",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/EapUri"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "personal",
+            "project",
+            "machine",
+            "home",
+            "enterprise",
+            "cloud",
+            "lab",
+            "service",
+            "custom"
+          ]
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "owner_ref": {
+          "$ref": "#/$defs/EapUri"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "labels": {
+          "$ref": "#/$defs/KeyValue"
+        },
+        "metadata": {
+          "$ref": "#/$defs/ExtensionMap"
+        }
+      }
+    },
+    "Subject": {
+      "type": "object",
+      "required": [
+        "ref",
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/EapUri"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]*$"
+        },
+        "environment_ref": {
+          "$ref": "#/$defs/EapUri"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "parent_ref": {
+          "$ref": "#/$defs/EapUri"
+        },
+        "attributes": {
+          "$ref": "#/$defs/ExtensionMap"
+        },
+        "sensitivity": {
+          "$ref": "#/$defs/Sensitivity"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "metadata": {
+          "$ref": "#/$defs/ExtensionMap"
+        }
+      }
+    },
+    "ReturnPolicy": {
+      "type": "object",
+      "required": [
+        "default_action",
+        "by_severity"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "default_action": {
+          "$ref": "#/$defs/DeliveryAction"
+        },
+        "by_severity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "info": {
+              "$ref": "#/$defs/DeliveryAction"
+            },
+            "notice": {
+              "$ref": "#/$defs/DeliveryAction"
+            },
+            "warning": {
+              "$ref": "#/$defs/DeliveryAction"
+            },
+            "critical": {
+              "$ref": "#/$defs/DeliveryAction"
+            },
+            "emergency": {
+              "$ref": "#/$defs/DeliveryAction"
+            }
+          }
+        }
+      }
+    },
+    "PrivacyPolicy": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "data_minimization",
+        "forbidden_fields",
+        "redaction",
+        "retention",
+        "audit"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_minimization": {
+          "type": "boolean"
+        },
+        "allowed_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "forbidden_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "redaction": {
+          "type": "object",
+          "required": [
+            "mode",
+            "include_redaction_report"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "none",
+                "mask",
+                "hash",
+                "summary_only",
+                "drop"
+              ]
+            },
+            "include_redaction_report": {
+              "type": "boolean"
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "retention": {
+          "type": "object",
+          "required": [
+            "observations",
+            "events",
+            "audit_logs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "observations": {
+              "$ref": "#/$defs/Duration"
+            },
+            "events": {
+              "$ref": "#/$defs/Duration"
+            },
+            "audit_logs": {
+              "$ref": "#/$defs/Duration"
+            }
+          }
+        },
+        "audit": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "user_visible"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "user_visible": {
+              "type": "boolean"
+            },
+            "log_fields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
+          }
+        },
+        "consent_ref": {
+          "type": "string"
+        },
+        "data_classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "PrivacyReport": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "data_minimization_applied",
+        "fields_included",
+        "fields_redacted",
+        "retention"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "type": "string"
+        },
+        "data_minimization_applied": {
+          "type": "boolean"
+        },
+        "fields_included": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "fields_redacted": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/Duration"
+          }
+        },
+        "redaction_report": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "TraceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trace_id": {
+          "type": "string"
+        },
+        "span_id": {
+          "type": "string"
+        },
+        "parent_span_id": {
+          "type": "string"
+        },
+        "correlation_id": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

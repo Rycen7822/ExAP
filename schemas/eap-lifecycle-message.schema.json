@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-lifecycle-message.schema.json",
+  "title": "EAP Lifecycle API Message",
+  "type": "object",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Request"
+    },
+    {
+      "$ref": "#/$defs/Response"
+    }
+  ],
+  "$defs": {
+    "Request": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "eap.discover",
+            "eap.contract.create",
+            "eap.contract.get",
+            "eap.contract.list",
+            "eap.contract.update",
+            "eap.contract.pause",
+            "eap.contract.resume",
+            "eap.contract.revoke",
+            "eap.wait",
+            "eap.stream.open",
+            "eap.attention.ack",
+            "eap.status",
+            "eap.observation.query"
+          ]
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "eap.contract.create"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "required": [
+                  "contract"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "contract": {
+                    "$ref": "https://eap.dev/schemas/eap-attention-contract.schema.json"
+                  },
+                  "validate_only": {
+                    "type": "boolean"
+                  },
+                  "idempotency_key": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "eap.wait"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "required": [
+                  "contract_id",
+                  "until",
+                  "timeout"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "contract_id": {
+                    "type": "string"
+                  },
+                  "until": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "timeout": {
+                    "type": "string"
+                  },
+                  "min_severity": {
+                    "type": "string"
+                  },
+                  "include": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cursor": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "eap.attention.ack"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "required": [
+                  "attention_id",
+                  "action"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "attention_id": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "seen",
+                      "snooze",
+                      "dismiss",
+                      "escalate"
+                    ]
+                  },
+                  "actor": {
+                    "type": "string"
+                  },
+                  "snooze_for": {
+                    "type": "string"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "eap.contract.revoke"
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "required": [
+                  "contract_id",
+                  "reason"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "contract_id": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Response": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "error": {
+          "$ref": "#/$defs/Error"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "result"
+          ]
+        },
+        {
+          "required": [
+            "error"
+          ]
+        }
+      ]
+    },
+    "Error": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "WaitResult": {
+      "type": "object",
+      "required": [
+        "contract_id",
+        "return_reason",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string"
+        },
+        "return_reason": {
+          "type": "string",
+          "enum": [
+            "attention",
+            "summary",
+            "timeout",
+            "revoked",
+            "expired",
+            "completed",
+            "provider_error",
+            "interrupted"
+          ]
+        },
+        "status": {
+          "type": "string"
+        },
+        "event": {
+          "$ref": "https://eap.dev/schemas/eap-attention-event.schema.json"
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

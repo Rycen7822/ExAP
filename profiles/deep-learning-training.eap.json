@@ -1,0 +1,209 @@
+{
+  "profile_id": "profile:deep-learning-training",
+  "eap_version": "0.2.0-draft",
+  "name": "Deep Learning Training",
+  "description": "Monitor long-running ML training tasks, logs, checkpoints, GPU utilization, and training failures.",
+  "domain": "machine-learning",
+  "subject_types": [
+    "process",
+    "gpu",
+    "file"
+  ],
+  "signals": [
+    "process.status",
+    "process.cpu.percent",
+    "process.memory.rss_mb",
+    "gpu.util.percent",
+    "gpu.memory.used_mb",
+    "log.line",
+    "file.exists",
+    "disk.free_gb"
+  ],
+  "event_types": [
+    "process.exited",
+    "log.line.appended",
+    "file.created"
+  ],
+  "rules": [
+    {
+      "rule_id": "rule_process_exited",
+      "name": "process_exited",
+      "description": "The monitored process exited.",
+      "condition": {
+        "type": "event",
+        "event_type": "process.exited",
+        "operator": "exists",
+        "subject_ref": "eap://local/process/18423"
+      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "evidence": {
+        "include": [
+          "matched_values",
+          "event_excerpt",
+          "subject_snapshot"
+        ],
+        "max_items": 5,
+        "max_excerpt_chars": 2000,
+        "include_subject_attributes": true
+      }
+    },
+    {
+      "rule_id": "rule_gpu_idle",
+      "name": "gpu_idle",
+      "description": "GPU utilization stayed low while the process was still running.",
+      "condition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "signal",
+            "signal": "gpu.util.percent",
+            "operator": "lt",
+            "value": 20,
+            "duration": "PT5M",
+            "aggregate": "avg",
+            "window": "PT5M",
+            "subject_ref": "eap://local/gpu/0"
+          },
+          {
+            "type": "signal",
+            "signal": "process.status",
+            "operator": "eq",
+            "value": "running",
+            "subject_ref": "eap://local/process/18423"
+          }
+        ]
+      },
+      "severity": "warning",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "debounce": "PT1M",
+      "cooldown": "PT10M",
+      "hysteresis": {
+        "recover_when": {
+          "type": "signal",
+          "signal": "gpu.util.percent",
+          "operator": "gt",
+          "value": 40,
+          "duration": "PT2M",
+          "subject_ref": "eap://local/gpu/0"
+        },
+        "emit_recovery_event": true
+      },
+      "evidence": {
+        "include": [
+          "window_stats",
+          "subject_snapshot"
+        ],
+        "max_items": 8,
+        "max_excerpt_chars": 1000,
+        "include_subject_attributes": true
+      }
+    },
+    {
+      "rule_id": "rule_cuda_oom",
+      "name": "cuda_oom",
+      "description": "Training log contains a CUDA memory failure.",
+      "condition": {
+        "type": "event",
+        "event_type": "log.line.appended",
+        "operator": "field_regex",
+        "filters": [
+          {
+            "path": "line",
+            "operator": "regex",
+            "value": "CUDA out of memory|CUDNN_STATUS_ALLOC_FAILED",
+            "case_sensitive": false
+          }
+        ],
+        "subject_ref": "eap://local/process/18423"
+      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "cooldown": "PT30M",
+      "evidence": {
+        "include": [
+          "log_excerpt",
+          "event_excerpt"
+        ],
+        "max_items": 3,
+        "max_excerpt_chars": 4000,
+        "include_subject_attributes": false
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    }
+  },
+  "privacy": {
+    "purpose": "environment_attention",
+    "data_minimization": true,
+    "allowed_fields": [
+      "subject.ref",
+      "subject.type",
+      "evidence.stats",
+      "evidence.value",
+      "payload.summary"
+    ],
+    "forbidden_fields": [
+      "secret",
+      "token",
+      "password",
+      "credential",
+      "payload.raw_body",
+      "payload.attachment.content"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": []
+    },
+    "retention": {
+      "observations": "PT24H",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "delivery_action"
+      ]
+    },
+    "data_classes": [
+      "operational_metadata"
+    ]
+  },
+  "parameters": [
+    {
+      "name": "gpu_idle_threshold",
+      "type": "number",
+      "required": false,
+      "default": 20,
+      "description": "GPU utilization percent below which the gpu_idle rule evaluates as idle."
+    },
+    {
+      "name": "gpu_idle_duration",
+      "type": "duration",
+      "required": false,
+      "default": "PT5M",
+      "description": "Duration for which GPU utilization must remain below the threshold."
+    }
+  ]
+}

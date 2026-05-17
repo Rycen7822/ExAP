@@ -1,0 +1,148 @@
+{
+  "server_name": "eap-mcp-server",
+  "eap_version": "0.2.0-draft",
+  "tools": [
+    {
+      "name": "eap_discover",
+      "description": "Return EAP provider capability documents.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "environment_ref": {
+            "type": "string"
+          },
+          "subject_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "eap_contract_create",
+      "description": "Create an EAP Attention Contract.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "contract"
+        ],
+        "properties": {
+          "contract": {
+            "$ref": "https://eap.dev/schemas/eap-attention-contract.schema.json"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "eap_wait",
+      "description": "Block until an attention event, summary, completion, timeout, interruption, expiration, revocation, or provider error.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "contract_id",
+          "until",
+          "timeout"
+        ],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "until": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timeout": {
+            "type": "string"
+          },
+          "min_severity": {
+            "type": "string"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "eap_status",
+      "description": "Return compressed state for a contract.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "contract_id"
+        ],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "eap_attention_ack",
+      "description": "Acknowledge, snooze, dismiss, or escalate an attention event.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "attention_id",
+          "action"
+        ],
+        "properties": {
+          "attention_id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "seen",
+              "snooze",
+              "dismiss",
+              "escalate"
+            ]
+          },
+          "snooze_for": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "eap_contract_revoke",
+      "description": "Revoke an EAP contract.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "contract_id",
+          "reason"
+        ],
+        "properties": {
+          "contract_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  ]
+}

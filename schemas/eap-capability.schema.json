@@ -1,0 +1,402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-capability.schema.json",
+  "title": "EAP Capability Document",
+  "type": "object",
+  "required": [
+    "eap_versions",
+    "capability_id",
+    "provider",
+    "subject_types",
+    "signals",
+    "event_types",
+    "rule_capabilities",
+    "delivery_capabilities",
+    "privacy_capabilities",
+    "limits"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "eap_versions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapVersion"
+      },
+      "uniqueItems": true
+    },
+    "capability_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Provider"
+    },
+    "environments": {
+      "type": "array",
+      "items": {
+        "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Environment"
+      }
+    },
+    "subject_types": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SubjectTypeCapability"
+      }
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SignalCapability"
+      }
+    },
+    "event_types": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/EventTypeCapability"
+      }
+    },
+    "rule_capabilities": {
+      "$ref": "#/$defs/RuleCapabilities"
+    },
+    "delivery_capabilities": {
+      "$ref": "#/$defs/DeliveryCapabilities"
+    },
+    "privacy_capabilities": {
+      "$ref": "#/$defs/PrivacyCapabilities"
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "integer",
+          "boolean",
+          "array",
+          "object",
+          "null"
+        ]
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/BindingCapability"
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "profile_id",
+          "name"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action_id",
+          "description"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "metadata": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/ExtensionMap"
+    }
+  },
+  "$defs": {
+    "SubjectTypeCapability": {
+      "type": "object",
+      "required": [
+        "type",
+        "description",
+        "discoverable"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "discoverable": {
+          "type": "boolean"
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sensitivity": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Sensitivity"
+        }
+      }
+    },
+    "SignalCapability": {
+      "type": "object",
+      "required": [
+        "name",
+        "subject_types",
+        "value_type",
+        "description",
+        "operators"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "subject_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "value_type": {
+          "type": "string",
+          "enum": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "datetime",
+            "duration",
+            "object",
+            "array",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "sampling": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "privacy_class": {
+          "type": "string"
+        }
+      }
+    },
+    "EventTypeCapability": {
+      "type": "object",
+      "required": [
+        "event_type",
+        "subject_types",
+        "description"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "event_type": {
+          "type": "string"
+        },
+        "subject_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "description": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "privacy_class": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleCapabilities": {
+      "type": "object",
+      "required": [
+        "condition_types",
+        "operators",
+        "aggregates",
+        "hysteresis",
+        "cooldown",
+        "correlation",
+        "semantic_match"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "condition_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "aggregates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "hysteresis": {
+          "type": "boolean"
+        },
+        "cooldown": {
+          "type": "boolean"
+        },
+        "correlation": {
+          "type": "boolean"
+        },
+        "semantic_match": {
+          "type": "boolean"
+        }
+      }
+    },
+    "DeliveryCapabilities": {
+      "type": "object",
+      "required": [
+        "modes",
+        "transports",
+        "content_modes",
+        "supports_ack",
+        "supports_snooze"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "transports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "content_modes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "supports_ack": {
+          "type": "boolean"
+        },
+        "supports_snooze": {
+          "type": "boolean"
+        },
+        "max_wait": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        }
+      }
+    },
+    "PrivacyCapabilities": {
+      "type": "object",
+      "required": [
+        "field_level_access",
+        "redaction_methods",
+        "retention_controls",
+        "audit_log"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "field_level_access": {
+          "type": "boolean"
+        },
+        "redaction_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "retention_controls": {
+          "type": "boolean"
+        },
+        "audit_log": {
+          "type": "boolean"
+        },
+        "consent_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "BindingCapability": {
+      "type": "object",
+      "required": [
+        "binding",
+        "endpoint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "binding": {
+          "type": "string",
+          "enum": [
+            "http",
+            "webhook",
+            "sse",
+            "websocket",
+            "mqtt",
+            "nats",
+            "kafka",
+            "local_stdio",
+            "local_socket",
+            "mcp",
+            "a2a"
+          ]
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "auth": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "profile_id": "profile:calendar-focus",
+  "eap_version": "0.2.0-draft",
+  "name": "Calendar Focus",
+  "description": "Notify before important calendar events and suppress low-priority entries.",
+  "domain": "calendar",
+  "subject_types": [
+    "calendar",
+    "calendar_event"
+  ],
+  "signals": [
+    "calendar.event.starts_in_minutes",
+    "calendar.event.importance"
+  ],
+  "event_types": [
+    "calendar.event.created",
+    "calendar.event.updated"
+  ],
+  "rules": [
+    {
+      "rule_id": "rule_important_meeting_soon",
+      "name": "important_meeting_soon",
+      "description": "An important calendar event begins soon.",
+      "condition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "signal",
+            "signal": "calendar.event.starts_in_minutes",
+            "operator": "lte",
+            "value": 15
+          },
+          {
+            "type": "signal",
+            "signal": "calendar.event.importance",
+            "operator": "gte",
+            "value": 0.8
+          }
+        ]
+      },
+      "severity": "notice",
+      "delivery_action": "deliver",
+      "cooldown": "PT30M",
+      "evidence": {
+        "include": [
+          "matched_values",
+          "subject_snapshot"
+        ],
+        "max_items": 4,
+        "max_excerpt_chars": 1000,
+        "include_subject_attributes": true
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    }
+  },
+  "privacy": {
+    "purpose": "environment_attention",
+    "data_minimization": true,
+    "allowed_fields": [
+      "subject.ref",
+      "subject.type",
+      "evidence.stats",
+      "evidence.value",
+      "payload.summary"
+    ],
+    "forbidden_fields": [
+      "secret",
+      "token",
+      "password",
+      "credential",
+      "payload.raw_body",
+      "payload.attachment.content"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": []
+    },
+    "retention": {
+      "observations": "PT24H",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "delivery_action"
+      ]
+    },
+    "data_classes": [
+      "operational_metadata"
+    ]
+  },
+  "parameters": []
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-profile.schema.json",
+  "title": "EAP Domain Profile",
+  "type": "object",
+  "required": [
+    "profile_id",
+    "eap_version",
+    "name",
+    "description",
+    "domain",
+    "subject_types",
+    "rules",
+    "delivery",
+    "privacy"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "profile_id": {
+      "type": "string",
+      "pattern": "^profile:[a-z0-9_.:-]+$"
+    },
+    "eap_version": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapVersion"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "subject_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "event_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "https://eap.dev/schemas/eap-rule.schema.json"
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "required": [
+        "modes",
+        "return_policy"
+      ],
+      "additionalProperties": true
+    },
+    "privacy": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/PrivacyPolicy"
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "required",
+          "description"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "integer",
+              "boolean",
+              "duration",
+              "datetime",
+              "array",
+              "object"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "default": {},
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/ExtensionMap"
+    }
+  }
+}

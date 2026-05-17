@@ -1,0 +1,333 @@
+{
+  "eap_versions": [
+    "0.2.0-draft"
+  ],
+  "capability_id": "cap_local_process_001",
+  "provider": {
+    "provider_id": "local-process-provider",
+    "type": "local_daemon",
+    "display_name": "Local Process Provider",
+    "version": "0.2.0",
+    "authority": "local"
+  },
+  "environments": [
+    {
+      "ref": "eap://local/machine/workstation-01",
+      "kind": "machine",
+      "display_name": "workstation-01",
+      "timezone": "Asia/Tokyo",
+      "labels": {
+        "os": "linux"
+      }
+    }
+  ],
+  "subject_types": [
+    {
+      "type": "process",
+      "description": "Operating system process",
+      "discoverable": true,
+      "relationships": [
+        "parent",
+        "child",
+        "process_group"
+      ],
+      "attributes": [
+        "pid",
+        "ppid",
+        "command",
+        "cwd",
+        "user"
+      ],
+      "sensitivity": "internal"
+    },
+    {
+      "type": "gpu",
+      "description": "GPU device visible to the local machine",
+      "discoverable": true,
+      "relationships": [
+        "used_by_process"
+      ],
+      "attributes": [
+        "index",
+        "uuid",
+        "vendor",
+        "memory_total_mb"
+      ],
+      "sensitivity": "internal"
+    },
+    {
+      "type": "file",
+      "description": "Filesystem object",
+      "discoverable": true,
+      "relationships": [
+        "owned_by_process"
+      ],
+      "attributes": [
+        "path",
+        "size",
+        "modified_at"
+      ],
+      "sensitivity": "confidential"
+    }
+  ],
+  "signals": [
+    {
+      "name": "process.status",
+      "subject_types": [
+        "process"
+      ],
+      "value_type": "string",
+      "description": "Process lifecycle status.",
+      "operators": [
+        "eq",
+        "ne",
+        "changed"
+      ],
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "process.cpu.percent",
+      "subject_types": [
+        "process"
+      ],
+      "value_type": "number",
+      "unit": "percent",
+      "description": "CPU utilization percent.",
+      "operators": [
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "rate_gt",
+        "rate_lt"
+      ],
+      "sampling": {
+        "min_interval": "PT1S"
+      },
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "process.memory.rss_mb",
+      "subject_types": [
+        "process"
+      ],
+      "value_type": "number",
+      "unit": "MB",
+      "description": "Resident memory size.",
+      "operators": [
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "relative_change_gt"
+      ],
+      "sampling": {
+        "min_interval": "PT1S"
+      },
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "gpu.util.percent",
+      "subject_types": [
+        "gpu"
+      ],
+      "value_type": "number",
+      "unit": "percent",
+      "description": "GPU utilization percent.",
+      "operators": [
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "relative_change_gt",
+        "relative_change_lt"
+      ],
+      "sampling": {
+        "min_interval": "PT1S"
+      },
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "gpu.memory.used_mb",
+      "subject_types": [
+        "gpu"
+      ],
+      "value_type": "number",
+      "unit": "MB",
+      "description": "GPU memory used.",
+      "operators": [
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "relative_drop_gt"
+      ],
+      "sampling": {
+        "min_interval": "PT1S"
+      },
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "disk.free_gb",
+      "subject_types": [
+        "file"
+      ],
+      "value_type": "number",
+      "unit": "GB",
+      "description": "Free disk space on containing filesystem.",
+      "operators": [
+        "gt",
+        "gte",
+        "lt",
+        "lte"
+      ],
+      "privacy_class": "operational_metadata"
+    }
+  ],
+  "event_types": [
+    {
+      "event_type": "process.exited",
+      "subject_types": [
+        "process"
+      ],
+      "description": "The process exited.",
+      "fields": [
+        "exit_code",
+        "signal",
+        "finished_at"
+      ],
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "event_type": "log.line.appended",
+      "subject_types": [
+        "process"
+      ],
+      "description": "A monitored log line was appended.",
+      "fields": [
+        "line",
+        "path",
+        "offset"
+      ],
+      "privacy_class": "log_excerpt"
+    },
+    {
+      "event_type": "file.created",
+      "subject_types": [
+        "file"
+      ],
+      "description": "A matching file was created.",
+      "fields": [
+        "path",
+        "size",
+        "created_at"
+      ],
+      "privacy_class": "file_metadata"
+    }
+  ],
+  "rule_capabilities": {
+    "condition_types": [
+      "all",
+      "any",
+      "not",
+      "signal",
+      "event",
+      "state",
+      "correlation"
+    ],
+    "operators": [
+      "eq",
+      "ne",
+      "gt",
+      "gte",
+      "lt",
+      "lte",
+      "exists",
+      "not_exists",
+      "changed",
+      "regex",
+      "contains",
+      "in",
+      "relative_drop_gt",
+      "semantic_match"
+    ],
+    "aggregates": [
+      "last",
+      "min",
+      "max",
+      "avg",
+      "sum",
+      "count",
+      "delta",
+      "rate"
+    ],
+    "hysteresis": true,
+    "cooldown": true,
+    "correlation": true,
+    "semantic_match": false
+  },
+  "delivery_capabilities": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "transports": [
+      "http",
+      "http_webhook",
+      "sse",
+      "local_socket",
+      "mcp"
+    ],
+    "content_modes": [
+      "structured"
+    ],
+    "supports_ack": true,
+    "supports_snooze": true,
+    "max_wait": "P1D"
+  },
+  "privacy_capabilities": {
+    "field_level_access": true,
+    "redaction_methods": [
+      "mask",
+      "hash",
+      "drop",
+      "summary_only"
+    ],
+    "retention_controls": true,
+    "audit_log": true,
+    "consent_required": false
+  },
+  "limits": {
+    "max_contracts": 1024,
+    "max_rules_per_contract": 64,
+    "max_wait": "P1D",
+    "max_payload_bytes": 65536
+  },
+  "bindings": [
+    {
+      "binding": "http",
+      "endpoint": "http://127.0.0.1:8765/eap",
+      "auth": [
+        "bearer"
+      ]
+    },
+    {
+      "binding": "mcp",
+      "endpoint": "stdio:eap-mcp",
+      "auth": [
+        "host_consent"
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "profile_id": "profile:process-monitoring",
+      "name": "Process Monitoring"
+    },
+    {
+      "profile_id": "profile:deep-learning-training",
+      "name": "Deep Learning Training"
+    }
+  ]
+}

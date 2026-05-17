@@ -1,0 +1,23 @@
+asyncapi: 3.0.0
+info:
+  title: EAP Provider Event Stream
+  version: 0.2.0-draft
+channels:
+  attentionEvents:
+    address: eap.attention.events
+    messages:
+      attentionEvent:
+        $ref: '#/components/messages/attentionEvent'
+operations:
+  receiveAttentionEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/attentionEvents'
+components:
+  messages:
+    attentionEvent:
+      name: attentionEvent
+      title: EAP Attention Event
+      contentType: application/json
+      payload:
+        $ref: '../schemas/eap-attention-event.schema.json'

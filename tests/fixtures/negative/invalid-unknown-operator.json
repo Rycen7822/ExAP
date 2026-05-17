@@ -1,0 +1,289 @@
+{
+  "eap_version": "0.2.0-draft",
+  "contract_id": "act_process_wait_001",
+  "created_at": "2026-05-16T12:00:00+09:00",
+  "consumer": {
+    "consumer_id": "agent:codex-local",
+    "type": "agent",
+    "display_name": "Codex local agent",
+    "capabilities": {
+      "blocking_wait": true,
+      "mcp": true
+    }
+  },
+  "provider": {
+    "provider_id": "local-process-provider",
+    "type": "local_daemon",
+    "version": "0.2.0"
+  },
+  "environment_ref": "eap://local/machine/workstation-01",
+  "intent": "monitor_long_running_process_without_polling",
+  "scope": {
+    "subjects": [
+      {
+        "type": "process",
+        "ref": "eap://local/process/18423",
+        "include_children": true,
+        "resolution": "exact"
+      },
+      {
+        "type": "gpu",
+        "ref": "eap://local/gpu/0",
+        "resolution": "exact"
+      }
+    ],
+    "signals": [
+      "process.status",
+      "process.exit_code",
+      "process.cpu.percent",
+      "process.memory.rss_mb",
+      "gpu.util.percent",
+      "gpu.memory.used_mb",
+      "log.line",
+      "disk.free_gb"
+    ],
+    "events": [
+      "process.exited",
+      "log.line.appended",
+      "file.created"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "rule_process_exited",
+      "name": "process_exited",
+      "description": "The monitored process exited.",
+      "condition": {
+        "type": "event",
+        "event_type": "process.exited",
+        "operator": "between",
+        "subject_ref": "eap://local/process/18423"
+      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "evidence": {
+        "include": [
+          "matched_values",
+          "event_excerpt",
+          "subject_snapshot"
+        ],
+        "max_items": 5,
+        "max_excerpt_chars": 2000,
+        "include_subject_attributes": true
+      }
+    },
+    {
+      "rule_id": "rule_gpu_idle",
+      "name": "gpu_idle",
+      "description": "GPU utilization stayed low while the process was still running.",
+      "condition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "signal",
+            "signal": "gpu.util.percent",
+            "operator": "lt",
+            "value": 20,
+            "duration": "PT5M",
+            "aggregate": "avg",
+            "window": "PT5M",
+            "subject_ref": "eap://local/gpu/0"
+          },
+          {
+            "type": "signal",
+            "signal": "process.status",
+            "operator": "eq",
+            "value": "running",
+            "subject_ref": "eap://local/process/18423"
+          }
+        ]
+      },
+      "severity": "warning",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "debounce": "PT1M",
+      "cooldown": "PT10M",
+      "hysteresis": {
+        "recover_when": {
+          "type": "signal",
+          "signal": "gpu.util.percent",
+          "operator": "gt",
+          "value": 40,
+          "duration": "PT2M",
+          "subject_ref": "eap://local/gpu/0"
+        },
+        "emit_recovery_event": true
+      },
+      "evidence": {
+        "include": [
+          "window_stats",
+          "subject_snapshot"
+        ],
+        "max_items": 8,
+        "max_excerpt_chars": 1000,
+        "include_subject_attributes": true
+      }
+    },
+    {
+      "rule_id": "rule_cuda_oom",
+      "name": "cuda_oom",
+      "description": "Training log contains a CUDA memory failure.",
+      "condition": {
+        "type": "event",
+        "event_type": "log.line.appended",
+        "operator": "field_regex",
+        "filters": [
+          {
+            "path": "line",
+            "operator": "regex",
+            "value": "CUDA out of memory|CUDNN_STATUS_ALLOC_FAILED",
+            "case_sensitive": false
+          }
+        ],
+        "subject_ref": "eap://local/process/18423"
+      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "cooldown": "PT30M",
+      "evidence": {
+        "include": [
+          "log_excerpt",
+          "event_excerpt"
+        ],
+        "max_items": 3,
+        "max_excerpt_chars": 4000,
+        "include_subject_attributes": false
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "stream"
+    ],
+    "transports": [
+      {
+        "transport": "mcp",
+        "mode": "blocking_wait",
+        "content_mode": "structured",
+        "metadata": {
+          "tool": "eap_wait"
+        }
+      },
+      {
+        "transport": "sse",
+        "mode": "stream",
+        "endpoint": "http://127.0.0.1:8765/eap/contracts/act_process_wait_001/stream",
+        "content_mode": "structured"
+      }
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    },
+    "dedupe": {
+      "key_fields": [
+        "contract_id",
+        "rule_id",
+        "subject.ref"
+      ],
+      "window": "PT10M"
+    },
+    "retry": {
+      "max_attempts": 0,
+      "backoff": "none"
+    },
+    "ack": {
+      "required": false,
+      "deadline": "PT0S",
+      "snooze_allowed": true
+    },
+    "payload_limits": {
+      "max_event_bytes": 32768,
+      "max_evidence_items": 8,
+      "max_text_chars": 4000
+    }
+  },
+  "privacy": {
+    "purpose": "environment_attention",
+    "data_minimization": true,
+    "allowed_fields": [
+      "subject.ref",
+      "subject.type",
+      "evidence.stats",
+      "evidence.value",
+      "payload.summary"
+    ],
+    "forbidden_fields": [
+      "secret",
+      "token",
+      "password",
+      "credential",
+      "payload.raw_body",
+      "payload.attachment.content"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": []
+    },
+    "retention": {
+      "observations": "PT24H",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "delivery_action"
+      ]
+    },
+    "data_classes": [
+      "operational_metadata"
+    ]
+  },
+  "lifecycle": {
+    "status": "active",
+    "starts_at": "2026-05-16T12:00:00+09:00",
+    "expires_at": "2026-05-17T12:00:00+09:00",
+    "max_runtime": "P1D",
+    "auto_revoke_on_completion": true
+  },
+  "memory": {
+    "allowed": true,
+    "scope": "session",
+    "allowed_keys": [
+      "contract_id",
+      "last_attention_id",
+      "last_status"
+    ],
+    "forbidden_keys": [
+      "payload.raw_body",
+      "secret"
+    ]
+  },
+  "integrations": {
+    "mcp": {
+      "tools": [
+        "eap_discover",
+        "eap_contract_create",
+        "eap_wait",
+        "eap_status",
+        "eap_attention_ack",
+        "eap_contract_revoke"
+      ]
+    },
+    "a2a": {
+      "artifact_type": "application/eap+json"
+    }
+  }
+}

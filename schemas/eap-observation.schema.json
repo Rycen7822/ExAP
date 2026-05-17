@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-observation.schema.json",
+  "title": "EAP Observation",
+  "type": "object",
+  "required": [
+    "observation_id",
+    "subject_ref",
+    "signal",
+    "value",
+    "observed_at",
+    "source"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "observation_id": {
+      "type": "string"
+    },
+    "subject_ref": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+    },
+    "signal": {
+      "type": "string"
+    },
+    "value": {},
+    "observed_at": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DateTime"
+    },
+    "source": {
+      "type": "string"
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "privacy": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/PrivacyReport"
+    },
+    "trace": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/TraceContext"
+    }
+  }
+}

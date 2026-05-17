@@ -1,0 +1,196 @@
+{
+  "eap_versions": [
+    "0.2.0-draft"
+  ],
+  "capability_id": "cap_mail_001",
+  "provider": {
+    "provider_id": "mail-provider",
+    "type": "connector",
+    "display_name": "Mail Provider",
+    "version": "0.2.0",
+    "authority": "personal"
+  },
+  "environments": [
+    {
+      "ref": "eap://personal/workspace/default",
+      "kind": "personal",
+      "display_name": "Personal workspace",
+      "timezone": "Asia/Tokyo"
+    }
+  ],
+  "subject_types": [
+    {
+      "type": "mailbox",
+      "description": "Mailbox folder or logical inbox",
+      "discoverable": true,
+      "relationships": [
+        "contains_thread",
+        "contains_message"
+      ],
+      "attributes": [
+        "provider",
+        "label",
+        "address_hash"
+      ],
+      "sensitivity": "confidential"
+    },
+    {
+      "type": "email_thread",
+      "description": "Email conversation thread",
+      "discoverable": false,
+      "relationships": [
+        "belongs_to_mailbox"
+      ],
+      "attributes": [
+        "thread_id",
+        "last_message_at"
+      ],
+      "sensitivity": "confidential"
+    }
+  ],
+  "signals": [
+    {
+      "name": "mail.sender.relationship",
+      "subject_types": [
+        "mailbox",
+        "email_thread"
+      ],
+      "value_type": "string",
+      "description": "Relationship class for a sender.",
+      "operators": [
+        "eq",
+        "in",
+        "not_in"
+      ],
+      "privacy_class": "email_metadata"
+    },
+    {
+      "name": "mail.content.semantic_intent",
+      "subject_types": [
+        "email_thread"
+      ],
+      "value_type": "string",
+      "description": "Semantic class extracted from message content.",
+      "operators": [
+        "eq",
+        "in",
+        "semantic_match"
+      ],
+      "privacy_class": "email_summary"
+    },
+    {
+      "name": "mail.has_attachment",
+      "subject_types": [
+        "email_thread"
+      ],
+      "value_type": "boolean",
+      "description": "Whether the message has attachments.",
+      "operators": [
+        "eq"
+      ],
+      "privacy_class": "email_metadata"
+    }
+  ],
+  "event_types": [
+    {
+      "event_type": "mail.message.received",
+      "subject_types": [
+        "mailbox"
+      ],
+      "description": "A new message arrived.",
+      "fields": [
+        "thread_id",
+        "sender_domain",
+        "subject_summary",
+        "received_at"
+      ],
+      "privacy_class": "email_metadata"
+    }
+  ],
+  "rule_capabilities": {
+    "condition_types": [
+      "all",
+      "any",
+      "not",
+      "signal",
+      "event"
+    ],
+    "operators": [
+      "eq",
+      "ne",
+      "exists",
+      "field_eq",
+      "field_regex",
+      "field_contains",
+      "in",
+      "not_in",
+      "semantic_match"
+    ],
+    "aggregates": [
+      "last",
+      "count"
+    ],
+    "hysteresis": false,
+    "cooldown": true,
+    "correlation": false,
+    "semantic_match": true
+  },
+  "delivery_capabilities": {
+    "modes": [
+      "push",
+      "stream",
+      "blocking_wait"
+    ],
+    "transports": [
+      "http_webhook",
+      "sse",
+      "mcp"
+    ],
+    "content_modes": [
+      "structured"
+    ],
+    "supports_ack": true,
+    "supports_snooze": true,
+    "max_wait": "PT12H"
+  },
+  "privacy_capabilities": {
+    "field_level_access": true,
+    "redaction_methods": [
+      "mask",
+      "hash",
+      "drop",
+      "summary_only"
+    ],
+    "retention_controls": true,
+    "audit_log": true,
+    "consent_required": true
+  },
+  "limits": {
+    "max_contracts": 256,
+    "max_rules_per_contract": 32,
+    "max_payload_bytes": 32768
+  },
+  "bindings": [
+    {
+      "binding": "webhook",
+      "endpoint": "https://mail-provider.example.com/eap/events",
+      "auth": [
+        "hmac",
+        "bearer"
+      ]
+    },
+    {
+      "binding": "mcp",
+      "endpoint": "stdio:eap-mail-mcp",
+      "auth": [
+        "oauth"
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "profile_id": "profile:email-priority",
+      "name": "Email Priority"
+    }
+  ]
+}

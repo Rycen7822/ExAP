@@ -1,0 +1,126 @@
+{
+  "profile_id": "profile:ci-cd-monitor",
+  "eap_version": "0.2.0-draft",
+  "name": "CI/CD Monitor",
+  "description": "Monitor build, test, deployment, and release pipeline status.",
+  "domain": "ci-cd",
+  "subject_types": [
+    "pipeline",
+    "job",
+    "artifact"
+  ],
+  "signals": [
+    "ci.job.status",
+    "ci.job.duration.seconds",
+    "artifact.exists"
+  ],
+  "event_types": [
+    "ci.job.failed",
+    "ci.job.completed",
+    "artifact.created",
+    "log.line.appended"
+  ],
+  "rules": [
+    {
+      "rule_id": "rule_build_failed",
+      "name": "build_failed",
+      "description": "A CI/CD job failed or emitted a fatal error.",
+      "condition": {
+        "type": "any",
+        "conditions": [
+          {
+            "type": "event",
+            "event_type": "ci.job.failed",
+            "operator": "exists"
+          },
+          {
+            "type": "event",
+            "event_type": "log.line.appended",
+            "operator": "field_regex",
+            "filters": [
+              {
+                "path": "line",
+                "operator": "regex",
+                "value": "fatal|failed|panic|segmentation fault",
+                "case_sensitive": false
+              }
+            ]
+          }
+        ]
+      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "cooldown": "PT10M",
+      "evidence": {
+        "include": [
+          "event_excerpt",
+          "log_excerpt",
+          "trace_link"
+        ],
+        "max_items": 8,
+        "max_excerpt_chars": 4000,
+        "include_subject_attributes": true
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    }
+  },
+  "privacy": {
+    "purpose": "environment_attention",
+    "data_minimization": true,
+    "allowed_fields": [
+      "subject.ref",
+      "subject.type",
+      "evidence.stats",
+      "evidence.value",
+      "payload.summary"
+    ],
+    "forbidden_fields": [
+      "secret",
+      "token",
+      "password",
+      "credential",
+      "payload.raw_body",
+      "payload.attachment.content"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": []
+    },
+    "retention": {
+      "observations": "PT24H",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "delivery_action"
+      ]
+    },
+    "data_classes": [
+      "operational_metadata"
+    ]
+  },
+  "parameters": []
+}

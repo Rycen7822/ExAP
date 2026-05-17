@@ -1,0 +1,106 @@
+{
+  "profile_id": "profile:process-monitoring",
+  "eap_version": "0.2.0-draft",
+  "name": "Process Monitoring",
+  "description": "Monitor long-running operating-system processes and their resource usage.",
+  "domain": "system",
+  "subject_types": [
+    "process",
+    "file"
+  ],
+  "signals": [
+    "process.status",
+    "process.cpu.percent",
+    "process.memory.rss_mb",
+    "disk.free_gb"
+  ],
+  "event_types": [
+    "process.exited",
+    "log.line.appended"
+  ],
+  "rules": [
+    {
+      "rule_id": "rule_process_exited",
+      "name": "process_exited",
+      "description": "The monitored process exited.",
+      "condition": {
+        "type": "event",
+        "event_type": "process.exited",
+        "operator": "exists",
+        "subject_ref": "eap://local/process/18423"
+      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
+      "evidence": {
+        "include": [
+          "matched_values",
+          "event_excerpt",
+          "subject_snapshot"
+        ],
+        "max_items": 5,
+        "max_excerpt_chars": 2000,
+        "include_subject_attributes": true
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    }
+  },
+  "privacy": {
+    "purpose": "environment_attention",
+    "data_minimization": true,
+    "allowed_fields": [
+      "subject.ref",
+      "subject.type",
+      "evidence.stats",
+      "evidence.value",
+      "payload.summary"
+    ],
+    "forbidden_fields": [
+      "secret",
+      "token",
+      "password",
+      "credential",
+      "payload.raw_body",
+      "payload.attachment.content"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": []
+    },
+    "retention": {
+      "observations": "PT24H",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "delivery_action"
+      ]
+    },
+    "data_classes": [
+      "operational_metadata"
+    ]
+  },
+  "parameters": []
+}

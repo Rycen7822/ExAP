@@ -1,0 +1,146 @@
+{
+  "profile_id": "profile:email-priority",
+  "eap_version": "0.2.0-draft",
+  "name": "Email Priority",
+  "description": "Surface important email while suppressing routine mail noise.",
+  "domain": "mail",
+  "subject_types": [
+    "mailbox",
+    "email_thread"
+  ],
+  "signals": [
+    "mail.sender.relationship",
+    "mail.content.semantic_intent",
+    "mail.has_attachment"
+  ],
+  "event_types": [
+    "mail.message.received"
+  ],
+  "rules": [
+    {
+      "rule_id": "rule_urgent_work_email",
+      "name": "urgent_work_email",
+      "description": "A new email from an important sender requests urgent work action.",
+      "condition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "event",
+            "event_type": "mail.message.received",
+            "operator": "exists",
+            "subject_ref": "eap://personal/mailbox/primary"
+          },
+          {
+            "type": "signal",
+            "signal": "mail.sender.relationship",
+            "operator": "in",
+            "value": [
+              "manager",
+              "client",
+              "frequent_collaborator"
+            ]
+          },
+          {
+            "type": "signal",
+            "signal": "mail.content.semantic_intent",
+            "operator": "in",
+            "value": [
+              "urgent_request",
+              "approval_needed",
+              "incident",
+              "deadline"
+            ]
+          }
+        ]
+      },
+      "severity": "warning",
+      "delivery_action": "deliver",
+      "debounce": "PT0S",
+      "cooldown": "PT30M",
+      "evidence": {
+        "include": [
+          "event_excerpt",
+          "semantic_score",
+          "redaction_report"
+        ],
+        "max_items": 6,
+        "max_excerpt_chars": 1200,
+        "include_subject_attributes": false
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    }
+  },
+  "privacy": {
+    "purpose": "urgent_email_notification",
+    "data_minimization": true,
+    "allowed_fields": [
+      "payload.email.sender_domain",
+      "payload.email.subject_summary",
+      "payload.email.body_summary",
+      "evidence.score"
+    ],
+    "forbidden_fields": [
+      "payload.email.body.raw",
+      "payload.email.attachments.content",
+      "payload.email.full_headers"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": [
+        {
+          "field": "payload.email.sender",
+          "method": "domain_only"
+        }
+      ]
+    },
+    "retention": {
+      "observations": "PT0S",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "mail.thread_id"
+      ]
+    },
+    "data_classes": [
+      "email_metadata",
+      "email_summary"
+    ]
+  },
+  "parameters": [
+    {
+      "name": "important_relationships",
+      "type": "array",
+      "required": false,
+      "default": [
+        "manager",
+        "client",
+        "frequent_collaborator"
+      ],
+      "description": "Sender relationship classes treated as important."
+    }
+  ]
+}

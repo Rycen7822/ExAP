@@ -1,0 +1,209 @@
+{
+  "eap_version": "0.2.0-draft",
+  "contract_id": "act_email_priority_001",
+  "created_at": "2026-05-16T09:00:00+09:00",
+  "consumer": {
+    "consumer_id": "app:desktop-assistant",
+    "type": "application",
+    "display_name": "Desktop Assistant",
+    "capabilities": {
+      "push": true,
+      "ack": true
+    }
+  },
+  "provider": {
+    "provider_id": "mail-provider",
+    "type": "connector",
+    "version": "0.2.0"
+  },
+  "environment_ref": "eap://personal/workspace/default",
+  "intent": "surface_important_email_without_interrupting_for_noise",
+  "scope": {
+    "subjects": [
+      {
+        "type": "mailbox",
+        "ref": "eap://personal/mailbox/primary",
+        "resolution": "exact"
+      }
+    ],
+    "signals": [
+      "mail.message.received",
+      "mail.sender.relationship",
+      "mail.content.semantic_intent",
+      "mail.has_attachment"
+    ],
+    "events": [
+      "mail.message.received"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "rule_urgent_work_email",
+      "name": "urgent_work_email",
+      "description": "A new email from an important sender requests urgent work action.",
+      "condition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "event",
+            "event_type": "mail.message.received",
+            "operator": "exists",
+            "subject_ref": "eap://personal/mailbox/primary"
+          },
+          {
+            "type": "signal",
+            "signal": "mail.sender.relationship",
+            "operator": "in",
+            "value": [
+              "manager",
+              "client",
+              "frequent_collaborator"
+            ]
+          },
+          {
+            "type": "signal",
+            "signal": "mail.content.semantic_intent",
+            "operator": "in",
+            "value": [
+              "urgent_request",
+              "approval_needed",
+              "incident",
+              "deadline"
+            ]
+          }
+        ]
+      },
+      "severity": "warning",
+      "delivery_action": "deliver",
+      "debounce": "PT0S",
+      "cooldown": "PT30M",
+      "evidence": {
+        "include": [
+          "event_excerpt",
+          "semantic_score",
+          "redaction_report"
+        ],
+        "max_items": 6,
+        "max_excerpt_chars": 1200,
+        "include_subject_attributes": false
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "push",
+      "stream"
+    ],
+    "transports": [
+      {
+        "transport": "http_webhook",
+        "mode": "push",
+        "endpoint": "https://assistant.example.com/eap/events",
+        "content_mode": "structured",
+        "auth_ref": "auth:webhook-hmac-001"
+      },
+      {
+        "transport": "sse",
+        "mode": "stream",
+        "endpoint": "https://mail-provider.example.com/eap/contracts/act_email_priority_001/stream",
+        "content_mode": "structured"
+      }
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    },
+    "dedupe": {
+      "key_fields": [
+        "contract_id",
+        "payload.email.thread_id"
+      ],
+      "window": "PT30M"
+    },
+    "retry": {
+      "max_attempts": 3,
+      "backoff": "exponential",
+      "initial_delay": "PT5S",
+      "max_delay": "PT1M"
+    },
+    "ack": {
+      "required": true,
+      "deadline": "PT15M",
+      "snooze_allowed": true
+    },
+    "payload_limits": {
+      "max_event_bytes": 16384,
+      "max_evidence_items": 6,
+      "max_text_chars": 2000
+    }
+  },
+  "privacy": {
+    "purpose": "urgent_email_notification",
+    "data_minimization": true,
+    "allowed_fields": [
+      "payload.email.sender_domain",
+      "payload.email.subject_summary",
+      "payload.email.body_summary",
+      "evidence.score"
+    ],
+    "forbidden_fields": [
+      "payload.email.body.raw",
+      "payload.email.attachments.content",
+      "payload.email.full_headers"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": [
+        {
+          "field": "payload.email.sender",
+          "method": "domain_only"
+        }
+      ]
+    },
+    "retention": {
+      "observations": "PT0S",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "mail.thread_id"
+      ]
+    },
+    "data_classes": [
+      "email_metadata",
+      "email_summary"
+    ]
+  },
+  "lifecycle": {
+    "status": "active",
+    "starts_at": "2026-05-16T09:00:00+09:00",
+    "expires_at": "2026-06-16T09:00:00+09:00",
+    "max_runtime": "P31D",
+    "auto_revoke_on_completion": false
+  },
+  "memory": {
+    "allowed": true,
+    "scope": "user",
+    "allowed_keys": [
+      "sender_domain",
+      "thread_importance_preference"
+    ],
+    "forbidden_keys": [
+      "payload.email.body.raw",
+      "payload.email.attachments.content"
+    ]
+  }
+}

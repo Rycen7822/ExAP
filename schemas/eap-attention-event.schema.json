@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eap.dev/schemas/eap-attention-event.schema.json",
+  "title": "EAP Attention Event",
+  "type": "object",
+  "required": [
+    "specversion",
+    "id",
+    "source",
+    "type",
+    "time",
+    "datacontenttype",
+    "data"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "specversion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "eap.attention.triggered",
+        "eap.attention.recovered",
+        "eap.attention.summary",
+        "eap.attention.acknowledged",
+        "eap.contract.state_changed"
+      ]
+    },
+    "subject": {
+      "type": "string"
+    },
+    "time": {
+      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DateTime"
+    },
+    "datacontenttype": {
+      "const": "application/json"
+    },
+    "data": {
+      "$ref": "#/$defs/AttentionData"
+    }
+  },
+  "$defs": {
+    "AttentionData": {
+      "type": "object",
+      "required": [
+        "eap_version",
+        "attention_id",
+        "contract_id",
+        "status",
+        "severity",
+        "title",
+        "reason",
+        "subject",
+        "rule",
+        "evidence",
+        "privacy",
+        "delivery"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "eap_version": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapVersion"
+        },
+        "attention_id": {
+          "type": "string",
+          "pattern": "^attn_[A-Za-z0-9_-]+$"
+        },
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "triggered",
+            "recovered",
+            "summary",
+            "acknowledged",
+            "suppressed",
+            "state_changed"
+          ]
+        },
+        "severity": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Severity"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intent": {
+          "type": "string"
+        },
+        "subject": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Subject"
+        },
+        "rule": {
+          "$ref": "#/$defs/RuleReference"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvidenceItem"
+          }
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "privacy": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/PrivacyReport"
+        },
+        "delivery": {
+          "$ref": "#/$defs/DeliveryReport"
+        },
+        "trace": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/TraceContext"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "triggered"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "evidence": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "RuleReference": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "name",
+        "severity",
+        "condition_summary",
+        "matched_at"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Severity"
+        },
+        "condition_summary": {
+          "type": "string"
+        },
+        "matched_at": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DateTime"
+        }
+      }
+    },
+    "EvidenceItem": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "kind",
+        "observed_at",
+        "subject_ref"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "signal_value",
+            "signal_window",
+            "event_match",
+            "log_excerpt",
+            "semantic_score",
+            "subject_snapshot",
+            "trace_link",
+            "redaction_report"
+          ]
+        },
+        "subject_ref": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+        },
+        "signal": {
+          "type": "string"
+        },
+        "event_type": {
+          "type": "string"
+        },
+        "observed_at": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DateTime"
+        },
+        "window": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        },
+        "value": {},
+        "unit": {
+          "type": "string"
+        },
+        "stats": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "number",
+              "integer",
+              "string",
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "path": {
+          "type": "string"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "DeliveryReport": {
+      "type": "object",
+      "required": [
+        "action",
+        "requires_ack"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DeliveryAction"
+        },
+        "requires_ack": {
+          "type": "boolean"
+        },
+        "ack_deadline": {
+          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+        },
+        "transport": {
+          "type": "string"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

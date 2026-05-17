@@ -1,0 +1,103 @@
+openapi: 3.1.0
+info:
+  title: EAP HTTP Binding
+  version: 0.2.0-draft
+paths:
+  /eap/capability:
+    get:
+      operationId: eapDiscover
+      responses:
+        '200':
+          description: Capability document
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/eap-capability.schema.json'
+  /eap/contracts:
+    post:
+      operationId: eapContractCreate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contract]
+              properties:
+                contract:
+                  $ref: '../schemas/eap-attention-contract.schema.json'
+                validate_only:
+                  type: boolean
+      responses:
+        '201':
+          description: Contract created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [contract_id, status, effective_contract]
+                properties:
+                  contract_id:
+                    type: string
+                  status:
+                    type: string
+                  effective_contract:
+                    $ref: '../schemas/eap-attention-contract.schema.json'
+  /eap/contracts/{contract_id}/wait:
+    post:
+      operationId: eapWait
+      parameters:
+        - name: contract_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [until, timeout]
+              properties:
+                until:
+                  type: array
+                  items:
+                    type: string
+                timeout:
+                  type: string
+                min_severity:
+                  type: string
+                include:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Wait result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [contract_id, return_reason, status]
+                properties:
+                  contract_id:
+                    type: string
+                  return_reason:
+                    type: string
+                  status:
+                    type: string
+                  event:
+                    $ref: '../schemas/eap-attention-event.schema.json'
+  /eap/attention/{attention_id}/ack:
+    post:
+      operationId: eapAttentionAck
+      parameters:
+        - name: attention_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Acknowledged

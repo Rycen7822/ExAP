@@ -1,0 +1,115 @@
+{
+  "profile_id": "profile:iot-safety",
+  "eap_version": "0.2.0-draft",
+  "name": "IoT Safety",
+  "description": "Monitor physical environment sensors and safety-related device events.",
+  "domain": "iot",
+  "subject_types": [
+    "iot_device",
+    "sensor"
+  ],
+  "signals": [
+    "device.temperature_c",
+    "device.humidity_percent",
+    "device.battery.percent"
+  ],
+  "event_types": [
+    "device.alert"
+  ],
+  "rules": [
+    {
+      "rule_id": "rule_temperature_too_high",
+      "name": "temperature_too_high",
+      "description": "A temperature sensor exceeded the safe threshold for the required duration.",
+      "condition": {
+        "type": "signal",
+        "signal": "device.temperature_c",
+        "operator": "gt",
+        "value": 35,
+        "duration": "PT2M"
+      },
+      "severity": "warning",
+      "delivery_action": "deliver",
+      "cooldown": "PT10M",
+      "hysteresis": {
+        "recover_when": {
+          "type": "signal",
+          "signal": "device.temperature_c",
+          "operator": "lt",
+          "value": 32,
+          "duration": "PT2M"
+        },
+        "emit_recovery_event": true
+      },
+      "evidence": {
+        "include": [
+          "window_stats",
+          "subject_snapshot"
+        ],
+        "max_items": 5,
+        "max_excerpt_chars": 500,
+        "include_subject_attributes": true
+      }
+    }
+  ],
+  "delivery": {
+    "modes": [
+      "blocking_wait",
+      "push",
+      "stream"
+    ],
+    "return_policy": {
+      "default_action": "record_only",
+      "by_severity": {
+        "info": "include_in_summary",
+        "notice": "deliver",
+        "warning": "deliver_and_interrupt_wait",
+        "critical": "deliver_and_interrupt_wait",
+        "emergency": "deliver_and_interrupt_wait"
+      }
+    }
+  },
+  "privacy": {
+    "purpose": "environment_attention",
+    "data_minimization": true,
+    "allowed_fields": [
+      "subject.ref",
+      "subject.type",
+      "evidence.stats",
+      "evidence.value",
+      "payload.summary"
+    ],
+    "forbidden_fields": [
+      "secret",
+      "token",
+      "password",
+      "credential",
+      "payload.raw_body",
+      "payload.attachment.content"
+    ],
+    "redaction": {
+      "mode": "summary_only",
+      "include_redaction_report": true,
+      "rules": []
+    },
+    "retention": {
+      "observations": "PT24H",
+      "events": "P7D",
+      "audit_logs": "P30D"
+    },
+    "audit": {
+      "enabled": true,
+      "user_visible": true,
+      "log_fields": [
+        "contract_id",
+        "attention_id",
+        "rule_id",
+        "delivery_action"
+      ]
+    },
+    "data_classes": [
+      "operational_metadata"
+    ]
+  },
+  "parameters": []
+}
