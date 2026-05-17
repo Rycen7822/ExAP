@@ -2,7 +2,7 @@
 
 ## 1. 定义
 
-EAP 可处理邮件、文件、进程、日志、日历、IoT、云资源和 agent 任务等高敏感环境信息。PrivacyPolicy、authorization、consent、retention、redaction 和 audit 是 Core 规范的一部分。
+ExAP 可处理邮件、文件、进程、日志、日历、IoT、云资源和 agent 任务等高敏感环境信息。PrivacyPolicy、authorization、consent、retention、redaction 和 audit 是 Core 规范的一部分。
 
 ## 2. 安全原则
 
@@ -92,7 +92,7 @@ Audit log MUST NOT 包含 forbidden fields 或 secret。
 
 ## 9. Action Safety
 
-EAP Core 不自动执行 destructive action。Provider 支持动作时，动作 MUST 出现在 capability `actions` 中，并声明 action scope、确认要求和审计字段。
+ExAP Core 不自动执行 destructive action。Provider 支持动作时，动作 MUST 出现在 capability `actions` 中，并声明 action scope、确认要求和审计字段。
 
 Agent Consumer MUST NOT 根据 Attention Event 自动执行 destructive action，除非 Contract、权限和用户/组织策略明确允许。
 

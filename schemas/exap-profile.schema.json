@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://eap.dev/schemas/eap-profile.schema.json",
-  "title": "EAP Domain Profile",
+  "$id": "https://exap.dev/schemas/exap-profile.schema.json",
+  "title": "ExAP Domain Profile",
   "type": "object",
   "required": [
     "profile_id",
-    "eap_version",
+    "exap_version",
     "name",
     "description",
     "domain",
@@ -20,8 +20,8 @@
       "type": "string",
       "pattern": "^profile:[a-z0-9_.:-]+$"
     },
-    "eap_version": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapVersion"
+    "exap_version": {
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPVersion"
     },
     "name": {
       "type": "string"
@@ -57,7 +57,7 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "https://eap.dev/schemas/eap-rule.schema.json"
+        "$ref": "https://exap.dev/schemas/exap-rule.schema.json"
       }
     },
     "delivery": {
@@ -69,7 +69,7 @@
       "additionalProperties": true
     },
     "privacy": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/PrivacyPolicy"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/PrivacyPolicy"
     },
     "parameters": {
       "type": "array",
@@ -110,7 +110,7 @@
       }
     },
     "metadata": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/ExtensionMap"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExtensionMap"
     }
   }
 }

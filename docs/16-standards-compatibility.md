@@ -2,21 +2,21 @@
 
 ## 1. 定义
 
-EAP 是 attention contract 层。现有标准继续承担 envelope、消息传输、遥测采集、授权、agent-to-tool 和 agent-to-agent 通信职责。
+ExAP 是 attention contract 层。现有标准继续承担 envelope、消息传输、遥测采集、授权、agent-to-tool 和 agent-to-agent 通信职责。
 
 ## 2. CloudEvents
 
-CloudEvents 统一事件 envelope。EAP Attention Event 使用 CloudEvents-compatible structured JSON。
+CloudEvents 统一事件 envelope。ExAP Attention Event 使用 CloudEvents-compatible structured JSON。
 
-| EAP | CloudEvents |
+| ExAP | CloudEvents |
 |---|---|
 | Attention Event | CloudEvent。 |
 | `id` | Event ID。 |
 | `source` | Provider source。 |
-| `type` | EAP event type。 |
+| `type` | ExAP event type。 |
 | `subject` | 主 Subject。 |
 | `time` | 生成时间。 |
-| `data` | EAP AttentionData。 |
+| `data` | ExAP AttentionData。 |
 
 Reference：
 
@@ -25,9 +25,9 @@ Reference：
 
 ## 3. AsyncAPI
 
-AsyncAPI 描述 message-driven API。EAP Provider 使用 MQTT、Kafka、NATS、WebSocket 或 webhook 时，MAY 发布 AsyncAPI 文档描述 channels、messages、operations 和 bindings。
+AsyncAPI 描述 message-driven API。ExAP Provider 使用 MQTT、Kafka、NATS、WebSocket 或 webhook 时，MAY 发布 AsyncAPI 文档描述 channels、messages、operations 和 bindings。
 
-| EAP | AsyncAPI |
+| ExAP | AsyncAPI |
 |---|---|
 | Provider API | AsyncAPI document。 |
 | Attention stream | Channel。 |
@@ -41,9 +41,9 @@ Reference：
 
 ## 4. OpenTelemetry
 
-OpenTelemetry 可作为 Signal、Observation、Evidence 的来源。EAP 不要求 Provider 使用 OpenTelemetry。
+OpenTelemetry 可作为 Signal、Observation、Evidence 的来源。ExAP 不要求 Provider 使用 OpenTelemetry。
 
-| OpenTelemetry | EAP |
+| OpenTelemetry | ExAP |
 |---|---|
 | Metric datapoint | Observation。 |
 | Log record | Event 或 Evidence。 |
@@ -57,7 +57,7 @@ Reference：
 
 ## 5. JSON Schema
 
-EAP schemas 使用 JSON Schema Draft 2020-12。所有跨 schema 引用使用 canonical `$id`。
+ExAP schemas 使用 JSON Schema Draft 2020-12。所有跨 schema 引用使用 canonical `$id`。
 
 Reference：
 
@@ -65,7 +65,7 @@ Reference：
 
 ## 6. MQTT
 
-MQTT 作为 IoT 和边缘设备 transport。EAP MQTT Binding 定义 topic 和 payload 语义，不改变 MQTT QoS、retain、session 等机制。
+MQTT 作为 IoT 和边缘设备 transport。ExAP MQTT Binding 定义 topic 和 payload 语义，不改变 MQTT QoS、retain、session 等机制。
 
 Reference：
 
@@ -73,7 +73,7 @@ Reference：
 
 ## 7. NATS
 
-NATS 使用 subject-based pub/sub。EAP NATS Binding 将 authority、environment、subject 和 attention 映射到 NATS subject。
+NATS 使用 subject-based pub/sub。ExAP NATS Binding 将 authority、environment、subject 和 attention 映射到 NATS subject。
 
 Reference：
 
@@ -82,19 +82,19 @@ Reference：
 
 ## 8. OAuth 2.0
 
-OAuth 2.0 可用于远程 Provider 授权。EAP scope 可映射为 OAuth scope。
+OAuth 2.0 可用于远程 Provider 授权。ExAP scope 可映射为 OAuth scope。
 
-EAP scope 示例：
+ExAP scope 示例：
 
 ```text
-eap.contract.create
-eap.contract.read
-eap.contract.revoke
-eap.attention.receive
-eap.attention.ack
-eap.subject.mailbox.read_metadata
-eap.subject.mailbox.read_summary
-eap.subject.process.read_metrics
+exap.contract.create
+exap.contract.read
+exap.contract.revoke
+exap.attention.receive
+exap.attention.ack
+exap.subject.mailbox.read_metadata
+exap.subject.mailbox.read_summary
+exap.subject.process.read_metrics
 ```
 
 Reference：
@@ -103,7 +103,7 @@ Reference：
 
 ## 9. MCP
 
-MCP 负责 agent-to-tool 和 agent-to-resource 通信。EAP Provider 作为 MCP server 时，Lifecycle API 映射为 MCP tools，capability 和 recent events 映射为 MCP resources。MCP Binding 不改变 EAP Contract 和 Attention Event schema。
+MCP 负责 agent-to-tool 和 agent-to-resource 通信。ExAP Provider 作为 MCP server 时，Lifecycle API 映射为 MCP tools，capability 和 recent events 映射为 MCP resources。MCP Binding 不改变 ExAP Contract 和 Attention Event schema。
 
 Reference：
 
@@ -112,7 +112,7 @@ Reference：
 
 ## 10. A2A
 
-A2A 负责 agent-to-agent 通信、Agent Card discovery、Task、Message、Part、Artifact、streaming 和 push notification。EAP Provider 作为 A2A remote agent 时，Contract 创建和 wait 表示为 Task，Attention Event 表示为 `application/eap+json` Artifact。
+A2A 负责 agent-to-agent 通信、Agent Card discovery、Task、Message、Part、Artifact、streaming 和 push notification。ExAP Provider 作为 A2A remote agent 时，Contract 创建和 wait 表示为 Task，Attention Event 表示为 `application/exap+json` Artifact。
 
 Reference：
 
@@ -122,9 +122,9 @@ Reference：
 
 ## 11. 兼容性原则
 
-1. EAP Core 对 transport 保持中立。
-2. EAP Attention Event 可作为 CloudEvents structured event。
-3. EAP Provider 可用 AsyncAPI、OpenAPI 或 MCP 描述接口。
-4. EAP 可消费 OpenTelemetry 数据，但不依赖 OpenTelemetry。
-5. EAP 可被 A2A agent 使用，但不替代 A2A task lifecycle。
-6. EAP 权限模型必须能表达 scope、consent、redaction、retention 和 audit。
+1. ExAP Core 对 transport 保持中立。
+2. ExAP Attention Event 可作为 CloudEvents structured event。
+3. ExAP Provider 可用 AsyncAPI、OpenAPI 或 MCP 描述接口。
+4. ExAP 可消费 OpenTelemetry 数据，但不依赖 OpenTelemetry。
+5. ExAP 可被 A2A agent 使用，但不替代 A2A task lifecycle。
+6. ExAP 权限模型必须能表达 scope、consent、redaction、retention 和 audit。

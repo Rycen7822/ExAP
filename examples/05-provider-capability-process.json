@@ -1,5 +1,5 @@
 {
-  "eap_versions": [
+  "exap_versions": [
     "0.2.0-draft"
   ],
   "capability_id": "cap_local_process_001",
@@ -12,7 +12,7 @@
   },
   "environments": [
     {
-      "ref": "eap://local/machine/workstation-01",
+      "ref": "exap://local/machine/workstation-01",
       "kind": "machine",
       "display_name": "workstation-01",
       "timezone": "Asia/Tokyo",
@@ -307,14 +307,14 @@
   "bindings": [
     {
       "binding": "http",
-      "endpoint": "http://127.0.0.1:8765/eap",
+      "endpoint": "http://127.0.0.1:8765/exap",
       "auth": [
         "bearer"
       ]
     },
     {
       "binding": "mcp",
-      "endpoint": "stdio:eap-mcp",
+      "endpoint": "stdio:exap-mcp",
       "auth": [
         "host_consent"
       ]

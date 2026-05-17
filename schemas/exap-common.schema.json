@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://eap.dev/schemas/eap-common.schema.json",
-  "title": "EAP Common Definitions",
+  "$id": "https://exap.dev/schemas/exap-common.schema.json",
+  "title": "ExAP Common Definitions",
   "type": "object",
   "$defs": {
-    "EapVersion": {
+    "ExAPVersion": {
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.-]+)?$"
     },
-    "EapUri": {
+    "ExAPUri": {
       "type": "string",
-      "pattern": "^eap://[a-z0-9][a-z0-9._-]*/[a-z][a-z0-9._-]*/[^\\s]+$"
+      "pattern": "^exap://[a-z0-9][a-z0-9._-]*/[a-z][a-z0-9._-]*/[^\\s]+$"
     },
     "DateTime": {
       "type": "string",
@@ -173,7 +173,7 @@
       "additionalProperties": false,
       "properties": {
         "ref": {
-          "$ref": "#/$defs/EapUri"
+          "$ref": "#/$defs/ExAPUri"
         },
         "kind": {
           "type": "string",
@@ -193,7 +193,7 @@
           "type": "string"
         },
         "owner_ref": {
-          "$ref": "#/$defs/EapUri"
+          "$ref": "#/$defs/ExAPUri"
         },
         "timezone": {
           "type": "string"
@@ -215,20 +215,20 @@
       "additionalProperties": false,
       "properties": {
         "ref": {
-          "$ref": "#/$defs/EapUri"
+          "$ref": "#/$defs/ExAPUri"
         },
         "type": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9._-]*$"
         },
         "environment_ref": {
-          "$ref": "#/$defs/EapUri"
+          "$ref": "#/$defs/ExAPUri"
         },
         "display_name": {
           "type": "string"
         },
         "parent_ref": {
-          "$ref": "#/$defs/EapUri"
+          "$ref": "#/$defs/ExAPUri"
         },
         "attributes": {
           "$ref": "#/$defs/ExtensionMap"

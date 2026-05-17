@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://eap.dev/schemas/eap-capability.schema.json",
-  "title": "EAP Capability Document",
+  "$id": "https://exap.dev/schemas/exap-capability.schema.json",
+  "title": "ExAP Capability Document",
   "type": "object",
   "required": [
-    "eap_versions",
+    "exap_versions",
     "capability_id",
     "provider",
     "subject_types",
@@ -17,11 +17,11 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "eap_versions": {
+    "exap_versions": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapVersion"
+        "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPVersion"
       },
       "uniqueItems": true
     },
@@ -30,12 +30,12 @@
       "minLength": 1
     },
     "provider": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Provider"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Provider"
     },
     "environments": {
       "type": "array",
       "items": {
-        "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Environment"
+        "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Environment"
       }
     },
     "subject_types": {
@@ -108,7 +108,7 @@
       }
     },
     "metadata": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/ExtensionMap"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExtensionMap"
     }
   },
   "$defs": {
@@ -143,7 +143,7 @@
           }
         },
         "sensitivity": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Sensitivity"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Sensitivity"
         }
       }
     },
@@ -324,7 +324,7 @@
           "type": "boolean"
         },
         "max_wait": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
         }
       }
     },

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://eap.dev/schemas/eap-rule.schema.json",
-  "title": "EAP Rule",
+  "$id": "https://exap.dev/schemas/exap-rule.schema.json",
+  "title": "ExAP Rule",
   "type": "object",
   "required": [
     "rule_id",
@@ -30,19 +30,19 @@
       "$ref": "#/$defs/Condition"
     },
     "severity": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Severity"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Severity"
     },
     "category": {
       "type": "string"
     },
     "delivery_action": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DeliveryAction"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DeliveryAction"
     },
     "debounce": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
     },
     "cooldown": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
     },
     "hysteresis": {
       "type": "object",
@@ -64,10 +64,10 @@
       "$ref": "#/$defs/EvidencePolicy"
     },
     "labels": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/KeyValue"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/KeyValue"
     },
     "metadata": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/ExtensionMap"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExtensionMap"
     }
   },
   "$defs": {
@@ -207,7 +207,7 @@
           "const": "signal"
         },
         "subject_ref": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPUri"
         },
         "signal": {
           "type": "string",
@@ -218,13 +218,13 @@
         },
         "value": {},
         "window": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
         },
         "aggregate": {
           "$ref": "#/$defs/Aggregate"
         },
         "duration": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
         },
         "missing": {
           "type": "string",
@@ -336,7 +336,7 @@
           "const": "event"
         },
         "subject_ref": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPUri"
         },
         "event_type": {
           "type": "string",
@@ -347,7 +347,7 @@
         },
         "value": {},
         "window": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
         },
         "filters": {
           "type": "array",
@@ -400,7 +400,7 @@
           ]
         },
         "within": {
-          "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
         },
         "conditions": {
           "type": "array",

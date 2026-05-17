@@ -1,8 +1,8 @@
-# 04. EAP Rule DSL
+# 04. ExAP Rule DSL
 
 ## 1. 定义
 
-Rule DSL 是 EAP 中表达“何时值得注意”的结构化 JSON 语言。Rule DSL MUST NOT 使用任意代码字符串作为可执行表达式。Provider MUST 在 Contract 创建时验证字段、类型、operator、aggregate、signal、event type 和 capability。
+Rule DSL 是 ExAP 中表达“何时值得注意”的结构化 JSON 语言。Rule DSL MUST NOT 使用任意代码字符串作为可执行表达式。Provider MUST 在 Contract 创建时验证字段、类型、operator、aggregate、signal、event type 和 capability。
 
 ## 2. Rule 对象
 
@@ -73,7 +73,7 @@ Signal Condition 字段：
 | 字段 | 类型 | 必填 | 默认值 | 定义 |
 |---|---:|---:|---|---|
 | `type` | string | 是 | 无 | 必须为 `signal`。 |
-| `subject_ref` | EAP URI | 否 | Scope 解析结果 | 目标 Subject。省略时 Provider 对适用 Subject 集合求值。 |
+| `subject_ref` | ExAP URI | 否 | Scope 解析结果 | 目标 Subject。省略时 Provider 对适用 Subject 集合求值。 |
 | `signal` | string | 是 | 无 | Signal 名称。 |
 | `operator` | string | 是 | 无 | Signal operator。 |
 | `value` | any | 条件必填 | 无 | 比较值。除 `exists`、`not_exists`、`changed`、`unchanged` 外均 REQUIRED。 |
@@ -128,7 +128,7 @@ Signal Condition 字段：
 | 字段 | 类型 | 必填 | 默认值 | 定义 |
 |---|---:|---:|---|---|
 | `type` | string | 是 | 无 | 必须为 `event`。 |
-| `subject_ref` | EAP URI | 否 | Scope 解析结果 | 目标 Subject。 |
+| `subject_ref` | ExAP URI | 否 | Scope 解析结果 | 目标 Subject。 |
 | `event_type` | string | 是 | 无 | Event type。 |
 | `operator` | string | 是 | 无 | Event operator。 |
 | `value` | any | 条件必填 | 无 | Count、字段值或语义目标。 |
@@ -189,7 +189,7 @@ Correlation Condition 用于多条件窗口相关。
 
 `hysteresis.recover_when` 定义恢复条件。Rule 触发后，在恢复条件满足前，同一 Rule 不得重复触发，除非 severity 升级或 cooldown 已结束且 Provider 明确声明允许重复。
 
-`emit_recovery_event=true` 时，Provider 在恢复条件满足时生成 `eap.attention.recovered`。
+`emit_recovery_event=true` 时，Provider 在恢复条件满足时生成 `exap.attention.recovered`。
 
 ## 11. Cooldown
 

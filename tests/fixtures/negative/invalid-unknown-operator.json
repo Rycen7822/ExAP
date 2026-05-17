@@ -1,5 +1,5 @@
 {
-  "eap_version": "0.2.0-draft",
+  "exap_version": "0.2.0-draft",
   "contract_id": "act_process_wait_001",
   "created_at": "2026-05-16T12:00:00+09:00",
   "consumer": {
@@ -16,19 +16,19 @@
     "type": "local_daemon",
     "version": "0.2.0"
   },
-  "environment_ref": "eap://local/machine/workstation-01",
+  "environment_ref": "exap://local/machine/workstation-01",
   "intent": "monitor_long_running_process_without_polling",
   "scope": {
     "subjects": [
       {
         "type": "process",
-        "ref": "eap://local/process/18423",
+        "ref": "exap://local/process/18423",
         "include_children": true,
         "resolution": "exact"
       },
       {
         "type": "gpu",
-        "ref": "eap://local/gpu/0",
+        "ref": "exap://local/gpu/0",
         "resolution": "exact"
       }
     ],
@@ -57,7 +57,7 @@
         "type": "event",
         "event_type": "process.exited",
         "operator": "between",
-        "subject_ref": "eap://local/process/18423"
+        "subject_ref": "exap://local/process/18423"
       },
       "severity": "critical",
       "delivery_action": "deliver_and_interrupt_wait",
@@ -87,14 +87,14 @@
             "duration": "PT5M",
             "aggregate": "avg",
             "window": "PT5M",
-            "subject_ref": "eap://local/gpu/0"
+            "subject_ref": "exap://local/gpu/0"
           },
           {
             "type": "signal",
             "signal": "process.status",
             "operator": "eq",
             "value": "running",
-            "subject_ref": "eap://local/process/18423"
+            "subject_ref": "exap://local/process/18423"
           }
         ]
       },
@@ -109,7 +109,7 @@
           "operator": "gt",
           "value": 40,
           "duration": "PT2M",
-          "subject_ref": "eap://local/gpu/0"
+          "subject_ref": "exap://local/gpu/0"
         },
         "emit_recovery_event": true
       },
@@ -139,7 +139,7 @@
             "case_sensitive": false
           }
         ],
-        "subject_ref": "eap://local/process/18423"
+        "subject_ref": "exap://local/process/18423"
       },
       "severity": "critical",
       "delivery_action": "deliver_and_interrupt_wait",
@@ -166,13 +166,13 @@
         "mode": "blocking_wait",
         "content_mode": "structured",
         "metadata": {
-          "tool": "eap_wait"
+          "tool": "exap_wait"
         }
       },
       {
         "transport": "sse",
         "mode": "stream",
-        "endpoint": "http://127.0.0.1:8765/eap/contracts/act_process_wait_001/stream",
+        "endpoint": "http://127.0.0.1:8765/exap/contracts/act_process_wait_001/stream",
         "content_mode": "structured"
       }
     ],
@@ -274,16 +274,16 @@
   "integrations": {
     "mcp": {
       "tools": [
-        "eap_discover",
-        "eap_contract_create",
-        "eap_wait",
-        "eap_status",
-        "eap_attention_ack",
-        "eap_contract_revoke"
+        "exap_discover",
+        "exap_contract_create",
+        "exap_wait",
+        "exap_status",
+        "exap_attention_ack",
+        "exap_contract_revoke"
       ]
     },
     "a2a": {
-      "artifact_type": "application/eap+json"
+      "artifact_type": "application/exap+json"
     }
   }
 }

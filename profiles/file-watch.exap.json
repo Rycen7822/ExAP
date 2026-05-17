@@ -1,53 +1,60 @@
 {
-  "profile_id": "profile:calendar-focus",
-  "eap_version": "0.2.0-draft",
-  "name": "Calendar Focus",
-  "description": "Notify before important calendar events and suppress low-priority entries.",
-  "domain": "calendar",
+  "profile_id": "profile:file-watch",
+  "exap_version": "0.2.0-draft",
+  "name": "File Watch",
+  "description": "Monitor file creation, modification, growth, and readiness.",
+  "domain": "file",
   "subject_types": [
-    "calendar",
-    "calendar_event"
+    "file",
+    "directory"
   ],
   "signals": [
-    "calendar.event.starts_in_minutes",
-    "calendar.event.importance"
+    "file.exists",
+    "file.size.bytes",
+    "file.modified_age.seconds"
   ],
   "event_types": [
-    "calendar.event.created",
-    "calendar.event.updated"
+    "file.created",
+    "file.modified"
   ],
   "rules": [
     {
-      "rule_id": "rule_important_meeting_soon",
-      "name": "important_meeting_soon",
-      "description": "An important calendar event begins soon.",
+      "rule_id": "rule_expected_file_ready",
+      "name": "expected_file_ready",
+      "description": "An expected file exists and is stable.",
       "condition": {
         "type": "all",
         "conditions": [
           {
             "type": "signal",
-            "signal": "calendar.event.starts_in_minutes",
-            "operator": "lte",
-            "value": 15
+            "signal": "file.exists",
+            "operator": "eq",
+            "value": true
           },
           {
             "type": "signal",
-            "signal": "calendar.event.importance",
+            "signal": "file.size.bytes",
+            "operator": "gt",
+            "value": 0
+          },
+          {
+            "type": "signal",
+            "signal": "file.modified_age.seconds",
             "operator": "gte",
-            "value": 0.8
+            "value": 30
           }
         ]
       },
-      "severity": "notice",
-      "delivery_action": "deliver",
-      "cooldown": "PT30M",
+      "severity": "info",
+      "delivery_action": "include_in_summary",
+      "cooldown": "PT5M",
       "evidence": {
         "include": [
           "matched_values",
           "subject_snapshot"
         ],
         "max_items": 4,
-        "max_excerpt_chars": 1000,
+        "max_excerpt_chars": 500,
         "include_subject_attributes": true
       }
     }

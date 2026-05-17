@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://eap.dev/schemas/eap-observation.schema.json",
-  "title": "EAP Observation",
+  "$id": "https://exap.dev/schemas/exap-observation.schema.json",
+  "title": "ExAP Observation",
   "type": "object",
   "required": [
     "observation_id",
@@ -17,14 +17,14 @@
       "type": "string"
     },
     "subject_ref": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/EapUri"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPUri"
     },
     "signal": {
       "type": "string"
     },
     "value": {},
     "observed_at": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/DateTime"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
     },
     "source": {
       "type": "string"
@@ -34,10 +34,10 @@
       "additionalProperties": true
     },
     "privacy": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/PrivacyReport"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/PrivacyReport"
     },
     "trace": {
-      "$ref": "https://eap.dev/schemas/eap-common.schema.json#/$defs/TraceContext"
+      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/TraceContext"
     }
   }
 }

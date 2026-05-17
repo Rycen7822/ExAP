@@ -2,9 +2,9 @@
 
 ## 1. 定义
 
-Attention Event 是 Provider 评估 Rule 后交付给 Consumer 的结构化事件。Attention Event 使用 CloudEvents-compatible envelope，`data` 字段承载 EAP 专用内容。
+Attention Event 是 Provider 评估 Rule 后交付给 Consumer 的结构化事件。Attention Event 使用 CloudEvents-compatible envelope，`data` 字段承载 ExAP 专用内容。
 
-Attention Event JSON MUST 使用 `schemas/eap-attention-event.schema.json` 校验通过。
+Attention Event JSON MUST 使用 `schemas/exap-attention-event.schema.json` 校验通过。
 
 ## 2. CloudEvents-compatible envelope
 
@@ -12,18 +12,18 @@ Attention Event JSON MUST 使用 `schemas/eap-attention-event.schema.json` 校�
 |---|---:|---:|---|
 | `specversion` | string | 是 | 必须为 `1.0`。 |
 | `id` | string | 是 | Event ID。MUST 唯一。 |
-| `source` | string | 是 | Provider source。可使用 EAP URI。 |
-| `type` | string | 是 | `eap.attention.triggered`、`eap.attention.recovered`、`eap.attention.summary`、`eap.attention.acknowledged`、`eap.contract.state_changed`。 |
+| `source` | string | 是 | Provider source。可使用 ExAP URI。 |
+| `type` | string | 是 | `exap.attention.triggered`、`exap.attention.recovered`、`exap.attention.summary`、`exap.attention.acknowledged`、`exap.contract.state_changed`。 |
 | `subject` | string | 否 | 主 Subject 引用。 |
 | `time` | date-time | 是 | 事件生成时间。 |
 | `datacontenttype` | string | 是 | 必须为 `application/json`。 |
-| `data` | AttentionData | 是 | EAP 事件数据。 |
+| `data` | AttentionData | 是 | ExAP 事件数据。 |
 
 ## 3. `data` 字段
 
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
-| `eap_version` | string | 是 | EAP 版本。 |
+| `exap_version` | string | 是 | ExAP 版本。 |
 | `attention_id` | string | 是 | Attention ID。格式 `attn_<id>`。 |
 | `contract_id` | string | 是 | 触发 Contract ID。 |
 | `status` | string | 是 | `triggered`、`recovered`、`summary`、`acknowledged`、`suppressed`、`state_changed`。 |
@@ -56,7 +56,7 @@ Attention Event JSON MUST 使用 `schemas/eap-attention-event.schema.json` 校�
 |---|---:|---:|---|
 | `evidence_id` | string | 是 | Evidence ID。 |
 | `kind` | string | 是 | Evidence 类型。 |
-| `subject_ref` | EAP URI | 是 | 证据关联 Subject。 |
+| `subject_ref` | ExAP URI | 是 | 证据关联 Subject。 |
 | `signal` | string | 否 | Signal 名称。 |
 | `event_type` | string | 否 | Event type。 |
 | `observed_at` | date-time | 是 | 观测或事件时间。 |
@@ -110,11 +110,11 @@ Provider MUST 确保 `fields_included` 不包含 Contract `privacy.forbidden_fie
 
 ## 8. Ack 事件
 
-Consumer 执行 `eap.attention.ack` 后，Provider MAY 产生 `eap.attention.acknowledged` 事件。Ack 事件的 `data.status` MUST 为 `acknowledged`，`data.rule` MUST 指向原 Rule，`data.payload` MUST 包含 ack action、actor 和 ack time。
+Consumer 执行 `exap.attention.ack` 后，Provider MAY 产生 `exap.attention.acknowledged` 事件。Ack 事件的 `data.status` MUST 为 `acknowledged`，`data.rule` MUST 指向原 Rule，`data.payload` MUST 包含 ack action、actor 和 ack time。
 
 ## 9. Summary Event
 
-Summary Event 的 `type` 为 `eap.attention.summary`，`data.status` 为 `summary`。Summary Event 用于交付被 `include_in_summary` 聚合的事件或周期状态。Summary Event 的 evidence MAY 为空。
+Summary Event 的 `type` 为 `exap.attention.summary`，`data.status` 为 `summary`。Summary Event 用于交付被 `include_in_summary` 聚合的事件或周期状态。Summary Event 的 evidence MAY 为空。
 
 ## 10. TraceContext
 

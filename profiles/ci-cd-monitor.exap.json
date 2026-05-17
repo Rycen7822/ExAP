@@ -1,44 +1,64 @@
 {
-  "profile_id": "profile:process-monitoring",
-  "eap_version": "0.2.0-draft",
-  "name": "Process Monitoring",
-  "description": "Monitor long-running operating-system processes and their resource usage.",
-  "domain": "system",
+  "profile_id": "profile:ci-cd-monitor",
+  "exap_version": "0.2.0-draft",
+  "name": "CI/CD Monitor",
+  "description": "Monitor build, test, deployment, and release pipeline status.",
+  "domain": "ci-cd",
   "subject_types": [
-    "process",
-    "file"
+    "pipeline",
+    "job",
+    "artifact"
   ],
   "signals": [
-    "process.status",
-    "process.cpu.percent",
-    "process.memory.rss_mb",
-    "disk.free_gb"
+    "ci.job.status",
+    "ci.job.duration.seconds",
+    "artifact.exists"
   ],
   "event_types": [
-    "process.exited",
+    "ci.job.failed",
+    "ci.job.completed",
+    "artifact.created",
     "log.line.appended"
   ],
   "rules": [
     {
-      "rule_id": "rule_process_exited",
-      "name": "process_exited",
-      "description": "The monitored process exited.",
+      "rule_id": "rule_build_failed",
+      "name": "build_failed",
+      "description": "A CI/CD job failed or emitted a fatal error.",
       "condition": {
-        "type": "event",
-        "event_type": "process.exited",
-        "operator": "exists",
-        "subject_ref": "eap://local/process/18423"
+        "type": "any",
+        "conditions": [
+          {
+            "type": "event",
+            "event_type": "ci.job.failed",
+            "operator": "exists"
+          },
+          {
+            "type": "event",
+            "event_type": "log.line.appended",
+            "operator": "field_regex",
+            "filters": [
+              {
+                "path": "line",
+                "operator": "regex",
+                "value": "fatal|failed|panic|segmentation fault",
+                "case_sensitive": false
+              }
+            ]
+          }
+        ]
       },
       "severity": "critical",
       "delivery_action": "deliver_and_interrupt_wait",
+      "cooldown": "PT10M",
       "evidence": {
         "include": [
-          "matched_values",
           "event_excerpt",
-          "subject_snapshot"
+          "log_excerpt",
+          "trace_link"
         ],
-        "max_items": 5,
-        "max_excerpt_chars": 2000,
+        "max_items": 8,
+        "max_excerpt_chars": 4000,
         "include_subject_attributes": true
       }
     }

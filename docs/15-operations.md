@@ -2,7 +2,7 @@
 
 ## 1. 运行目标
 
-EAP Provider 的运行目标：低误报、低漏报、低延迟、低 token/带宽消耗、可审计、可恢复。
+ExAP Provider 的运行目标：低误报、低漏报、低延迟、低 token/带宽消耗、可审计、可恢复。
 
 ## 2. Metrics
 
@@ -10,14 +10,14 @@ Provider MUST 暴露以下 metrics：
 
 | Metric | 定义 |
 |---|---|
-| `eap.contract.active` | 活跃 Contract 数。 |
-| `eap.rule.evaluations` | Rule 评估次数。 |
-| `eap.attention.triggered` | 触发事件数。 |
-| `eap.attention.suppressed` | 抑制事件数。 |
-| `eap.delivery.attempts` | 交付尝试次数。 |
-| `eap.delivery.failures` | 交付失败次数。 |
-| `eap.wait.active` | 活跃 wait 数。 |
-| `eap.privacy.redactions` | 脱敏次数。 |
+| `exap.contract.active` | 活跃 Contract 数。 |
+| `exap.rule.evaluations` | Rule 评估次数。 |
+| `exap.attention.triggered` | 触发事件数。 |
+| `exap.attention.suppressed` | 抑制事件数。 |
+| `exap.delivery.attempts` | 交付尝试次数。 |
+| `exap.delivery.failures` | 交付失败次数。 |
+| `exap.wait.active` | 活跃 wait 数。 |
+| `exap.privacy.redactions` | 脱敏次数。 |
 
 ## 3. Logs
 
@@ -29,7 +29,7 @@ Provider MUST 备份 Contract Store 和 Audit Log。恢复后，Provider MUST �
 
 ## 5. Rate Limiting
 
-Provider MUST 对 Consumer、Contract、Subject 和 webhook endpoint 维度执行限流。Rate limit 命中返回 `EAP-4290`。
+Provider MUST 对 Consumer、Contract、Subject 和 webhook endpoint 维度执行限流。Rate limit 命中返回 `ExAP-4290`。
 
 ## 6. Event Storm Control
 

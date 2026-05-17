@@ -1,4 +1,4 @@
-# Contributing to EAP
+# Contributing to ExAP
 
 ## 1. 变更类别
 
@@ -17,13 +17,13 @@
 
 ## 3. Operator 新增规则
 
-- 新增 operator MUST 在 `docs/04-rule-dsl.md`、`schemas/eap-rule.schema.json`、capability 示例和负面测试中同步更新。
+- 新增 operator MUST 在 `docs/04-rule-dsl.md`、`schemas/exap-rule.schema.json`、capability 示例和负面测试中同步更新。
 - Operator MUST 具有确定性输入、输出和缺失值语义。
 - Operator MUST NOT 执行任意用户代码。
 
 ## 4. Profile 新增规则
 
-- 新 profile 文件 MUST 使用 `schemas/eap-profile.schema.json` 校验通过。
+- 新 profile 文件 MUST 使用 `schemas/exap-profile.schema.json` 校验通过。
 - Profile rule_id MUST 在 profile 内唯一。
 - Profile MUST 定义 privacy policy。
 

@@ -1,30 +1,30 @@
-# EAP Conformance Report
+# ExAP Conformance Report
 
-Generated at: 2026-05-17T06:40:14.898282+00:00
-Total checks: 43
-Passed: 43
+Generated at: 2026-05-17T08:45:48.256760+00:00
+Total checks: 44
+Passed: 44
 Failed: 0
 
 ## Results
 
 | Check | Result | Detail |
 |---|---:|---|
-| schema meta eap-attention-contract.schema.json | PASS |  |
-| schema meta eap-attention-event.schema.json | PASS |  |
-| schema meta eap-capability.schema.json | PASS |  |
-| schema meta eap-common.schema.json | PASS |  |
-| schema meta eap-lifecycle-message.schema.json | PASS |  |
-| schema meta eap-observation.schema.json | PASS |  |
-| schema meta eap-profile.schema.json | PASS |  |
-| schema meta eap-rule.schema.json | PASS |  |
-| canonical refs eap-attention-contract.schema.json | PASS |  |
-| canonical refs eap-attention-event.schema.json | PASS |  |
-| canonical refs eap-capability.schema.json | PASS |  |
-| canonical refs eap-common.schema.json | PASS |  |
-| canonical refs eap-lifecycle-message.schema.json | PASS |  |
-| canonical refs eap-observation.schema.json | PASS |  |
-| canonical refs eap-profile.schema.json | PASS |  |
-| canonical refs eap-rule.schema.json | PASS |  |
+| schema meta exap-attention-contract.schema.json | PASS |  |
+| schema meta exap-attention-event.schema.json | PASS |  |
+| schema meta exap-capability.schema.json | PASS |  |
+| schema meta exap-common.schema.json | PASS |  |
+| schema meta exap-lifecycle-message.schema.json | PASS |  |
+| schema meta exap-observation.schema.json | PASS |  |
+| schema meta exap-profile.schema.json | PASS |  |
+| schema meta exap-rule.schema.json | PASS |  |
+| canonical refs exap-attention-contract.schema.json | PASS |  |
+| canonical refs exap-attention-event.schema.json | PASS |  |
+| canonical refs exap-capability.schema.json | PASS |  |
+| canonical refs exap-common.schema.json | PASS |  |
+| canonical refs exap-lifecycle-message.schema.json | PASS |  |
+| canonical refs exap-observation.schema.json | PASS |  |
+| canonical refs exap-profile.schema.json | PASS |  |
+| canonical refs exap-rule.schema.json | PASS |  |
 | valid example 01-process-wait-contract.json | PASS |  |
 | valid example 02-gpu-idle-attention-event.json | PASS |  |
 | valid example 03-email-important-contract.json | PASS |  |
@@ -34,13 +34,13 @@ Failed: 0
 | valid example 07-http-contract-create-request.json | PASS |  |
 | MCP tools example | PASS |  |
 | A2A agent card example | PASS |  |
-| profile calendar-focus.eap.json | PASS |  |
-| profile ci-cd-monitor.eap.json | PASS |  |
-| profile deep-learning-training.eap.json | PASS |  |
-| profile email-priority.eap.json | PASS |  |
-| profile file-watch.eap.json | PASS |  |
-| profile iot-safety.eap.json | PASS |  |
-| profile process-monitoring.eap.json | PASS |  |
+| profile calendar-focus.exap.json | PASS |  |
+| profile ci-cd-monitor.exap.json | PASS |  |
+| profile deep-learning-training.exap.json | PASS |  |
+| profile email-priority.exap.json | PASS |  |
+| profile file-watch.exap.json | PASS |  |
+| profile iot-safety.exap.json | PASS |  |
+| profile process-monitoring.exap.json | PASS |  |
 | negative fixture invalid-missing-rules.json | PASS |  |
 | negative fixture invalid-unknown-operator.json | PASS |  |
 | negative fixture invalid-extra-field.json | PASS |  |
@@ -50,5 +50,6 @@ Failed: 0
 | YAML reference openapi-http-binding.yaml | PASS |  |
 | manifest listed files exist | PASS |  |
 | normative text has no banned ambiguity terms | PASS |  |
+| legacy naming removed | PASS |  |
 | schema properties documented | PASS |  |
 | all JSON files parse | PASS |  |

@@ -1,60 +1,53 @@
 {
-  "profile_id": "profile:file-watch",
-  "eap_version": "0.2.0-draft",
-  "name": "File Watch",
-  "description": "Monitor file creation, modification, growth, and readiness.",
-  "domain": "file",
+  "profile_id": "profile:calendar-focus",
+  "exap_version": "0.2.0-draft",
+  "name": "Calendar Focus",
+  "description": "Notify before important calendar events and suppress low-priority entries.",
+  "domain": "calendar",
   "subject_types": [
-    "file",
-    "directory"
+    "calendar",
+    "calendar_event"
   ],
   "signals": [
-    "file.exists",
-    "file.size.bytes",
-    "file.modified_age.seconds"
+    "calendar.event.starts_in_minutes",
+    "calendar.event.importance"
   ],
   "event_types": [
-    "file.created",
-    "file.modified"
+    "calendar.event.created",
+    "calendar.event.updated"
   ],
   "rules": [
     {
-      "rule_id": "rule_expected_file_ready",
-      "name": "expected_file_ready",
-      "description": "An expected file exists and is stable.",
+      "rule_id": "rule_important_meeting_soon",
+      "name": "important_meeting_soon",
+      "description": "An important calendar event begins soon.",
       "condition": {
         "type": "all",
         "conditions": [
           {
             "type": "signal",
-            "signal": "file.exists",
-            "operator": "eq",
-            "value": true
+            "signal": "calendar.event.starts_in_minutes",
+            "operator": "lte",
+            "value": 15
           },
           {
             "type": "signal",
-            "signal": "file.size.bytes",
-            "operator": "gt",
-            "value": 0
-          },
-          {
-            "type": "signal",
-            "signal": "file.modified_age.seconds",
+            "signal": "calendar.event.importance",
             "operator": "gte",
-            "value": 30
+            "value": 0.8
           }
         ]
       },
-      "severity": "info",
-      "delivery_action": "include_in_summary",
-      "cooldown": "PT5M",
+      "severity": "notice",
+      "delivery_action": "deliver",
+      "cooldown": "PT30M",
       "evidence": {
         "include": [
           "matched_values",
           "subject_snapshot"
         ],
         "max_items": 4,
-        "max_excerpt_chars": 500,
+        "max_excerpt_chars": 1000,
         "include_subject_attributes": true
       }
     }

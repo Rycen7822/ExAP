@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "attn_mail_urgent_001",
-  "source": "eap://personal/provider/mail-provider",
-  "type": "eap.attention.triggered",
-  "subject": "eap://personal/mailbox/primary",
+  "source": "exap://personal/provider/mail-provider",
+  "type": "exap.attention.triggered",
+  "subject": "exap://personal/mailbox/primary",
   "time": "2026-05-16T09:15:00+09:00",
   "datacontenttype": "application/json",
   "data": {
-    "eap_version": "0.2.0-draft",
+    "exap_version": "0.2.0-draft",
     "attention_id": "attn_mail_urgent_001",
     "contract_id": "act_email_priority_001",
     "status": "triggered",
@@ -16,9 +16,9 @@
     "reason": "A new message from a frequent collaborator matched the urgent approval intent.",
     "intent": "surface_important_email_without_interrupting_for_noise",
     "subject": {
-      "ref": "eap://personal/mailbox/primary",
+      "ref": "exap://personal/mailbox/primary",
       "type": "mailbox",
-      "environment_ref": "eap://personal/workspace/default",
+      "environment_ref": "exap://personal/workspace/default",
       "display_name": "Primary inbox",
       "sensitivity": "confidential",
       "tags": [
@@ -36,7 +36,7 @@
       {
         "evidence_id": "ev_mail_event",
         "kind": "event_match",
-        "subject_ref": "eap://personal/mailbox/primary",
+        "subject_ref": "exap://personal/mailbox/primary",
         "event_type": "mail.message.received",
         "observed_at": "2026-05-16T09:15:00+09:00",
         "value": {
@@ -48,7 +48,7 @@
       {
         "evidence_id": "ev_mail_semantic",
         "kind": "semantic_score",
-        "subject_ref": "eap://personal/mailbox/primary",
+        "subject_ref": "exap://personal/mailbox/primary",
         "signal": "mail.content.semantic_intent",
         "observed_at": "2026-05-16T09:15:00+09:00",
         "value": "approval_needed",

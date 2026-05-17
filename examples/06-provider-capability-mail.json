@@ -1,5 +1,5 @@
 {
-  "eap_versions": [
+  "exap_versions": [
     "0.2.0-draft"
   ],
   "capability_id": "cap_mail_001",
@@ -12,7 +12,7 @@
   },
   "environments": [
     {
-      "ref": "eap://personal/workspace/default",
+      "ref": "exap://personal/workspace/default",
       "kind": "personal",
       "display_name": "Personal workspace",
       "timezone": "Asia/Tokyo"
@@ -173,7 +173,7 @@
   "bindings": [
     {
       "binding": "webhook",
-      "endpoint": "https://mail-provider.example.com/eap/events",
+      "endpoint": "https://mail-provider.example.com/exap/events",
       "auth": [
         "hmac",
         "bearer"
@@ -181,7 +181,7 @@
     },
     {
       "binding": "mcp",
-      "endpoint": "stdio:eap-mail-mcp",
+      "endpoint": "stdio:exap-mail-mcp",
       "auth": [
         "oauth"
       ]

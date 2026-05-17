@@ -2,12 +2,12 @@
 
 ## 1. 参考实现目标
 
-参考实现提供 EAP Core 的可运行样例，不改变协议规范。参考实现名称固定为：`eapd`、`eapctl`、`eap-mcp-server`、`eap-a2a-agent`。
+参考实现提供 ExAP Core 的可运行样例，不改变协议规范。参考实现名称固定为：`exapd`、`exapctl`、`exap-mcp-server`、`exap-a2a-agent`。
 
 ## 2. 组件结构
 
 ```text
-eapd/
+exapd/
   capability_service.py
   contract_store.py
   subject_resolver.py
@@ -17,7 +17,7 @@ eapd/
   privacy_filter.py
   delivery_engine.py
   audit_logger.py
-eapctl/
+exapctl/
   cli.py
 bindings/
   http_server.py
@@ -25,9 +25,9 @@ bindings/
   a2a_agent.py
 ```
 
-## 3. eapd 功能
+## 3. exapd 功能
 
-`eapd` MUST 支持：
+`exapd` MUST 支持：
 
 - capability endpoint。
 - contract create/get/list/update/pause/resume/revoke。
@@ -39,16 +39,16 @@ bindings/
 - privacy filter。
 - audit log。
 
-## 4. eapctl 命令
+## 4. exapctl 命令
 
-| 命令 | EAP method |
+| 命令 | ExAP method |
 |---|---|
-| `eapctl discover` | `eap.discover` |
-| `eapctl contract create` | `eap.contract.create` |
-| `eapctl wait` | `eap.wait` |
-| `eapctl status` | `eap.status` |
-| `eapctl ack` | `eap.attention.ack` |
-| `eapctl contract revoke` | `eap.contract.revoke` |
+| `exapctl discover` | `exap.discover` |
+| `exapctl contract create` | `exap.contract.create` |
+| `exapctl wait` | `exap.wait` |
+| `exapctl status` | `exap.status` |
+| `exapctl ack` | `exap.attention.ack` |
+| `exapctl contract revoke` | `exap.contract.revoke` |
 
 ## 5. State Store
 
@@ -75,8 +75,8 @@ HTTP Server MUST 实现 `08-transport-bindings.md` 中 HTTP endpoints。所有�
 
 ## 9. MCP Server
 
-MCP Server MUST 暴露 `eap_discover`、`eap_contract_create`、`eap_wait`、`eap_status`、`eap_attention_ack`、`eap_contract_revoke` tools。输入 schema MUST 与 EAP schemas 对齐。
+MCP Server MUST 暴露 `exap_discover`、`exap_contract_create`、`exap_wait`、`exap_status`、`exap_attention_ack`、`exap_contract_revoke` tools。输入 schema MUST 与 ExAP schemas 对齐。
 
 ## 10. A2A Agent
 
-A2A Agent MUST 在 Agent Card 中声明 create contract 和 wait skill。EAP Attention Event MUST 作为 `application/eap+json` Artifact 返回。
+A2A Agent MUST 在 Agent Card 中声明 create contract 和 wait skill。ExAP Attention Event MUST 作为 `application/exap+json` Artifact 返回。

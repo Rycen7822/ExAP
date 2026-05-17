@@ -1,4 +1,4 @@
-# EAP 手册目录
+# ExAP 手册目录
 
 ## 规范性关键词
 
@@ -39,6 +39,6 @@
 ## 文件命名规则
 
 - Core 文档使用两位序号前缀。
-- Schema 文件使用 `eap-*.schema.json`。
-- Profile 文件使用 `*.eap.json`。
+- Schema 文件使用 `exap-*.schema.json`。
+- Profile 文件使用 `*.exap.json`。
 - 示例文件使用两位序号前缀。

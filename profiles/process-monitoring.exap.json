@@ -1,53 +1,44 @@
 {
-  "profile_id": "profile:iot-safety",
-  "eap_version": "0.2.0-draft",
-  "name": "IoT Safety",
-  "description": "Monitor physical environment sensors and safety-related device events.",
-  "domain": "iot",
+  "profile_id": "profile:process-monitoring",
+  "exap_version": "0.2.0-draft",
+  "name": "Process Monitoring",
+  "description": "Monitor long-running operating-system processes and their resource usage.",
+  "domain": "system",
   "subject_types": [
-    "iot_device",
-    "sensor"
+    "process",
+    "file"
   ],
   "signals": [
-    "device.temperature_c",
-    "device.humidity_percent",
-    "device.battery.percent"
+    "process.status",
+    "process.cpu.percent",
+    "process.memory.rss_mb",
+    "disk.free_gb"
   ],
   "event_types": [
-    "device.alert"
+    "process.exited",
+    "log.line.appended"
   ],
   "rules": [
     {
-      "rule_id": "rule_temperature_too_high",
-      "name": "temperature_too_high",
-      "description": "A temperature sensor exceeded the safe threshold for the required duration.",
+      "rule_id": "rule_process_exited",
+      "name": "process_exited",
+      "description": "The monitored process exited.",
       "condition": {
-        "type": "signal",
-        "signal": "device.temperature_c",
-        "operator": "gt",
-        "value": 35,
-        "duration": "PT2M"
+        "type": "event",
+        "event_type": "process.exited",
+        "operator": "exists",
+        "subject_ref": "exap://local/process/18423"
       },
-      "severity": "warning",
-      "delivery_action": "deliver",
-      "cooldown": "PT10M",
-      "hysteresis": {
-        "recover_when": {
-          "type": "signal",
-          "signal": "device.temperature_c",
-          "operator": "lt",
-          "value": 32,
-          "duration": "PT2M"
-        },
-        "emit_recovery_event": true
-      },
+      "severity": "critical",
+      "delivery_action": "deliver_and_interrupt_wait",
       "evidence": {
         "include": [
-          "window_stats",
+          "matched_values",
+          "event_excerpt",
           "subject_snapshot"
         ],
         "max_items": 5,
-        "max_excerpt_chars": 500,
+        "max_excerpt_chars": 2000,
         "include_subject_attributes": true
       }
     }

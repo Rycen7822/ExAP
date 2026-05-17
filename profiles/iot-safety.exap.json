@@ -1,64 +1,53 @@
 {
-  "profile_id": "profile:ci-cd-monitor",
-  "eap_version": "0.2.0-draft",
-  "name": "CI/CD Monitor",
-  "description": "Monitor build, test, deployment, and release pipeline status.",
-  "domain": "ci-cd",
+  "profile_id": "profile:iot-safety",
+  "exap_version": "0.2.0-draft",
+  "name": "IoT Safety",
+  "description": "Monitor physical environment sensors and safety-related device events.",
+  "domain": "iot",
   "subject_types": [
-    "pipeline",
-    "job",
-    "artifact"
+    "iot_device",
+    "sensor"
   ],
   "signals": [
-    "ci.job.status",
-    "ci.job.duration.seconds",
-    "artifact.exists"
+    "device.temperature_c",
+    "device.humidity_percent",
+    "device.battery.percent"
   ],
   "event_types": [
-    "ci.job.failed",
-    "ci.job.completed",
-    "artifact.created",
-    "log.line.appended"
+    "device.alert"
   ],
   "rules": [
     {
-      "rule_id": "rule_build_failed",
-      "name": "build_failed",
-      "description": "A CI/CD job failed or emitted a fatal error.",
+      "rule_id": "rule_temperature_too_high",
+      "name": "temperature_too_high",
+      "description": "A temperature sensor exceeded the safe threshold for the required duration.",
       "condition": {
-        "type": "any",
-        "conditions": [
-          {
-            "type": "event",
-            "event_type": "ci.job.failed",
-            "operator": "exists"
-          },
-          {
-            "type": "event",
-            "event_type": "log.line.appended",
-            "operator": "field_regex",
-            "filters": [
-              {
-                "path": "line",
-                "operator": "regex",
-                "value": "fatal|failed|panic|segmentation fault",
-                "case_sensitive": false
-              }
-            ]
-          }
-        ]
+        "type": "signal",
+        "signal": "device.temperature_c",
+        "operator": "gt",
+        "value": 35,
+        "duration": "PT2M"
       },
-      "severity": "critical",
-      "delivery_action": "deliver_and_interrupt_wait",
+      "severity": "warning",
+      "delivery_action": "deliver",
       "cooldown": "PT10M",
+      "hysteresis": {
+        "recover_when": {
+          "type": "signal",
+          "signal": "device.temperature_c",
+          "operator": "lt",
+          "value": 32,
+          "duration": "PT2M"
+        },
+        "emit_recovery_event": true
+      },
       "evidence": {
         "include": [
-          "event_excerpt",
-          "log_excerpt",
-          "trace_link"
+          "window_stats",
+          "subject_snapshot"
         ],
-        "max_items": 8,
-        "max_excerpt_chars": 4000,
+        "max_items": 5,
+        "max_excerpt_chars": 500,
         "include_subject_attributes": true
       }
     }

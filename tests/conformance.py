@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""EAP package conformance test.
+"""ExAP package conformance test.
 
 Run from the package root:
     python tests/conformance.py
@@ -20,7 +20,7 @@ from referencing.jsonschema import DRAFT202012
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
-BASE = "https://eap.dev/schemas/"
+BASE = "https://exap.dev/schemas/"
 RESULTS: list[tuple[str, bool, str]] = []
 
 
@@ -156,19 +156,19 @@ def main() -> int:
 
     # Valid examples.
     mappings = {
-        "01-process-wait-contract.json": "eap-attention-contract.schema.json",
-        "02-gpu-idle-attention-event.json": "eap-attention-event.schema.json",
-        "03-email-important-contract.json": "eap-attention-contract.schema.json",
-        "04-mail-attention-event.json": "eap-attention-event.schema.json",
-        "05-provider-capability-process.json": "eap-capability.schema.json",
-        "06-provider-capability-mail.json": "eap-capability.schema.json",
-        "07-http-contract-create-request.json": "eap-lifecycle-message.schema.json",
+        "01-process-wait-contract.json": "exap-attention-contract.schema.json",
+        "02-gpu-idle-attention-event.json": "exap-attention-event.schema.json",
+        "03-email-important-contract.json": "exap-attention-contract.schema.json",
+        "04-mail-attention-event.json": "exap-attention-event.schema.json",
+        "05-provider-capability-process.json": "exap-capability.schema.json",
+        "06-provider-capability-mail.json": "exap-capability.schema.json",
+        "07-http-contract-create-request.json": "exap-lifecycle-message.schema.json",
     }
     for fn, schema_name in mappings.items():
         inst = load_json(ROOT / "examples" / fn)
         errs = validate(inst, schemas[schema_name], registry)
         sem = []
-        if schema_name == "eap-attention-contract.schema.json" and not errs:
+        if schema_name == "exap-attention-contract.schema.json" and not errs:
             sem = semantic_contract(inst)
         record(f"valid example {fn}", not errs and not sem, "; ".join(errs + sem))
 
@@ -180,7 +180,7 @@ def main() -> int:
             Draft202012Validator.check_schema(tool["inputSchema"])
         except Exception as exc:
             tool_errors.append(f"{tool.get('name')}: {exc}")
-    required_tools = {"eap_discover", "eap_contract_create", "eap_wait", "eap_status", "eap_attention_ack", "eap_contract_revoke"}
+    required_tools = {"exap_discover", "exap_contract_create", "exap_wait", "exap_status", "exap_attention_ack", "exap_contract_revoke"}
     seen_tools = {t.get("name") for t in mcp.get("tools", [])}
     missing_tools = sorted(required_tools - seen_tools)
     if missing_tools:
@@ -193,8 +193,8 @@ def main() -> int:
     for field in ["name", "description", "url", "version", "capabilities", "skills"]:
         if field not in a2a:
             a2a_errors.append(f"missing {field}")
-    if "application/eap+json" not in a2a.get("defaultOutputModes", []):
-        a2a_errors.append("defaultOutputModes must include application/eap+json")
+    if "application/exap+json" not in a2a.get("defaultOutputModes", []):
+        a2a_errors.append("defaultOutputModes must include application/exap+json")
     skill_ids = {s.get("id") for s in a2a.get("skills", [])}
     for sid in ["create_attention_contract", "wait_for_attention"]:
         if sid not in skill_ids:
@@ -204,23 +204,23 @@ def main() -> int:
     # Profiles.
     for p in sorted((ROOT / "profiles").glob("*.json")):
         inst = load_json(p)
-        errs = validate(inst, schemas["eap-profile.schema.json"], registry)
+        errs = validate(inst, schemas["exap-profile.schema.json"], registry)
         sem = [] if errs else semantic_profile(inst)
         record(f"profile {p.name}", not errs and not sem, "; ".join(errs + sem))
 
     # Negative fixtures.
     neg_schema = {
-        "invalid-missing-rules.json": "eap-attention-contract.schema.json",
-        "invalid-unknown-operator.json": "eap-attention-contract.schema.json",
-        "invalid-extra-field.json": "eap-attention-contract.schema.json",
-        "invalid-duplicate-rule-id.json": "eap-attention-contract.schema.json",
-        "invalid-triggered-empty-evidence.json": "eap-attention-event.schema.json",
+        "invalid-missing-rules.json": "exap-attention-contract.schema.json",
+        "invalid-unknown-operator.json": "exap-attention-contract.schema.json",
+        "invalid-extra-field.json": "exap-attention-contract.schema.json",
+        "invalid-duplicate-rule-id.json": "exap-attention-contract.schema.json",
+        "invalid-triggered-empty-evidence.json": "exap-attention-event.schema.json",
     }
     for fn, schema_name in neg_schema.items():
         inst = load_json(ROOT / "tests" / "fixtures" / "negative" / fn)
         errs = validate(inst, schemas[schema_name], registry)
         sem = []
-        if schema_name == "eap-attention-contract.schema.json" and not errs:
+        if schema_name == "exap-attention-contract.schema.json" and not errs:
             sem = semantic_contract(inst)
         failed_as_expected = bool(errs or sem)
         record(f"negative fixture {fn}", failed_as_expected, "" if failed_as_expected else "fixture unexpectedly passed")
@@ -267,6 +267,45 @@ def main() -> int:
                 banned.append(f"{p.relative_to(ROOT)} contains {term}")
     record("normative text has no banned ambiguity terms", not banned, "; ".join(banned))
 
+    # Legacy naming consistency: the package has migrated from the old prefix to ExAP/exap.
+    old = "e" + "ap"
+    old_upper = "E" + "AP"
+    old_title = "E" + "ap"
+    wrong_title = "Ex" + "ap"
+    old_long_name = "Environment" + " Awareness Protocol"
+    legacy_patterns = [
+        re.compile(r"\b" + old_upper + r"\b"),
+        re.compile(r"\b" + old_title + r"\b"),
+        re.compile(r"\b" + wrong_title + r"\b"),
+        re.compile(r"\b" + old + r"[A-Za-z0-9_]*\b"),
+        re.compile(old + r"://"),
+        re.compile(r"application/" + old + r"\+json"),
+        re.compile(old + r"\.dev"),
+        re.compile(r"\." + old + r"\.json"),
+        re.compile(old + r"-"),
+        re.compile(old + r"_"),
+        re.compile(old + r"\."),
+        re.compile(old_long_name),
+    ]
+    legacy_hits = []
+    text_suffixes = {".md", ".json", ".yaml", ".yml", ".py", ".txt"}
+    for p in ROOT.rglob("*"):
+        if ".git" in p.parts:
+            continue
+        rel = str(p.relative_to(ROOT))
+        if rel == "tests/conformance-report.md":
+            continue
+        if any(pattern.search(rel) for pattern in legacy_patterns):
+            legacy_hits.append(f"path {rel}")
+        if not p.is_file() or p.suffix not in text_suffixes:
+            continue
+        text = p.read_text(encoding="utf-8")
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            if any(pattern.search(line) for pattern in legacy_patterns):
+                legacy_hits.append(f"{rel}:{line_no}")
+                break
+    record("legacy naming removed", not legacy_hits, ", ".join(legacy_hits[:50]))
+
     # Schema property documentation coverage.
     normative_docs = list((ROOT / "docs").glob("*.md")) + [ROOT / "README.md", ROOT / "GLOSSARY.md"]
     doc_text = "\n".join(path.read_text(encoding="utf-8") for path in normative_docs)
@@ -304,7 +343,7 @@ def main() -> int:
     failed = len(RESULTS) - passed
     report = ROOT / "tests" / "conformance-report.md"
     lines = [
-        "# EAP Conformance Report",
+        "# ExAP Conformance Report",
         "",
         f"Generated at: {datetime.now(timezone.utc).isoformat()}",
         f"Total checks: {len(RESULTS)}",

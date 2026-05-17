@@ -2,7 +2,7 @@
 
 ## 1. 定义
 
-Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 method 的语义一致。JSON-RPC 2.0 表示法用于规范方法名、参数和响应；HTTP、MCP、A2A 等绑定可将这些方法映射到 endpoint、tool 或 task。
+Lifecycle API 是 ExAP 的通用操作集合。所有绑定必须保持这些 method 的语义一致。JSON-RPC 2.0 表示法用于规范方法名、参数和响应；HTTP、MCP、A2A 等绑定可将这些方法映射到 endpoint、tool 或 task。
 
 ## 2. 通用请求格式
 
@@ -10,7 +10,7 @@ Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 met
 {
   "jsonrpc": "2.0",
   "id": "req_001",
-  "method": "eap.contract.create",
+  "method": "exap.contract.create",
   "params": {}
 }
 ```
@@ -19,7 +19,7 @@ Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 met
 |---|---:|---:|---|
 | `jsonrpc` | string | 是 | 必须为 `2.0`。 |
 | `id` | string/integer | 是 | 请求 ID。 |
-| `method` | string | 是 | EAP method。 |
+| `method` | string | 是 | ExAP method。 |
 | `params` | object | 是 | method 参数。 |
 
 ## 3. 通用响应格式
@@ -41,7 +41,7 @@ Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 met
   "jsonrpc": "2.0",
   "id": "req_001",
   "error": {
-    "code": "EAP-4001",
+    "code": "ExAP-4001",
     "message": "Unsupported signal",
     "details": {}
   }
@@ -52,26 +52,26 @@ Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 met
 
 | Code | 定义 |
 |---|---|
-| `EAP-4000` | 请求结构无效。 |
-| `EAP-4001` | Contract schema 无效。 |
-| `EAP-4002` | 不支持的 EAP 版本。 |
-| `EAP-4003` | 不支持的 subject type。 |
-| `EAP-4004` | 不支持的 signal。 |
-| `EAP-4005` | 不支持的 event type。 |
-| `EAP-4006` | 不支持的 operator 或 aggregate。 |
-| `EAP-4007` | Rule 语义无效。 |
-| `EAP-4010` | 未认证。 |
-| `EAP-4030` | 授权不足。 |
-| `EAP-4031` | Privacy policy 冲突。 |
-| `EAP-4040` | Contract、Attention Event 或 Subject 不存在。 |
-| `EAP-4090` | 状态冲突。 |
-| `EAP-4130` | Payload 超限。 |
-| `EAP-4290` | 速率限制。 |
-| `EAP-5000` | Provider 内部错误。 |
-| `EAP-5030` | Provider 不可用。 |
-| `EAP-5040` | Wait 超时。 |
+| `ExAP-4000` | 请求结构无效。 |
+| `ExAP-4001` | Contract schema 无效。 |
+| `ExAP-4002` | 不支持的 ExAP 版本。 |
+| `ExAP-4003` | 不支持的 subject type。 |
+| `ExAP-4004` | 不支持的 signal。 |
+| `ExAP-4005` | 不支持的 event type。 |
+| `ExAP-4006` | 不支持的 operator 或 aggregate。 |
+| `ExAP-4007` | Rule 语义无效。 |
+| `ExAP-4010` | 未认证。 |
+| `ExAP-4030` | 授权不足。 |
+| `ExAP-4031` | Privacy policy 冲突。 |
+| `ExAP-4040` | Contract、Attention Event 或 Subject 不存在。 |
+| `ExAP-4090` | 状态冲突。 |
+| `ExAP-4130` | Payload 超限。 |
+| `ExAP-4290` | 速率限制。 |
+| `ExAP-5000` | Provider 内部错误。 |
+| `ExAP-5030` | Provider 不可用。 |
+| `ExAP-5040` | Wait 超时。 |
 
-## 5. `eap.discover`
+## 5. `exap.discover`
 
 参数见 `06-capability-discovery.md`。
 
@@ -81,7 +81,7 @@ Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 met
 |---|---:|---|
 | `capability` | Capability Document | Provider 能力。 |
 
-## 6. `eap.contract.create`
+## 6. `exap.contract.create`
 
 ### 6.1 请求参数
 
@@ -102,7 +102,7 @@ Lifecycle API 是 EAP 的通用操作集合。所有绑定必须保持这些 met
 
 Provider MUST 先执行 schema、capability、authorization、privacy、rule uniqueness 校验。校验失败 MUST NOT 创建 Contract。
 
-## 7. `eap.contract.get`
+## 7. `exap.contract.get`
 
 参数：
 
@@ -113,7 +113,7 @@ Provider MUST 先执行 schema、capability、authorization、privacy、rule uni
 
 返回：`contract` 与可选 `state`。
 
-## 8. `eap.contract.list`
+## 8. `exap.contract.list`
 
 参数：
 
@@ -126,7 +126,7 @@ Provider MUST 先执行 schema、capability、authorization、privacy、rule uni
 
 返回：`contracts`、`next_cursor`。
 
-## 9. `eap.contract.update`
+## 9. `exap.contract.update`
 
 参数：
 
@@ -138,14 +138,14 @@ Provider MUST 先执行 schema、capability、authorization、privacy、rule uni
 
 Provider MUST 对更新后的 Contract 重新执行完整校验。终态 Contract MUST NOT 被更新。
 
-## 10. `eap.contract.pause` / `eap.contract.resume`
+## 10. `exap.contract.pause` / `exap.contract.resume`
 
 `pause` 参数：`contract_id`、`reason`。  
 `resume` 参数：`contract_id`、`reason`。
 
 暂停后 Provider MUST 停止交付新 Attention Event，但 MAY 继续记录内部 Observation，前提是 PrivacyPolicy 允许。
 
-## 11. `eap.contract.revoke`
+## 11. `exap.contract.revoke`
 
 参数：
 
@@ -156,7 +156,7 @@ Provider MUST 对更新后的 Contract 重新执行完整校验。终态 Contrac
 
 Provider MUST 停止观察、停止交付、释放资源，并将状态置为 `revoked`。
 
-## 12. `eap.wait`
+## 12. `exap.wait`
 
 参数：
 
@@ -189,11 +189,11 @@ Wait 语义：
 - Consumer 新请求或上层取消导致 wait 中断时，Provider 返回 `interrupted` 或绑定层取消响应。
 - 多个 wait 同时存在时，Provider MUST 保证每个 wait 根据相同 Contract 状态独立返回。
 
-## 13. `eap.stream.open`
+## 13. `exap.stream.open`
 
 参数：`contract_id`、`min_severity`、`cursor`、`include`。返回流式事件。绑定层定义事件帧格式。
 
-## 14. `eap.attention.ack`
+## 14. `exap.attention.ack`
 
 参数：
 
@@ -205,10 +205,10 @@ Wait 语义：
 | `snooze_for` | duration | 条件必填 | `action=snooze` 时 REQUIRED。 |
 | `comment` | string | 否 | 说明。 |
 
-## 15. `eap.status`
+## 15. `exap.status`
 
-参数：`contract_id`、`include`。返回压缩状态，不返回完整原始观测流。Consumer MUST NOT 用短间隔 `eap.status` 代替 `eap.wait`。
+参数：`contract_id`、`include`。返回压缩状态，不返回完整原始观测流。Consumer MUST NOT 用短间隔 `exap.status` 代替 `exap.wait`。
 
-## 16. `eap.observation.query`
+## 16. `exap.observation.query`
 
 用于受控查询 Observation。Provider MUST 进行权限、privacy、retention 检查。查询结果 MUST 受 payload limits 限制。

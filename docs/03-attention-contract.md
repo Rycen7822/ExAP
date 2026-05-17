@@ -4,13 +4,13 @@
 
 Attention Contract 是 Consumer 提交给 Provider 的规范化关注契约。Provider 只按照 Contract 中明确声明的 scope、rules、delivery 和 privacy 观察环境并交付 Attention Event。
 
-Contract JSON MUST 使用 `schemas/eap-attention-contract.schema.json` 校验通过。
+Contract JSON MUST 使用 `schemas/exap-attention-contract.schema.json` 校验通过。
 
 ## 2. 顶层字段
 
 | 字段 | 类型 | 必填 | 默认值 | 定义 |
 |---|---:|---:|---|---|
-| `eap_version` | string | 是 | 无 | EAP 版本。当前包使用 `0.2.0-draft`。 |
+| `exap_version` | string | 是 | 无 | ExAP 版本。当前包使用 `0.2.0-draft`。 |
 | `contract_id` | string | 否 | Provider 生成 | Contract ID。格式为 `act_<id>`。Consumer 提供时在 Provider 范围内 MUST 唯一。 |
 | `created_at` | date-time | 否 | Provider 当前时间 | Contract 创建时间。 |
 | `updated_at` | date-time | 否 | Provider 当前时间 | Contract 最近更新时间。 |
@@ -18,7 +18,7 @@ Contract JSON MUST 使用 `schemas/eap-attention-contract.schema.json` 校验通
 | `consumer` | Consumer | 是 | 无 | 接收事件的实体。 |
 | `provider` | Provider | 否 | 当前 Provider | 执行 Contract 的实体。 |
 | `environment` | Environment | 否 | 无 | 内联 Environment 对象。 |
-| `environment_ref` | EAP URI | 否 | Provider 默认环境 | Environment 引用。`environment` 与 `environment_ref` 同时存在时，二者 MUST 指向同一环境。 |
+| `environment_ref` | ExAP URI | 否 | Provider 默认环境 | Environment 引用。`environment` 与 `environment_ref` 同时存在时，二者 MUST 指向同一环境。 |
 | `intent` | string | 是 | 无 | 关注意图。MUST 是非空字符串。 |
 | `scope` | Scope | 是 | 无 | 观察范围。 |
 | `rules` | array[Rule] | 是 | 无 | 触发规则。长度 MUST 大于 0。 |
@@ -26,7 +26,7 @@ Contract JSON MUST 使用 `schemas/eap-attention-contract.schema.json` 校验通
 | `privacy` | PrivacyPolicy | 是 | 无 | 用途、数据最小化、脱敏、保留和审计策略。 |
 | `lifecycle` | Lifecycle | 否 | Provider 填充 | Contract 生命周期。 |
 | `state_policy` | StatePolicy | 否 | Provider 默认 | 观测和事件状态存储策略。 |
-| `memory` | MemoryPolicy | 否 | `allowed=false` | Consumer 或 agent 是否允许持久化 EAP 信息。 |
+| `memory` | MemoryPolicy | 否 | `allowed=false` | Consumer 或 agent 是否允许持久化 ExAP 信息。 |
 | `integrations` | IntegrationHints | 否 | `{}` | MCP、A2A、OpenTelemetry 等集成提示。 |
 | `metadata` | object | 否 | `{}` | 扩展元数据。 |
 
@@ -72,7 +72,7 @@ Scope 定义 Contract 可观察范围。Provider MUST 拒绝超出 capability �
 | 字段 | 类型 | 必填 | 默认值 | 定义 |
 |---|---:|---:|---|---|
 | `type` | string | 是 | 无 | Subject 类型。 |
-| `ref` | EAP URI | 条件必填 | 无 | 精确 Subject 引用。 |
+| `ref` | ExAP URI | 条件必填 | 无 | 精确 Subject 引用。 |
 | `match` | object | 条件必填 | 无 | 动态属性匹配。`ref` 与 `match` MUST 至少存在一个。 |
 | `include_children` | boolean | 否 | `false` | 是否包含子 Subject。 |
 | `relationship` | string | 否 | 无 | 与其他 Subject 的关系。 |
@@ -147,7 +147,7 @@ DeliveryAction 允许值：
 | `record_only` | 只记录，不交付给 Consumer。 |
 | `include_in_summary` | 不立即交付，只在 summary 中出现。 |
 | `deliver` | 交付给 Consumer，不打断 blocking wait 以外的执行。 |
-| `deliver_and_interrupt_wait` | 交付给 Consumer，并使阻塞中的 `eap.wait` 立即返回。 |
+| `deliver_and_interrupt_wait` | 交付给 Consumer，并使阻塞中的 `exap.wait` 立即返回。 |
 
 Rule 的 `delivery_action` 存在时覆盖 ReturnPolicy。
 
@@ -242,12 +242,12 @@ paused -> expired
 
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
-| `allowed` | boolean | 是 | Consumer 或 agent 是否允许持久化来自 EAP 的信息。 |
+| `allowed` | boolean | 是 | Consumer 或 agent 是否允许持久化来自 ExAP 的信息。 |
 | `scope` | string | 是 | `none`、`session`、`project`、`user`、`organization`。 |
 | `allowed_keys` | array[string] | 否 | 允许持久化的键。 |
 | `forbidden_keys` | array[string] | 否 | 禁止持久化的键。 |
 
-`memory.allowed=false` 时，Consumer MUST NOT 将 EAP payload、evidence 或 summary 写入长期记忆。
+`memory.allowed=false` 时，Consumer MUST NOT 将 ExAP payload、evidence 或 summary 写入长期记忆。
 
 ## 12. `integrations`
 

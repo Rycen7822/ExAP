@@ -38,14 +38,14 @@
 
 | 文件 | 内容 |
 |---|---|
-| `schemas/eap-common.schema.json` | 公共类型。 |
-| `schemas/eap-rule.schema.json` | Rule DSL。 |
-| `schemas/eap-attention-contract.schema.json` | Attention Contract。 |
-| `schemas/eap-attention-event.schema.json` | Attention Event。 |
-| `schemas/eap-capability.schema.json` | Capability Document。 |
-| `schemas/eap-lifecycle-message.schema.json` | Lifecycle API message。 |
-| `schemas/eap-observation.schema.json` | Observation。 |
-| `schemas/eap-profile.schema.json` | Domain Profile。 |
+| `schemas/exap-common.schema.json` | 公共类型。 |
+| `schemas/exap-rule.schema.json` | Rule DSL。 |
+| `schemas/exap-attention-contract.schema.json` | Attention Contract。 |
+| `schemas/exap-attention-event.schema.json` | Attention Event。 |
+| `schemas/exap-capability.schema.json` | Capability Document。 |
+| `schemas/exap-lifecycle-message.schema.json` | Lifecycle API message。 |
+| `schemas/exap-observation.schema.json` | Observation。 |
+| `schemas/exap-profile.schema.json` | Domain Profile。 |
 
 ## Examples
 
@@ -66,13 +66,13 @@
 
 | 文件 | 内容 |
 |---|---|
-| `profiles/process-monitoring.eap.json` | 进程监控。 |
-| `profiles/deep-learning-training.eap.json` | 深度学习训练。 |
-| `profiles/email-priority.eap.json` | 邮件优先级。 |
-| `profiles/calendar-focus.eap.json` | 日历关注。 |
-| `profiles/file-watch.eap.json` | 文件关注。 |
-| `profiles/iot-safety.eap.json` | IoT 安全。 |
-| `profiles/ci-cd-monitor.eap.json` | CI/CD 监控。 |
+| `profiles/process-monitoring.exap.json` | 进程监控。 |
+| `profiles/deep-learning-training.exap.json` | 深度学习训练。 |
+| `profiles/email-priority.exap.json` | 邮件优先级。 |
+| `profiles/calendar-focus.exap.json` | 日历关注。 |
+| `profiles/file-watch.exap.json` | 文件关注。 |
+| `profiles/iot-safety.exap.json` | IoT 安全。 |
+| `profiles/ci-cd-monitor.exap.json` | CI/CD 监控。 |
 
 ## Reference
 

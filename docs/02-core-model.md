@@ -1,17 +1,17 @@
-# 02. EAP 核心对象模型
+# 02. ExAP 核心对象模型
 
 ## 1. 统一数据格式
 
-EAP Core 对象使用 JSON。Schema 使用 JSON Schema Draft 2020-12。时间使用 RFC 3339 date-time 字符串。持续时间使用 ISO 8601 duration，例如 `PT5M`、`P1D`、`PT30S`。
+ExAP Core 对象使用 JSON。Schema 使用 JSON Schema Draft 2020-12。时间使用 RFC 3339 date-time 字符串。持续时间使用 ISO 8601 duration，例如 `PT5M`、`P1D`、`PT30S`。
 
-## 2. EAP URI
+## 2. ExAP URI
 
-EAP URI 标识 Environment、Subject、Provider 或其他 EAP 对象。
+ExAP URI 标识 Environment、Subject、Provider 或其他 ExAP 对象。
 
 格式：
 
 ```text
-eap://<authority>/<type>/<id>
+exap://<authority>/<type>/<id>
 ```
 
 字段定义：
@@ -25,9 +25,9 @@ eap://<authority>/<type>/<id>
 示例：
 
 ```text
-eap://local/process/18423
-eap://personal/mailbox/primary
-eap://org-acme/pipeline/release-2026-05-16
+exap://local/process/18423
+exap://personal/mailbox/primary
+exap://org-acme/pipeline/release-2026-05-16
 ```
 
 ## 3. Environment
@@ -36,10 +36,10 @@ Environment 是感知发生的边界。
 
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
-| `ref` | EAP URI | 是 | Environment 标识。 |
+| `ref` | ExAP URI | 是 | Environment 标识。 |
 | `kind` | string | 是 | 允许值：`personal`、`project`、`machine`、`home`、`enterprise`、`cloud`、`lab`、`service`、`custom`。 |
 | `display_name` | string | 否 | 人类可读名称。 |
-| `owner_ref` | EAP URI | 否 | 所有者或控制者。 |
+| `owner_ref` | ExAP URI | 否 | 所有者或控制者。 |
 | `timezone` | string | 否 | IANA 时区名称。 |
 | `labels` | object | 否 | 字符串、数字、布尔或 null 值组成的标签。 |
 | `metadata` | object | 否 | 扩展元数据。 |
@@ -50,11 +50,11 @@ Subject 是被观察对象。
 
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
-| `ref` | EAP URI | 是 | Subject 标识。 |
+| `ref` | ExAP URI | 是 | Subject 标识。 |
 | `type` | string | 是 | Subject 类型。 |
-| `environment_ref` | EAP URI | 否 | 所属 Environment。 |
+| `environment_ref` | ExAP URI | 否 | 所属 Environment。 |
 | `display_name` | string | 否 | 人类可读名称。 |
-| `parent_ref` | EAP URI | 否 | 父 Subject。 |
+| `parent_ref` | ExAP URI | 否 | 父 Subject。 |
 | `attributes` | object | 否 | Subject 属性。 |
 | `sensitivity` | string | 否 | 允许值：`public`、`internal`、`confidential`、`secret`、`restricted`。 |
 | `tags` | array[string] | 否 | 标签。 |
@@ -90,7 +90,7 @@ Observation 是某一时刻对 Signal 的一次原始观测。
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
 | `observation_id` | string | 是 | Observation ID。 |
-| `subject_ref` | EAP URI | 是 | 被观察 Subject。 |
+| `subject_ref` | ExAP URI | 是 | 被观察 Subject。 |
 | `signal` | string | 是 | Signal 名称。 |
 | `value` | any | 是 | 观测值。 |
 | `observed_at` | date-time | 是 | 观测时间。 |
@@ -101,7 +101,7 @@ Observation 是某一时刻对 Signal 的一次原始观测。
 
 ## 7. Event
 
-Event 是离散发生的事情。EAP Event 可映射为 CloudEvents，也可作为 Provider 内部规则输入。
+Event 是离散发生的事情。ExAP Event 可映射为 CloudEvents，也可作为 Provider 内部规则输入。
 
 字段：
 
@@ -114,11 +114,11 @@ Event 是离散发生的事情。EAP Event 可映射为 CloudEvents，也可作�
 
 ## 8. Attention Contract
 
-Attention Contract 是 EAP 的核心输入对象。它定义 Consumer、Provider、Scope、Rules、Delivery、Privacy、Lifecycle 和 Integration Hints。完整字段见 `03-attention-contract.md`。
+Attention Contract 是 ExAP 的核心输入对象。它定义 Consumer、Provider、Scope、Rules、Delivery、Privacy、Lifecycle 和 Integration Hints。完整字段见 `03-attention-contract.md`。
 
 ## 9. Attention Event
 
-Attention Event 是 EAP 的核心输出对象。它使用 CloudEvents-compatible envelope，并在 `data` 中包含 EAP 特有的 `attention_id`、`contract_id`、`status`、`severity`、`rule`、`evidence`、`privacy`、`delivery`。完整字段见 `05-attention-event.md`。
+Attention Event 是 ExAP 的核心输出对象。它使用 CloudEvents-compatible envelope，并在 `data` 中包含 ExAP 特有的 `attention_id`、`contract_id`、`status`、`severity`、`rule`、`evidence`、`privacy`、`delivery`。完整字段见 `05-attention-event.md`。
 
 ## 10. Severity
 

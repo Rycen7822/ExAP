@@ -1,10 +1,10 @@
 {
-  "server_name": "eap-mcp-server",
-  "eap_version": "0.2.0-draft",
+  "server_name": "exap-mcp-server",
+  "exap_version": "0.2.0-draft",
   "tools": [
     {
-      "name": "eap_discover",
-      "description": "Return EAP provider capability documents.",
+      "name": "exap_discover",
+      "description": "Return ExAP provider capability documents.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -22,8 +22,8 @@
       }
     },
     {
-      "name": "eap_contract_create",
-      "description": "Create an EAP Attention Contract.",
+      "name": "exap_contract_create",
+      "description": "Create an ExAP Attention Contract.",
       "inputSchema": {
         "type": "object",
         "required": [
@@ -31,14 +31,14 @@
         ],
         "properties": {
           "contract": {
-            "$ref": "https://eap.dev/schemas/eap-attention-contract.schema.json"
+            "$ref": "https://exap.dev/schemas/exap-attention-contract.schema.json"
           }
         },
         "additionalProperties": false
       }
     },
     {
-      "name": "eap_wait",
+      "name": "exap_wait",
       "description": "Block until an attention event, summary, completion, timeout, interruption, expiration, revocation, or provider error.",
       "inputSchema": {
         "type": "object",
@@ -74,7 +74,7 @@
       }
     },
     {
-      "name": "eap_status",
+      "name": "exap_status",
       "description": "Return compressed state for a contract.",
       "inputSchema": {
         "type": "object",
@@ -96,7 +96,7 @@
       }
     },
     {
-      "name": "eap_attention_ack",
+      "name": "exap_attention_ack",
       "description": "Acknowledge, snooze, dismiss, or escalate an attention event.",
       "inputSchema": {
         "type": "object",
@@ -125,8 +125,8 @@
       }
     },
     {
-      "name": "eap_contract_revoke",
-      "description": "Revoke an EAP contract.",
+      "name": "exap_contract_revoke",
+      "description": "Revoke an ExAP contract.",
       "inputSchema": {
         "type": "object",
         "required": [

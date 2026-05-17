@@ -1,21 +1,21 @@
 openapi: 3.1.0
 info:
-  title: EAP HTTP Binding
+  title: ExAP HTTP Binding
   version: 0.2.0-draft
 paths:
-  /eap/capability:
+  /exap/capability:
     get:
-      operationId: eapDiscover
+      operationId: exapDiscover
       responses:
         '200':
           description: Capability document
           content:
             application/json:
               schema:
-                $ref: '../schemas/eap-capability.schema.json'
-  /eap/contracts:
+                $ref: '../schemas/exap-capability.schema.json'
+  /exap/contracts:
     post:
-      operationId: eapContractCreate
+      operationId: exapContractCreate
       requestBody:
         required: true
         content:
@@ -25,7 +25,7 @@ paths:
               required: [contract]
               properties:
                 contract:
-                  $ref: '../schemas/eap-attention-contract.schema.json'
+                  $ref: '../schemas/exap-attention-contract.schema.json'
                 validate_only:
                   type: boolean
       responses:
@@ -42,10 +42,10 @@ paths:
                   status:
                     type: string
                   effective_contract:
-                    $ref: '../schemas/eap-attention-contract.schema.json'
-  /eap/contracts/{contract_id}/wait:
+                    $ref: '../schemas/exap-attention-contract.schema.json'
+  /exap/contracts/{contract_id}/wait:
     post:
-      operationId: eapWait
+      operationId: exapWait
       parameters:
         - name: contract_id
           in: path
@@ -88,10 +88,10 @@ paths:
                   status:
                     type: string
                   event:
-                    $ref: '../schemas/eap-attention-event.schema.json'
-  /eap/attention/{attention_id}/ack:
+                    $ref: '../schemas/exap-attention-event.schema.json'
+  /exap/attention/{attention_id}/ack:
     post:
-      operationId: eapAttentionAck
+      operationId: exapAttentionAck
       parameters:
         - name: attention_id
           in: path

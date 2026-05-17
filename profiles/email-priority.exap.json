@@ -1,6 +1,6 @@
 {
   "profile_id": "profile:email-priority",
-  "eap_version": "0.2.0-draft",
+  "exap_version": "0.2.0-draft",
   "name": "Email Priority",
   "description": "Surface important email while suppressing routine mail noise.",
   "domain": "mail",
@@ -28,7 +28,7 @@
             "type": "event",
             "event_type": "mail.message.received",
             "operator": "exists",
-            "subject_ref": "eap://personal/mailbox/primary"
+            "subject_ref": "exap://personal/mailbox/primary"
           },
           {
             "type": "signal",

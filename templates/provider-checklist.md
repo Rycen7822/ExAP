@@ -1,10 +1,10 @@
-# EAP Provider Checklist
+# ExAP Provider Checklist
 
 ## Capability
 
-- [ ] 发布 `eap.discover`。
+- [ ] 发布 `exap.discover`。
 - [ ] Capability document 通过 schema 校验。
-- [ ] 声明 EAP versions、subject types、signals、event types、operators、aggregates、delivery modes、privacy capabilities、limits、bindings。
+- [ ] 声明 ExAP versions、subject types、signals、event types、operators、aggregates、delivery modes、privacy capabilities、limits、bindings。
 
 ## Contract
 
@@ -26,7 +26,7 @@
 ## Delivery
 
 - [ ] 支持至少一种 delivery mode。
-- [ ] `eap.wait` 不使用短间隔返回状态替代阻塞等待。
+- [ ] `exap.wait` 不使用短间隔返回状态替代阻塞等待。
 - [ ] Push 有认证和 replay 防护。
 - [ ] Stream 有 keepalive。
 - [ ] Ack required 被执行。

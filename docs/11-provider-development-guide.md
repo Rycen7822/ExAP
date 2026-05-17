@@ -36,7 +36,7 @@ Provider MUST 按顺序执行：
 
 1. 解析 JSON。
 2. Schema 校验。
-3. EAP version 校验。
+3. ExAP version 校验。
 4. Consumer 认证。
 5. Scope 授权。
 6. SubjectSelector 解析。

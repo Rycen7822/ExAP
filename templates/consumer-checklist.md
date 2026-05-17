@@ -1,9 +1,9 @@
-# EAP Consumer Checklist
+# ExAP Consumer Checklist
 
 ## Discover
 
-- [ ] 调用 `eap.discover`。
-- [ ] 检查 EAP version。
+- [ ] 调用 `exap.discover`。
+- [ ] 检查 ExAP version。
 - [ ] 检查 signal、event、operator、delivery、privacy、limits。
 
 ## Contract
@@ -16,7 +16,7 @@
 
 ## Wait / Receive
 
-- [ ] Agent 使用 `eap.wait` 处理长时间任务。
+- [ ] Agent 使用 `exap.wait` 处理长时间任务。
 - [ ] 不使用固定短间隔轮询替代 wait。
 - [ ] Push 验证签名和 timestamp。
 - [ ] Stream 处理 keepalive 和 reconnect。

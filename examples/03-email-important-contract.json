@@ -1,5 +1,5 @@
 {
-  "eap_version": "0.2.0-draft",
+  "exap_version": "0.2.0-draft",
   "contract_id": "act_email_priority_001",
   "created_at": "2026-05-16T09:00:00+09:00",
   "consumer": {
@@ -16,13 +16,13 @@
     "type": "connector",
     "version": "0.2.0"
   },
-  "environment_ref": "eap://personal/workspace/default",
+  "environment_ref": "exap://personal/workspace/default",
   "intent": "surface_important_email_without_interrupting_for_noise",
   "scope": {
     "subjects": [
       {
         "type": "mailbox",
-        "ref": "eap://personal/mailbox/primary",
+        "ref": "exap://personal/mailbox/primary",
         "resolution": "exact"
       }
     ],
@@ -48,7 +48,7 @@
             "type": "event",
             "event_type": "mail.message.received",
             "operator": "exists",
-            "subject_ref": "eap://personal/mailbox/primary"
+            "subject_ref": "exap://personal/mailbox/primary"
           },
           {
             "type": "signal",
@@ -98,14 +98,14 @@
       {
         "transport": "http_webhook",
         "mode": "push",
-        "endpoint": "https://assistant.example.com/eap/events",
+        "endpoint": "https://assistant.example.com/exap/events",
         "content_mode": "structured",
         "auth_ref": "auth:webhook-hmac-001"
       },
       {
         "transport": "sse",
         "mode": "stream",
-        "endpoint": "https://mail-provider.example.com/eap/contracts/act_email_priority_001/stream",
+        "endpoint": "https://mail-provider.example.com/exap/contracts/act_email_priority_001/stream",
         "content_mode": "structured"
       }
     ],

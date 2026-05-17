@@ -1,13 +1,13 @@
 {
   "specversion": "1.0",
   "id": "attn_gpu_idle_001",
-  "source": "eap://local/provider/local-process-provider",
-  "type": "eap.attention.triggered",
-  "subject": "eap://local/process/18423",
+  "source": "exap://local/provider/local-process-provider",
+  "type": "exap.attention.triggered",
+  "subject": "exap://local/process/18423",
   "time": "2026-05-16T12:07:00+09:00",
   "datacontenttype": "application/json",
   "data": {
-    "eap_version": "0.2.0-draft",
+    "exap_version": "0.2.0-draft",
     "attention_id": "attn_gpu_idle_001",
     "contract_id": "act_process_wait_001",
     "status": "triggered",
@@ -16,9 +16,9 @@
     "reason": "gpu.util.percent averaged below 20 for PT5M while process.status remained running.",
     "intent": "monitor_long_running_process_without_polling",
     "subject": {
-      "ref": "eap://local/process/18423",
+      "ref": "exap://local/process/18423",
       "type": "process",
-      "environment_ref": "eap://local/machine/workstation-01",
+      "environment_ref": "exap://local/machine/workstation-01",
       "display_name": "python train.py",
       "attributes": {
         "pid": 18423,
@@ -40,7 +40,7 @@
       {
         "evidence_id": "ev_gpu_window",
         "kind": "signal_window",
-        "subject_ref": "eap://local/gpu/0",
+        "subject_ref": "exap://local/gpu/0",
         "signal": "gpu.util.percent",
         "observed_at": "2026-05-16T12:07:00+09:00",
         "window": "PT5M",
@@ -55,7 +55,7 @@
       {
         "evidence_id": "ev_process_status",
         "kind": "signal_value",
-        "subject_ref": "eap://local/process/18423",
+        "subject_ref": "exap://local/process/18423",
         "signal": "process.status",
         "observed_at": "2026-05-16T12:07:00+09:00",
         "value": "running",

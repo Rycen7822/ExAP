@@ -2,17 +2,17 @@
 
 ## 1. 定义
 
-Capability Discovery 是 Consumer 对 Provider 的第一步调用。Provider 返回 Capability Document，说明自己支持的 EAP 版本、Subject、Signal、Event、Rule、Delivery、Privacy、limits、bindings、profiles 和 actions。
+Capability Discovery 是 Consumer 对 Provider 的第一步调用。Provider 返回 Capability Document，说明自己支持的 ExAP 版本、Subject、Signal、Event、Rule、Delivery、Privacy、limits、bindings、profiles 和 actions。
 
-Capability JSON MUST 使用 `schemas/eap-capability.schema.json` 校验通过。
+Capability JSON MUST 使用 `schemas/exap-capability.schema.json` 校验通过。
 
 ## 2. Discover 请求
 
-`eap.discover` 请求参数：
+`exap.discover` 请求参数：
 
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
-| `environment_ref` | EAP URI | 否 | 限定 Environment。 |
+| `environment_ref` | ExAP URI | 否 | 限定 Environment。 |
 | `subject_types` | array[string] | 否 | 限定返回的 Subject 类型。 |
 | `signals` | array[string] | 否 | 限定返回的 Signal。 |
 | `profiles` | array[string] | 否 | 限定返回的 Profile。 |
@@ -22,7 +22,7 @@ Capability JSON MUST 使用 `schemas/eap-capability.schema.json` 校验通过。
 
 | 字段 | 类型 | 必填 | 定义 |
 |---|---:|---:|---|
-| `eap_versions` | array[string] | 是 | 支持的 EAP 版本。 |
+| `exap_versions` | array[string] | 是 | 支持的 ExAP 版本。 |
 | `capability_id` | string | 是 | Capability document ID。 |
 | `provider` | Provider | 是 | Provider 身份。 |
 | `environments` | array[Environment] | 否 | Provider 可观察的 Environment。 |
