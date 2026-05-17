@@ -142,5 +142,13 @@
       ],
       "description": "Sender relationship classes treated as important."
     }
+  ],
+  "parameter_bindings": [
+    {
+      "parameter": "important_relationships",
+      "paths": [
+        "/rules/0/condition/conditions/1/value"
+      ]
+    }
   ]
 }

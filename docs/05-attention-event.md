@@ -13,7 +13,7 @@ Attention Event JSON MUST 使用 `schemas/exap-attention-event.schema.json` 校�
 | `specversion` | string | 是 | 必须为 `1.0`。 |
 | `id` | string | 是 | Event ID。MUST 唯一。 |
 | `source` | string | 是 | Provider source。可使用 ExAP URI。 |
-| `type` | string | 是 | `exap.attention.triggered`、`exap.attention.recovered`、`exap.attention.summary`、`exap.attention.acknowledged`、`exap.contract.state_changed`。 |
+| `type` | string | 是 | `exap.attention.triggered`、`exap.attention.recovered`、`exap.attention.summary`、`exap.attention.acknowledged`、`exap.attention.suppressed`、`exap.contract.state_changed`。 |
 | `subject` | string | 否 | 主 Subject 引用。 |
 | `time` | date-time | 是 | 事件生成时间。 |
 | `datacontenttype` | string | 是 | 必须为 `application/json`。 |
@@ -39,6 +39,19 @@ Attention Event JSON MUST 使用 `schemas/exap-attention-event.schema.json` 校�
 | `delivery` | DeliveryReport | 是 | 交付动作和 ack 要求。 |
 | `trace` | TraceContext | 否 | 追踪信息。 |
 | `links` | array[object] | 否 | 相关资源链接。 |
+
+## 3.1 `type` 与 `data.status` 绑定
+
+| CloudEvents `type` | `data.status` | 交付语义 |
+|---|---|---|
+| `exap.attention.triggered` | `triggered` | Rule 触发并交付 Attention Event，`evidence` 长度必须大于 0。 |
+| `exap.attention.recovered` | `recovered` | 已触发 Rule 达到恢复条件。 |
+| `exap.attention.summary` | `summary` | 聚合交付 summary，`evidence` 可为空。 |
+| `exap.attention.acknowledged` | `acknowledged` | Ack 事件。 |
+| `exap.attention.suppressed` | `suppressed` | 可交付抑制记录，`payload` 包含 suppression reason/count。 |
+| `exap.contract.state_changed` | `state_changed` | Contract 生命周期状态变化。 |
+
+Schema 使用 conditional validation 固定上述组合。Consumer 可按 `type` 路由，并按 `data.status` 执行业务分支，两者必须一致。
 
 ## 4. RuleReference
 
@@ -129,4 +142,4 @@ TraceContext 字段：
 
 ## 11. Suppression
 
-Provider 抑制重复事件时 MAY 记录 `data.status=suppressed` 的内部事件。若交付给 Consumer，Provider MUST 在 `reason` 中说明抑制原因，在 `payload` 中包含 suppressed count。
+Provider 抑制重复事件时可以记录 `data.status=suppressed` 的事件。交付给 Consumer 时，顶层 `type` 必须为 `exap.attention.suppressed`，`reason` 说明抑制原因，`payload` 包含 suppression count、dedupe key 和窗口信息。

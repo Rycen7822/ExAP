@@ -15,7 +15,7 @@ Capability JSON MUST 使用 `schemas/exap-capability.schema.json` 校验通过�
 | `environment_ref` | ExAP URI | 否 | 限定 Environment。 |
 | `subject_types` | array[string] | 否 | 限定返回的 Subject 类型。 |
 | `signals` | array[string] | 否 | 限定返回的 Signal。 |
-| `profiles` | array[string] | 否 | 限定返回的 Profile。 |
+| `profile_ids` | array[string] | 否 | 限定返回的 Profile。 |
 | `include_examples` | boolean | 否 | 是否返回示例片段。 |
 
 ## 3. Capability Document 顶层字段
@@ -84,7 +84,24 @@ Capability JSON MUST 使用 `schemas/exap-capability.schema.json` 校验通过�
 | `correlation` | boolean | 是 | 是否支持 correlation。 |
 | `semantic_match` | boolean | 是 | 是否支持 semantic_match。 |
 
-Provider MUST 拒绝不在 capability 中的 operator、condition type 和 aggregate。
+Provider MUST 拒绝不在 capability 中的 operator、condition type 和 aggregate。`rule_capabilities.operators` 必须覆盖各 SignalCapability `operators` 中声明的 operator，或由规范明确更细粒度覆盖规则。`semantic_match=false` 时，`rule_capabilities.operators` 中不得包含 `semantic_match`。
+
+## 7.1 Shared vocabulary
+
+Capability、Contract、Lifecycle、MCP/A2A 示例共用 `schemas/exap-common.schema.json` 中的词表：
+
+| `$defs` | 使用位置 |
+|---|---|
+| `DeliveryMode` | Contract delivery modes、Capability delivery modes。 |
+| `TransportKind` | Contract transport、Capability delivery transports。 |
+| `BindingKind` | Capability bindings。 |
+| `ContentMode` | Contract transport content mode、Capability content modes。 |
+| `SignalOperator`、`EventOperator`、`FieldOperator` | Rule DSL 与 signal/event/filter 能力。 |
+| `RuleOperator` | Capability 全局 Rule operator 能力。 |
+| `Aggregate` | Rule DSL aggregate 与 capability aggregate。 |
+| `ReturnReason`、`AckAction`、`LifecycleStatus` | Lifecycle API params/result。 |
+
+`BindingKind=webhook` satisfies `TransportKind=http_webhook` for `DeliveryMode=push` when the binding endpoint accepts HTTP webhook delivery. Other binding/transport mappings must be declared in binding-specific docs or `metadata`.
 
 ## 8. DeliveryCapabilities
 

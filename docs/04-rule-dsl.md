@@ -169,6 +169,7 @@ State Condition 判断 Provider 内部状态。
 | `state_path` | string | 是 | 状态路径，例如 `contract.status`。 |
 | `operator` | string | 是 | Signal operator。 |
 | `value` | any | 条件必填 | 比较值。 |
+| `window` | duration | 条件必填 | `rate_*`、`relative_*`、`relative_drop_gt` 的状态窗口。 |
 
 ## 8. Correlation Condition
 

@@ -20,6 +20,7 @@ Domain Profile 是特定场景的默认 Rule、Delivery、Privacy 和参数模�
 | `delivery` | object | 是 | 默认 delivery。 |
 | `privacy` | PrivacyPolicy | 是 | 默认 privacy。 |
 | `parameters` | array[object] | 否 | 可配置参数。 |
+| `parameter_bindings` | array[object] | 否 | 参数到 Contract 模板路径的绑定表。 |
 | `metadata` | object | 否 | 扩展元数据。 |
 
 ## 3. Profile Parameter
@@ -31,6 +32,19 @@ Domain Profile 是特定场景的默认 Rule、Delivery、Privacy 和参数模�
 | `required` | boolean | 是 | 是否必填。 |
 | `default` | any | 否 | 默认值。 |
 | `description` | string | 是 | 参数说明。 |
+
+## 3.1 Parameter binding
+
+Profile 使用 `parameter_bindings` 声明参数替换目标。每个声明的 `parameter` 必须在 `parameters` 中存在；每个声明的参数必须至少有一个绑定路径。
+
+```json
+{
+  "parameter": "gpu_idle_threshold",
+  "paths": ["/rules/1/condition/conditions/0/value"]
+}
+```
+
+`paths` 使用 JSON Pointer 指向 Profile 模板中被替换的字段。参数类型必须与目标字段 schema 兼容。实例化流程为：`profile + params + provider capability -> effective contract`。实例化后的 Contract 必须通过 Contract schema、Rule DSL schema、capability compatibility validator、privacy/evidence limits 与 delivery compatibility。
 
 ## 4. 包内 Profile
 

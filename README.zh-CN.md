@@ -15,7 +15,7 @@
   <a href="docs/00-index.md"><img src="https://img.shields.io/badge/Docs-18%20chapters-0969da?style=for-the-badge" alt="Documentation: 18 chapters"></a>
   <a href="schemas"><img src="https://img.shields.io/badge/JSON%20Schema-2020--12-2ea44f?style=for-the-badge" alt="JSON Schema Draft 2020-12"></a>
   <a href="examples"><img src="https://img.shields.io/badge/Examples-contracts%20%7C%20events%20%7C%20bindings-5865F2?style=for-the-badge" alt="Examples"></a>
-  <a href="tests/conformance.py"><img src="https://img.shields.io/badge/Conformance-43%2F43%20PASS-blue?style=for-the-badge" alt="Conformance: 43 of 43 passed"></a>
+  <a href="tests/conformance.py"><img src="https://img.shields.io/badge/Package%20Check-71%2F71%20PASS-blue?style=for-the-badge" alt="Package Check: 71 of 71 passed"></a>
   <a href="docs/17-mcp-a2a-integration.md"><img src="https://img.shields.io/badge/Agent%20Bindings-MCP%20%7C%20A2A-ff69b4?style=for-the-badge" alt="Agent bindings: MCP and A2A"></a>
 </p>
 
@@ -87,11 +87,11 @@ ExAP 作为关注契约层，与现有事件、遥测、传输、安全和 agent
 |---|---|
 | Protocol version | `0.2.0-draft`。 |
 | Normative docs | `docs/00-index.md` 到 `docs/17-mcp-a2a-integration.md`，覆盖核心模型、Contract、Rule DSL、Event、Capability、Lifecycle、Transport、Privacy、Profiles、Conformance、MCP、A2A。 |
-| JSON Schemas | 8 个 Draft 2020-12 schema，canonical `$id` 位于 `https://exap.dev/schemas/`。 |
+| JSON Schemas | 8 个 Draft 2020-12 schema，canonical `$id` 位于 `https://exap.dev/schemas/0.2.0-draft/`。 |
 | Examples | Contract、Attention Event、Capability Document、Lifecycle request、MCP tools、A2A Agent Card、local CLI 样例。 |
 | Domain Profiles | process monitoring、deep learning training、email priority、calendar focus、file watch、IoT safety、CI/CD monitoring。 |
 | References | HTTP binding 的 OpenAPI 草案与 provider event stream 的 AsyncAPI 草案。 |
-| Conformance | `tests/conformance.py` 执行 schema、引用、示例、profile、负面用例、YAML、清单和文档覆盖检查。 |
+| Package Check | `tests/conformance.py` 是 C0/C1 包级自检，覆盖 schema、引用、示例、profile、负面用例、capability compatibility、YAML、清单和文档覆盖。 |
 
 ## 核心对象
 
@@ -112,7 +112,7 @@ ExAP 作为关注契约层，与现有事件、遥测、传输、安全和 agent
 
 | 顺序 | 文件 | 读完后能理解什么 |
 |---:|---|---|
-| 1 | `docs/01-overview-and-scope.md` | ExAP 的目标、非目标、角色和工作流。 |
+| 1 | `docs/01-overview-and-scope.md` | ExAP 的目标、标准与绑定职责、角色和工作流。 |
 | 2 | `docs/02-core-model.md` | Environment、Subject、Signal、Observation、Event、Contract、Attention Event。 |
 | 3 | `docs/03-attention-contract.md` | Consumer 如何表达 intent、scope、rules、delivery、privacy 和 memory policy。 |
 | 4 | `docs/04-rule-dsl.md` | Rule 条件、operator、aggregate、debounce、cooldown、hysteresis 和缺失值语义。 |

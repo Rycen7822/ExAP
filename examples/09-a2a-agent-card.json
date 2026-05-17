@@ -20,28 +20,87 @@
     {
       "id": "create_attention_contract",
       "name": "Create Attention Contract",
-      "description": "Create an ExAP contract from structured parameters or a natural language monitoring intent.",
+      "description": "Create an ExAP contract from structured JSON; natural language input returns a validate_only draft for confirmation.",
       "inputModes": [
         "application/json",
         "text/plain"
       ],
       "outputModes": [
-        "application/exap+json"
+        "application/exap+json",
+        "application/json"
       ],
       "examples": [
-        "Monitor this training process and interrupt me only for failures or GPU idle."
-      ]
+        "Structured create with validate_only=false after confirming a draft.",
+        "Text monitoring intent returns a validate_only draft and required confirmations."
+      ],
+      "x-exap-input-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractCreateParams"
+      },
+      "x-exap-output-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractCreateResult"
+      },
+      "x-exap-natural-language": {
+        "mode": "validate_only_draft",
+        "active_contract_creation": false,
+        "returns": [
+          "resolved_scope",
+          "proposed_rules",
+          "delivery_changes",
+          "privacy_evidence_changes",
+          "required_confirmations"
+        ]
+      }
     },
     {
       "id": "wait_for_attention",
       "name": "Wait for Attention Event",
-      "description": "Wait for an ExAP Attention Event or contract terminal state.",
+      "description": "Represent ExAP wait as a long-running A2A task that returns Attention Event artifacts or terminal return reasons.",
       "inputModes": [
         "application/json"
       ],
       "outputModes": [
         "application/exap+json"
-      ]
+      ],
+      "x-exap-input-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/WaitParams"
+      },
+      "x-exap-output-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/WaitResult"
+      }
+    },
+    {
+      "id": "ack_attention_event",
+      "name": "Ack Attention Event",
+      "description": "Acknowledge, snooze, dismiss, or escalate an ExAP Attention Event.",
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/exap+json"
+      ],
+      "x-exap-input-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/AttentionAckParams"
+      },
+      "x-exap-output-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/AttentionAckResult"
+      }
+    },
+    {
+      "id": "revoke_attention_contract",
+      "name": "Revoke Attention Contract",
+      "description": "Revoke an ExAP Attention Contract and release observation resources.",
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/exap+json"
+      ],
+      "x-exap-input-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractRevokeParams"
+      },
+      "x-exap-output-schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractRevokeResult"
+      }
     }
   ],
   "securitySchemes": {
@@ -54,5 +113,16 @@
     {
       "bearer": []
     }
-  ]
+  ],
+  "x-exap": {
+    "version": "0.2.0-draft",
+    "capability_ref": "exap://provider/capability/current",
+    "default_artifact_media_type": "application/exap+json"
+  },
+  "x-exap-task-mapping": {
+    "contract.create": "A2A Task with structured Contract params or validate_only draft request.",
+    "wait": "Long-running Task returning application/exap+json artifacts.",
+    "attention.ack": "Task or message update referencing an Attention Event artifact.",
+    "contract.revoke": "Task that returns ContractRevokeResult and terminal contract state."
+  }
 }

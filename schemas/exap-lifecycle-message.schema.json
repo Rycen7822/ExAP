@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://exap.dev/schemas/exap-lifecycle-message.schema.json",
+  "$id": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json",
   "title": "ExAP Lifecycle API Message",
   "type": "object",
   "oneOf": [
@@ -13,6 +13,49 @@
   ],
   "$defs": {
     "Request": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/DiscoverRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractCreateRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractGetRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractListRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractUpdateRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractPauseRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractResumeRequest"
+        },
+        {
+          "$ref": "#/$defs/ContractRevokeRequest"
+        },
+        {
+          "$ref": "#/$defs/WaitRequest"
+        },
+        {
+          "$ref": "#/$defs/StreamOpenRequest"
+        },
+        {
+          "$ref": "#/$defs/AttentionAckRequest"
+        },
+        {
+          "$ref": "#/$defs/StatusRequest"
+        },
+        {
+          "$ref": "#/$defs/ObservationQueryRequest"
+        }
+      ]
+    },
+    "DiscoverRequest": {
       "type": "object",
       "required": [
         "jsonrpc",
@@ -32,194 +75,336 @@
           ]
         },
         "method": {
-          "type": "string",
-          "enum": [
-            "exap.discover",
-            "exap.contract.create",
-            "exap.contract.get",
-            "exap.contract.list",
-            "exap.contract.update",
-            "exap.contract.pause",
-            "exap.contract.resume",
-            "exap.contract.revoke",
-            "exap.wait",
-            "exap.stream.open",
-            "exap.attention.ack",
-            "exap.status",
-            "exap.observation.query"
-          ]
+          "const": "exap.discover"
         },
         "params": {
-          "type": "object",
-          "additionalProperties": true
+          "$ref": "#/$defs/DiscoverParams"
         }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "method": {
-                "const": "exap.contract.create"
-              }
-            },
-            "required": [
-              "method"
-            ]
-          },
-          "then": {
-            "properties": {
-              "params": {
-                "type": "object",
-                "required": [
-                  "contract"
-                ],
-                "additionalProperties": false,
-                "properties": {
-                  "contract": {
-                    "$ref": "https://exap.dev/schemas/exap-attention-contract.schema.json"
-                  },
-                  "validate_only": {
-                    "type": "boolean"
-                  },
-                  "idempotency_key": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
+      }
+    },
+    "ContractCreateRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
         },
-        {
-          "if": {
-            "properties": {
-              "method": {
-                "const": "exap.wait"
-              }
-            },
-            "required": [
-              "method"
-            ]
-          },
-          "then": {
-            "properties": {
-              "params": {
-                "type": "object",
-                "required": [
-                  "contract_id",
-                  "until",
-                  "timeout"
-                ],
-                "additionalProperties": false,
-                "properties": {
-                  "contract_id": {
-                    "type": "string"
-                  },
-                  "until": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "timeout": {
-                    "type": "string"
-                  },
-                  "min_severity": {
-                    "type": "string"
-                  },
-                  "include": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "cursor": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
         },
-        {
-          "if": {
-            "properties": {
-              "method": {
-                "const": "exap.attention.ack"
-              }
-            },
-            "required": [
-              "method"
-            ]
-          },
-          "then": {
-            "properties": {
-              "params": {
-                "type": "object",
-                "required": [
-                  "attention_id",
-                  "action"
-                ],
-                "additionalProperties": false,
-                "properties": {
-                  "attention_id": {
-                    "type": "string"
-                  },
-                  "action": {
-                    "type": "string",
-                    "enum": [
-                      "seen",
-                      "snooze",
-                      "dismiss",
-                      "escalate"
-                    ]
-                  },
-                  "actor": {
-                    "type": "string"
-                  },
-                  "snooze_for": {
-                    "type": "string"
-                  },
-                  "comment": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
+        "method": {
+          "const": "exap.contract.create"
         },
-        {
-          "if": {
-            "properties": {
-              "method": {
-                "const": "exap.contract.revoke"
-              }
-            },
-            "required": [
-              "method"
-            ]
-          },
-          "then": {
-            "properties": {
-              "params": {
-                "type": "object",
-                "required": [
-                  "contract_id",
-                  "reason"
-                ],
-                "additionalProperties": false,
-                "properties": {
-                  "contract_id": {
-                    "type": "string"
-                  },
-                  "reason": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
+        "params": {
+          "$ref": "#/$defs/ContractCreateParams"
         }
-      ]
+      }
+    },
+    "ContractGetRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.contract.get"
+        },
+        "params": {
+          "$ref": "#/$defs/ContractGetParams"
+        }
+      }
+    },
+    "ContractListRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.contract.list"
+        },
+        "params": {
+          "$ref": "#/$defs/ContractListParams"
+        }
+      }
+    },
+    "ContractUpdateRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.contract.update"
+        },
+        "params": {
+          "$ref": "#/$defs/ContractUpdateParams"
+        }
+      }
+    },
+    "ContractPauseRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.contract.pause"
+        },
+        "params": {
+          "$ref": "#/$defs/ContractPauseParams"
+        }
+      }
+    },
+    "ContractResumeRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.contract.resume"
+        },
+        "params": {
+          "$ref": "#/$defs/ContractResumeParams"
+        }
+      }
+    },
+    "ContractRevokeRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.contract.revoke"
+        },
+        "params": {
+          "$ref": "#/$defs/ContractRevokeParams"
+        }
+      }
+    },
+    "WaitRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.wait"
+        },
+        "params": {
+          "$ref": "#/$defs/WaitParams"
+        }
+      }
+    },
+    "StreamOpenRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.stream.open"
+        },
+        "params": {
+          "$ref": "#/$defs/StreamOpenParams"
+        }
+      }
+    },
+    "AttentionAckRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.attention.ack"
+        },
+        "params": {
+          "$ref": "#/$defs/AttentionAckParams"
+        }
+      }
+    },
+    "StatusRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.status"
+        },
+        "params": {
+          "$ref": "#/$defs/StatusParams"
+        }
+      }
+    },
+    "ObservationQueryRequest": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "method": {
+          "const": "exap.observation.query"
+        },
+        "params": {
+          "$ref": "#/$defs/ObservationQueryParams"
+        }
+      }
     },
     "Response": {
       "type": "object",
@@ -239,8 +424,47 @@
           ]
         },
         "result": {
-          "type": "object",
-          "additionalProperties": true
+          "oneOf": [
+            {
+              "$ref": "#/$defs/DiscoverResult"
+            },
+            {
+              "$ref": "#/$defs/ContractCreateResult"
+            },
+            {
+              "$ref": "#/$defs/ContractGetResult"
+            },
+            {
+              "$ref": "#/$defs/ContractListResult"
+            },
+            {
+              "$ref": "#/$defs/ContractUpdateResult"
+            },
+            {
+              "$ref": "#/$defs/ContractPauseResult"
+            },
+            {
+              "$ref": "#/$defs/ContractResumeResult"
+            },
+            {
+              "$ref": "#/$defs/ContractRevokeResult"
+            },
+            {
+              "$ref": "#/$defs/WaitResult"
+            },
+            {
+              "$ref": "#/$defs/StreamOpenResult"
+            },
+            {
+              "$ref": "#/$defs/AttentionAckResult"
+            },
+            {
+              "$ref": "#/$defs/StatusResult"
+            },
+            {
+              "$ref": "#/$defs/ObservationQueryResult"
+            }
+          ]
         },
         "error": {
           "$ref": "#/$defs/Error"
@@ -250,12 +474,22 @@
         {
           "required": [
             "result"
-          ]
+          ],
+          "not": {
+            "required": [
+              "error"
+            ]
+          }
         },
         {
           "required": [
             "error"
-          ]
+          ],
+          "not": {
+            "required": [
+              "result"
+            ]
+          }
         }
       ]
     },
@@ -263,58 +497,665 @@
       "type": "object",
       "required": [
         "code",
-        "message"
+        "message",
+        "data"
       ],
       "additionalProperties": false,
       "properties": {
         "code": {
-          "type": "string"
+          "type": "integer"
         },
         "message": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
-        "details": {
+        "data": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": true,
+          "properties": {
+            "exap_code": {
+              "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExAPErrorCode"
+            },
+            "field": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "exap_code"
+          ]
         }
       }
     },
-    "WaitResult": {
+    "DiscoverParams": {
       "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "environment_ref": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExAPUri"
+        },
+        "subject_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "profile_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "include_examples": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ContractCreateParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json"
+        },
+        "validate_only": {
+          "type": "boolean"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
       "required": [
-        "contract_id",
-        "return_reason",
-        "status"
-      ],
+        "contract"
+      ]
+    },
+    "ContractGetParams": {
+      "type": "object",
       "additionalProperties": false,
       "properties": {
         "contract_id": {
-          "type": "string"
-        },
-        "return_reason": {
           "type": "string",
-          "enum": [
-            "attention",
-            "summary",
-            "timeout",
-            "revoked",
-            "expired",
-            "completed",
-            "provider_error",
-            "interrupted"
-          ]
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "include_state": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "contract_id"
+      ]
+    },
+    "ContractListParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "consumer_id": {
+          "type": "string"
         },
         "status": {
+          "type": "array",
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/LifecycleStatus"
+          },
+          "uniqueItems": true
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": []
+    },
+    "ContractUpdateParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "patch": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        },
+        "expected_version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_id",
+        "patch"
+      ]
+    },
+    "ContractPauseParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "contract_id",
+        "reason"
+      ]
+    },
+    "ContractResumeParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "contract_id",
+        "reason"
+      ]
+    },
+    "ContractRevokeParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "contract_id",
+        "reason"
+      ]
+    },
+    "WaitParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "until": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ReturnReason"
+          },
+          "uniqueItems": true
+        },
+        "timeout": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
+        },
+        "min_severity": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Severity"
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/WaitInclude"
+          },
+          "uniqueItems": true
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_id",
+        "until",
+        "timeout"
+      ]
+    },
+    "StreamOpenParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "min_severity": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Severity"
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/WaitInclude"
+          },
+          "uniqueItems": true
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_id"
+      ]
+    },
+    "AttentionAckParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attention_id": {
+          "type": "string",
+          "pattern": "^attn_[A-Za-z0-9_-]+$"
+        },
+        "action": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/AckAction"
+        },
+        "actor": {
           "type": "string"
         },
-        "event": {
-          "$ref": "https://exap.dev/schemas/exap-attention-event.schema.json"
+        "snooze_for": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "attention_id",
+        "action"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "action": {
+                "const": "snooze"
+              }
+            },
+            "required": [
+              "action"
+            ]
+          },
+          "then": {
+            "required": [
+              "snooze_for"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "snooze_for"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "StatusParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "state",
+              "delivery",
+              "recent_events",
+              "metrics"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "contract_id"
+      ]
+    },
+    "ObservationQueryParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "subject_ref": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExAPUri"
+        },
+        "signal": {
+          "type": "string"
+        },
+        "event_type": {
+          "type": "string"
+        },
+        "since": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
+        },
+        "until": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": []
+    },
+    "DiscoverResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-capability.schema.json"
+        }
+      },
+      "required": [
+        "capability"
+      ]
+    },
+    "ContractCreateResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/LifecycleStatus"
+        },
+        "effective_contract": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "contract_id",
+        "status",
+        "effective_contract"
+      ]
+    },
+    "ContractGetResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json"
         },
         "state": {
           "type": "object",
           "additionalProperties": true
         }
-      }
+      },
+      "required": [
+        "contract"
+      ]
+    },
+    "ContractListResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contracts": {
+          "type": "array",
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json"
+          }
+        },
+        "next_cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contracts"
+      ]
+    },
+    "ContractUpdateResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/LifecycleStatus"
+        },
+        "effective_contract": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "required": [
+        "contract_id",
+        "status",
+        "effective_contract"
+      ]
+    },
+    "ContractPauseResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "const": "paused"
+        }
+      },
+      "required": [
+        "contract_id",
+        "status"
+      ]
+    },
+    "ContractResumeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "const": "active"
+        }
+      },
+      "required": [
+        "contract_id",
+        "status"
+      ]
+    },
+    "ContractRevokeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "const": "revoked"
+        }
+      },
+      "required": [
+        "contract_id",
+        "status"
+      ]
+    },
+    "WaitResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "return_reason": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ReturnReason"
+        },
+        "status": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/LifecycleStatus"
+        },
+        "event": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-event.schema.json"
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_id",
+        "return_reason",
+        "status"
+      ]
+    },
+    "StreamOpenResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "stream_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/LifecycleStatus"
+        },
+        "cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contract_id",
+        "stream_id",
+        "status"
+      ]
+    },
+    "AttentionAckResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attention_id": {
+          "type": "string",
+          "pattern": "^attn_[A-Za-z0-9_-]+$"
+        },
+        "action": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/AckAction"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "acknowledged",
+            "snoozed",
+            "dismissed",
+            "escalated"
+          ]
+        }
+      },
+      "required": [
+        "attention_id",
+        "action",
+        "status"
+      ]
+    },
+    "StatusResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "pattern": "^act_[A-Za-z0-9_-]+$"
+        },
+        "status": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/LifecycleStatus"
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "recent_events": {
+          "type": "array",
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-event.schema.json"
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "contract_id",
+        "status"
+      ]
+    },
+    "ObservationQueryResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-observation.schema.json"
+          }
+        },
+        "next_cursor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "items"
+      ]
     }
   }
 }

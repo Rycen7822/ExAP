@@ -17,18 +17,18 @@ ExAP 覆盖以下场景：
 | CI/CD | `pipeline`、`job`、`artifact` | `ci.job.failed`、`artifact.created` |
 | Agent 协作 | `agent_task`、`artifact` | `task.status.changed` |
 
-## 2. 非目标
+## 2. 标准与绑定职责
 
-ExAP MUST NOT 被实现为以下系统的替代品：
+ExAP 固定环境感知契约语义，并与既有标准形成分层协作：
 
-| 非目标 | 边界 |
-|---|---|
-| 通用消息总线 | MQTT、NATS、Kafka、Webhook 等传输仍由对应系统提供。 |
-| 遥测采集系统 | OpenTelemetry、系统 API、SaaS API、传感器仍负责采集。 |
-| Agent 工具协议 | MCP 负责 agent-to-tool；ExAP 只提供 awareness contract 语义。 |
-| Agent 协作协议 | A2A 负责 agent-to-agent；ExAP 只提供环境感知对象和事件。 |
-| 认证授权标准 | OAuth、mTLS、API key、企业 IAM 仍负责认证授权。 |
-| 自动决策引擎 | ExAP 只判断是否需要注意，不规定 Consumer 的最终业务动作。 |
+| 层级 | 主要职责 | ExAP 交互方式 |
+|---|---|---|
+| 消息与流式传输 | MQTT、NATS、Kafka、Webhook、SSE、HTTP 负责连接、路由、重试和帧格式。 | ExAP Transport Binding 将 Attention Event、Lifecycle request 和 delivery metadata 映射到具体传输。 |
+| 遥测采集 | OpenTelemetry、系统 API、SaaS API、传感器负责产生原始 Observation 或外部事件。 | Provider 将采集结果归一化为 Signal、Observation 和 Event，再执行 Rule DSL。 |
+| Agent 工具协议 | MCP 负责 agent host 与 tool/resource server 的结构化交互。 | ExAP MCP Binding 暴露 Lifecycle tools、resources、output schema、progress 和 cancellation 语义。 |
+| Agent 协作协议 | A2A 负责 Agent Card discovery、Task、Message、Part、Artifact、streaming 和 push notification。 | ExAP A2A Binding 使用 Task 表示 create/wait/ack/revoke，使用 `application/exap+json` Artifact 交付 Attention Event。 |
+| 认证授权标准 | OAuth、mTLS、API key、企业 IAM 负责认证、授权和组织策略。 | ExAP Contract 与 Attention Event 携带 authorization context、privacy policy、privacy report 和 audit metadata。 |
+| 业务执行 | Consumer、agent、应用或自动化系统负责最终动作。 | ExAP 只输出结构化 Attention Event、evidence、delivery report 和 return reason，供业务侧决策。 |
 
 ## 3. 系统角色
 

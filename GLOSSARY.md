@@ -29,3 +29,14 @@
 | Privacy Report | Attention Event 中说明实际包含与脱敏字段的报告。 |
 | MCP Binding | 将 ExAP Lifecycle API 暴露为 MCP tools/resources/prompts 的 agent-to-tool 绑定。 |
 | A2A Binding | 将 ExAP Provider 表示为 A2A agent，并以 task、message、part、artifact 传递 ExAP 对象的 agent-to-agent 绑定。 |
+| `exap_code` | JSON-RPC integer `error.code` 之外的 ExAP 专用错误码，位于 `error.data.exap_code`。 |
+| `stream_id` | `exap.stream.open` 成功后返回的流实例标识。 |
+| `recent_events` | `exap.status` 可返回的近期 Attention Event 摘要数组。 |
+| `items` | 列表或查询结果的数组容器字段。 |
+| `since` | 查询时间窗口起点，采用 RFC 3339 date-time。 |
+| `parameter` | Profile 参数声明或绑定中的参数名。 |
+| `parameter_bindings` | Profile 中将参数名映射到 Contract 模板 `paths` 的结构化绑定表。 |
+| `paths` | 参数绑定目标路径集合，使用 JSON Pointer 或等价的字段路径语法。 |
+| `profile_ids` | `exap.discover` 可使用的 Profile 过滤条件数组。 |
+| `next_cursor` | 分页查询或列表结果的后续游标。 |
+| `warnings` | 校验或创建结果中的非阻断诊断数组。 |

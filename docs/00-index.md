@@ -18,7 +18,7 @@
 
 | 顺序 | 文件 | 内容 |
 |---:|---|---|
-| 1 | `01-overview-and-scope.md` | 协议目标、非目标、角色、工作流。 |
+| 1 | `01-overview-and-scope.md` | 协议目标、标准与绑定职责、角色、工作流。 |
 | 2 | `02-core-model.md` | Environment、Subject、Signal、Observation、Event、Contract、Attention Event。 |
 | 3 | `03-attention-contract.md` | Attention Contract 的全部字段。 |
 | 4 | `04-rule-dsl.md` | Rule DSL、Condition、operator、窗口、冷却、恢复。 |

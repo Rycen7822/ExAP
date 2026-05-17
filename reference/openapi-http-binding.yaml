@@ -2,102 +2,388 @@ openapi: 3.1.0
 info:
   title: ExAP HTTP Binding
   version: 0.2.0-draft
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+servers:
+  - url: https://provider.example.com
+security:
+  - bearerAuth: []
 paths:
   /exap/capability:
     get:
       operationId: exapDiscover
+      summary: Discover provider capability
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - name: environment_ref
+          in: query
+          schema:
+            type: string
+        - name: subject_types
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: profile_ids
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: signals
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: include_examples
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: Capability document
           content:
             application/json:
               schema:
-                $ref: '../schemas/exap-capability.schema.json'
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/DiscoverResult'
+        default:
+          $ref: '#/components/responses/Error'
   /exap/contracts:
     post:
       operationId: exapContractCreate
+      summary: Create or validate an Attention Contract
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [contract]
-              properties:
-                contract:
-                  $ref: '../schemas/exap-attention-contract.schema.json'
-                validate_only:
-                  type: boolean
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractCreateParams'
       responses:
         '201':
           description: Contract created
           content:
             application/json:
               schema:
-                type: object
-                required: [contract_id, status, effective_contract]
-                properties:
-                  contract_id:
-                    type: string
-                  status:
-                    type: string
-                  effective_contract:
-                    $ref: '../schemas/exap-attention-contract.schema.json'
-  /exap/contracts/{contract_id}/wait:
-    post:
-      operationId: exapWait
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractCreateResult'
+        '200':
+          description: Validation-only result
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractCreateResult'
+        default:
+          $ref: '#/components/responses/Error'
+    get:
+      operationId: exapContractList
+      summary: List contracts
       parameters:
-        - name: contract_id
-          in: path
-          required: true
+        - $ref: '#/components/parameters/ExAPVersion'
+        - name: consumer_id
+          in: query
           schema:
             type: string
+        - name: status
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '../schemas/exap-common.schema.json#/$defs/LifecycleStatus'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Contract list
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractListResult'
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/contracts/{contract_id}:
+    parameters:
+      - $ref: '#/components/parameters/ExAPVersion'
+      - $ref: '#/components/parameters/ContractId'
+    get:
+      operationId: exapContractGet
+      summary: Get a contract
+      parameters:
+        - name: include_state
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Contract
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractGetResult'
+        default:
+          $ref: '#/components/responses/Error'
+    patch:
+      operationId: exapContractUpdate
+      summary: Update a contract with JSON merge patch
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractUpdateParams'
+          application/json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractUpdateParams'
+      responses:
+        '200':
+          description: Updated contract
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractUpdateResult'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      operationId: exapContractRevoke
+      summary: Revoke a contract
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [until, timeout]
-              properties:
-                until:
-                  type: array
-                  items:
-                    type: string
-                timeout:
-                  type: string
-                min_severity:
-                  type: string
-                include:
-                  type: array
-                  items:
-                    type: string
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractRevokeParams'
+      responses:
+        '200':
+          description: Revoked contract
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractRevokeResult'
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/contracts/{contract_id}/pause:
+    post:
+      operationId: exapContractPause
+      summary: Pause a contract
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/ContractId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractPauseParams'
+      responses:
+        '200':
+          description: Paused
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractPauseResult'
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/contracts/{contract_id}/resume:
+    post:
+      operationId: exapContractResume
+      summary: Resume a contract
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/ContractId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractResumeParams'
+      responses:
+        '200':
+          description: Resumed
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ContractResumeResult'
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/contracts/{contract_id}/wait:
+    post:
+      operationId: exapWait
+      summary: Block until an Attention Event or terminal return reason
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/ContractId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/WaitParams'
       responses:
         '200':
           description: Wait result
           content:
             application/json:
               schema:
-                type: object
-                required: [contract_id, return_reason, status]
-                properties:
-                  contract_id:
-                    type: string
-                  return_reason:
-                    type: string
-                  status:
-                    type: string
-                  event:
-                    $ref: '../schemas/exap-attention-event.schema.json'
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/WaitResult'
+        '504':
+          $ref: '#/components/responses/Error'
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/contracts/{contract_id}/stream:
+    get:
+      operationId: exapStreamOpen
+      summary: Open an SSE stream for Attention Events
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/ContractId'
+        - name: min_severity
+          in: query
+          schema:
+            $ref: '../schemas/exap-common.schema.json#/$defs/Severity'
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: include
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '../schemas/exap-common.schema.json#/$defs/WaitInclude'
+      responses:
+        '200':
+          description: SSE stream of Attention Events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/contracts/{contract_id}/status:
+    get:
+      operationId: exapStatus
+      summary: Get compressed contract status
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/ContractId'
+        - name: include
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [state, delivery, recent_events, metrics]
+      responses:
+        '200':
+          description: Status result
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/StatusResult'
+        default:
+          $ref: '#/components/responses/Error'
   /exap/attention/{attention_id}/ack:
     post:
       operationId: exapAttentionAck
+      summary: Acknowledge, snooze, dismiss, or escalate an Attention Event
       parameters:
-        - name: attention_id
-          in: path
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/ExAPVersion'
+        - $ref: '#/components/parameters/AttentionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/AttentionAckParams'
       responses:
         '200':
-          description: Acknowledged
+          description: Ack result
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/AttentionAckResult'
+        default:
+          $ref: '#/components/responses/Error'
+  /exap/observations/query:
+    post:
+      operationId: exapObservationQuery
+      summary: Query observations under authorization and privacy limits
+      parameters:
+        - $ref: '#/components/parameters/ExAPVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ObservationQueryParams'
+      responses:
+        '200':
+          description: Observation query result
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/ObservationQueryResult'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    ExAPVersion:
+      name: ExAP-Version
+      in: header
+      required: true
+      schema:
+        $ref: '../schemas/exap-common.schema.json#/$defs/ExAPVersion'
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+    ContractId:
+      name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    AttentionId:
+      name: attention_id
+      in: path
+      required: true
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    Error:
+      description: JSON-RPC-compatible ExAP error envelope
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [jsonrpc, id, error]
+            properties:
+              jsonrpc:
+                const: '2.0'
+              id:
+                type: [string, integer]
+              error:
+                $ref: '../schemas/exap-lifecycle-message.schema.json#/$defs/Error'
+            additionalProperties: false

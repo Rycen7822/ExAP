@@ -205,5 +205,20 @@
       "default": "PT5M",
       "description": "Duration for which GPU utilization must remain below the threshold."
     }
+  ],
+  "parameter_bindings": [
+    {
+      "parameter": "gpu_idle_threshold",
+      "paths": [
+        "/rules/1/condition/conditions/0/value"
+      ]
+    },
+    {
+      "parameter": "gpu_idle_duration",
+      "paths": [
+        "/rules/1/condition/conditions/0/duration",
+        "/rules/1/condition/conditions/0/window"
+      ]
+    }
   ]
 }

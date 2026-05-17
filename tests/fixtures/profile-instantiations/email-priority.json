@@ -1,0 +1,12 @@
+{
+  "profile_file": "profiles/email-priority.exap.json",
+  "capability_file": "examples/06-provider-capability-mail.json",
+  "params": {
+    "important_relationships": [
+      "manager",
+      "client",
+      "frequent_collaborator"
+    ]
+  },
+  "effective_contract_file": "examples/03-email-important-contract.json"
+}

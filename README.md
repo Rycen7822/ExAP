@@ -15,7 +15,7 @@ Declare who cares about what, when it becomes worth attention, what evidence is 
   <a href="docs/00-index.md"><img src="https://img.shields.io/badge/Docs-18%20chapters-0969da?style=for-the-badge" alt="Documentation: 18 chapters"></a>
   <a href="schemas"><img src="https://img.shields.io/badge/JSON%20Schema-2020--12-2ea44f?style=for-the-badge" alt="JSON Schema Draft 2020-12"></a>
   <a href="examples"><img src="https://img.shields.io/badge/Examples-contracts%20%7C%20events%20%7C%20bindings-5865F2?style=for-the-badge" alt="Examples"></a>
-  <a href="tests/conformance.py"><img src="https://img.shields.io/badge/Conformance-43%2F43%20PASS-blue?style=for-the-badge" alt="Conformance: 43 of 43 passed"></a>
+  <a href="tests/conformance.py"><img src="https://img.shields.io/badge/Package%20Check-71%2F71%20PASS-blue?style=for-the-badge" alt="Package Check: 71 of 71 passed"></a>
   <a href="docs/17-mcp-a2a-integration.md"><img src="https://img.shields.io/badge/Agent%20Bindings-MCP%20%7C%20A2A-ff69b4?style=for-the-badge" alt="Agent bindings: MCP and A2A"></a>
 </p>
 
@@ -87,11 +87,11 @@ ExAP defines the attention-contract layer and maps cleanly onto common event, te
 |---|---|
 | Protocol version | `0.2.0-draft`. |
 | Normative docs | `docs/00-index.md` through `docs/17-mcp-a2a-integration.md`, covering core model, Contract, Rule DSL, Event, Capability, Lifecycle, Transport, Privacy, Profiles, Conformance, MCP, and A2A. |
-| JSON Schemas | 8 Draft 2020-12 schemas with canonical `$id` values under `https://exap.dev/schemas/`. |
+| JSON Schemas | 8 Draft 2020-12 schemas with canonical `$id` values under `https://exap.dev/schemas/0.2.0-draft/`. |
 | Examples | Contracts, Attention Events, Capability Documents, Lifecycle requests, MCP tools, A2A Agent Card, and local CLI examples. |
 | Domain Profiles | Process monitoring, deep learning training, email priority, calendar focus, file watch, IoT safety, and CI/CD monitoring. |
 | References | Draft OpenAPI for the HTTP binding and draft AsyncAPI for provider event streams. |
-| Conformance | `tests/conformance.py` checks schemas, references, examples, profiles, negative fixtures, YAML references, manifest entries, and documentation coverage. |
+| Package Check | `tests/conformance.py` is the C0/C1 package self-check for schemas, references, examples, profiles, negative fixtures, capability compatibility, YAML references, manifest entries, and documentation coverage. |
 
 ## Core objects
 
@@ -112,7 +112,7 @@ ExAP defines the attention-contract layer and maps cleanly onto common event, te
 
 | Order | File | What it gives you |
 |---:|---|---|
-| 1 | `docs/01-overview-and-scope.md` | Goals, non-goals, roles, and workflow. |
+| 1 | `docs/01-overview-and-scope.md` | Goals, standards and binding roles, roles, and workflow. |
 | 2 | `docs/02-core-model.md` | Environment, Subject, Signal, Observation, Event, Contract, Attention Event. |
 | 3 | `docs/03-attention-contract.md` | How a Consumer expresses intent, scope, rules, delivery, privacy, and memory policy. |
 | 4 | `docs/04-rule-dsl.md` | Conditions, operators, aggregates, debounce, cooldown, hysteresis, and missing-value semantics. |

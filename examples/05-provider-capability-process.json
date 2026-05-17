@@ -182,6 +182,38 @@
         "lte"
       ],
       "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "process.exit_code",
+      "subject_types": [
+        "process"
+      ],
+      "value_type": "integer",
+      "description": "Process exit code observed when a process terminates.",
+      "operators": [
+        "eq",
+        "ne",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "exists"
+      ],
+      "privacy_class": "operational_metadata"
+    },
+    {
+      "name": "log.line",
+      "subject_types": [
+        "process"
+      ],
+      "value_type": "string",
+      "description": "Latest monitored log line text for rule evaluation and evidence extraction.",
+      "operators": [
+        "exists",
+        "regex",
+        "contains"
+      ],
+      "privacy_class": "log_excerpt"
     }
   ],
   "event_types": [
@@ -248,8 +280,14 @@
       "regex",
       "contains",
       "in",
+      "rate_gt",
+      "rate_lt",
+      "relative_change_gt",
+      "relative_change_lt",
       "relative_drop_gt",
-      "semantic_match"
+      "field_eq",
+      "field_regex",
+      "field_contains"
     ],
     "aggregates": [
       "last",

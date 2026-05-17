@@ -1,8 +1,8 @@
-# ExAP Conformance Report
+# ExAP Package Self-Check Report
 
-Generated at: 2026-05-17T08:45:48.256760+00:00
-Total checks: 44
-Passed: 44
+Generated at: 2026-05-17T12:40:58.140998+00:00
+Total checks: 71
+Passed: 71
 Failed: 0
 
 ## Results
@@ -41,11 +41,38 @@ Failed: 0
 | profile file-watch.exap.json | PASS |  |
 | profile iot-safety.exap.json | PASS |  |
 | profile process-monitoring.exap.json | PASS |  |
+| profile instantiation fixtures | PASS |  |
+| package version binding | PASS |  |
 | negative fixture invalid-missing-rules.json | PASS |  |
 | negative fixture invalid-unknown-operator.json | PASS |  |
 | negative fixture invalid-extra-field.json | PASS |  |
 | negative fixture invalid-duplicate-rule-id.json | PASS |  |
 | negative fixture invalid-triggered-empty-evidence.json | PASS |  |
+| lifecycle wait rejects unknown until | PASS |  |
+| lifecycle wait rejects invalid duration | PASS |  |
+| lifecycle wait rejects empty time duration | PASS |  |
+| lifecycle ack snooze requires snooze_for | PASS |  |
+| lifecycle contract.get rejects unknown params | PASS |  |
+| lifecycle response rejects arbitrary result | PASS |  |
+| lifecycle error accepts JSON-RPC integer code | PASS |  |
+| lifecycle error requires exap_code | PASS |  |
+| rule rejects exists with value | PASS |  |
+| rule rejects rate missing window | PASS |  |
+| rule rejects in value not array | PASS |  |
+| rule rejects event count missing value | PASS |  |
+| rule rejects field filter missing value | PASS |  |
+| rule rejects state eq missing value | PASS |  |
+| rule rejects state rate missing window | PASS |  |
+| rule accepts semantic_match array value | PASS |  |
+| rule accepts datetime comparison value | PASS |  |
+| rule accepts duration comparison value | PASS |  |
+| attention event rejects summary type with triggered status | PASS |  |
+| attention event rejects triggered type with suppressed status | PASS |  |
+| capability compatibility process example | PASS |  |
+| capability compatibility mail example | PASS |  |
+| capability self-consistency process | PASS |  |
+| capability self-consistency mail | PASS |  |
+| capability compatibility rejects signal-level operator | PASS |  |
 | YAML reference asyncapi-provider.yaml | PASS |  |
 | YAML reference openapi-http-binding.yaml | PASS |  |
 | manifest listed files exist | PASS |  |

@@ -16,7 +16,7 @@
 | 文件 | 内容 |
 |---|---|
 | `docs/00-index.md` | 手册目录。 |
-| `docs/01-overview-and-scope.md` | 目标、非目标、角色、工作流。 |
+| `docs/01-overview-and-scope.md` | 目标、标准与绑定职责、角色、工作流。 |
 | `docs/02-core-model.md` | 核心对象模型。 |
 | `docs/03-attention-contract.md` | Attention Contract 字段定义。 |
 | `docs/04-rule-dsl.md` | Rule DSL 字段和语义。 |
@@ -88,5 +88,6 @@
 | `tests/conformance.py` | 可执行一致性测试。 |
 | `tests/conformance-report.md` | 测试报告。 |
 | `tests/fixtures/negative/*.json` | 负面用例。 |
-| `tests/audit-notes.md` | 修订审计记录。 |
+| `tests/fixtures/profile-instantiations/*.json` | Profile 实例化与 capability compatibility fixture。 |
+| `tests/audit-notes.md` | 历史修订审计记录，发布时作为 archive/internal 材料处理。 |
 | `tests/draft-plan.md` | 修订计划记录。 |

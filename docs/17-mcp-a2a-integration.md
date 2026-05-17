@@ -10,7 +10,7 @@ ExAP 与 MCP、A2A 的关系固定如下：
 | A2A | Agent-to-agent | Agent Card、Task、Message、Part、Artifact、Streaming、Push Notifications | ExAP Provider 作为远程 agent，使用 Task 管理长时间关注。 |
 | ExAP | Environment-to-consumer | Attention Contract、Rule、Attention Event、Evidence、PrivacyPolicy | 定义环境感知语义。 |
 
-ExAP Binding MUST NOT 复制 MCP 或 A2A 的整个协议。ExAP Binding 只定义 ExAP 对象如何映射到这些协议的主流开发对象。
+ExAP Binding 固定 ExAP 对象到 MCP/A2A 主流开发对象的映射，Core 对象语义仍由 ExAP schema、Rule DSL、Capability 和 Lifecycle API 维护。
 
 ## 2. MCP Binding
 
@@ -31,11 +31,11 @@ ExAP MCP server MUST 至少暴露以下 tools：
 | `exap_attention_ack` | `exap.attention.ack` | attention_id、action、snooze_for、comment | ack result。 |
 | `exap_contract_revoke` | `exap.contract.revoke` | contract_id、reason | revoke result。 |
 
-Tool inputSchema MUST be JSON Schema. Tool output MUST be JSON object. Tool descriptions MUST state that `exap_wait` blocks until a return reason occurs and that agents MUST NOT replace it with fixed polling.
+Tool `inputSchema` 和 `outputSchema` 必须使用 JSON Schema，并引用 lifecycle Params/Result schema。`exap_wait` 描述必须声明长时间阻塞、cursor 恢复、progress/keepalive、return reason enum 和 cancellation 语义。
 
 ### 2.3 Resources
 
-ExAP MCP server MAY expose resources:
+ExAP MCP server 暴露以下 resources：
 
 | Resource URI | 内容 |
 |---|---|
@@ -44,19 +44,19 @@ ExAP MCP server MAY expose resources:
 | `exap://attention/recent` | 最近 Attention Event 摘要。 |
 | `exap://profiles` | 可用 Domain Profiles。 |
 
-Resources MUST respect privacy and authorization. Resources MUST NOT expose forbidden fields.
+Resources 必须执行 authorization 与 privacy policy，并使用 privacy report/redaction 语义处理受限字段。
 
 ### 2.4 Prompts
 
-ExAP MCP server MAY expose prompts for common Contract templates. Prompt output MUST produce or request structured Contract fields; it MUST NOT produce hidden rules that bypass Contract schema.
+ExAP MCP server 可暴露 prompts 生成常见 Contract 草案。Prompt output 必须产生或请求结构化 Contract 字段，最终 active Contract 仍经过 Contract schema、Rule DSL schema、capability compatibility 和 privacy validation。
 
 ### 2.5 Progress and cancellation
 
-`exap_wait` is a long-running tool. MCP cancellation MUST map to `interrupted` wait handling or tool cancellation. Cancellation MUST NOT revoke the Contract unless the tool input explicitly requested revoke-on-cancel.
+`exap_wait` is a long-running tool. MCP cancellation maps to `interrupted` wait handling or tool-level cancellation. Contract revocation uses explicit `exap_contract_revoke` or an explicit revoke-on-cancel input flag.
 
 ### 2.6 Notifications
 
-MCP notifications MAY be used for server capability changes. ExAP Attention Events MUST NOT depend on MCP notifications as the only delivery path. Event delivery MUST use `exap_wait`, stream, or push. If an MCP host supports notifications to the model runtime, it MAY surface event availability and then call `exap_status` or `exap_wait`.
+MCP notifications can announce server capability changes or event availability. Event delivery uses `exap_wait`, stream, or push. If an MCP host surfaces event availability to a model runtime, the next structured call is `exap_status` or `exap_wait`.
 
 ## 3. A2A Binding
 
@@ -99,7 +99,7 @@ A2A Task terminal states MUST be mapped to ExAP states:
 
 ### 3.3 Message and Part mapping
 
-A2A Message Part with `data` MAY carry Contract JSON or wait parameters. A2A Artifact Part with `data` MUST carry ExAP Attention Event JSON when media type is `application/exap+json`.
+A2A Message Part with `data` carries Contract JSON, wait params, ack params, revoke params, or validate-only draft requests. A2A Artifact Part with `data` carries ExAP Attention Event JSON when media type is `application/exap+json`.
 
 ### 3.4 Streaming and push
 
@@ -108,6 +108,16 @@ A2A SSE streaming maps to ExAP stream. A2A push notifications map to ExAP push. 
 ### 3.5 Opaque execution
 
 A2A remote agents do not expose internal tools or memory. ExAP A2A Provider MUST expose capability, Contract status, Attention Events and audit-compatible summaries; it MUST NOT expose hidden chain-of-thought, internal prompts, private tools or proprietary decision logic.
+
+### 3.6 Natural language draft flow
+
+`text/plain` intent maps to a validate-only draft flow:
+
+1. Provider resolves scope, candidate subjects, proposed rules, delivery changes and privacy/evidence changes.
+2. Provider returns `validate_only=true` draft output with required confirmations.
+3. Consumer sends structured `application/json` ContractCreateParams for active creation.
+
+Natural language input creates drafts and confirmation requests; active Contract creation uses structured JSON.
 
 ## 4. Combined MCP + A2A deployment
 

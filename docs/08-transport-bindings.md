@@ -31,6 +31,7 @@ ExAP v0.2 的示例和 schema 使用 structured mode。
 | `GET` | `/exap/contracts/{contract_id}/stream` | `exap.stream.open` |
 | `POST` | `/exap/attention/{attention_id}/ack` | `exap.attention.ack` |
 | `GET` | `/exap/contracts/{contract_id}/status` | `exap.status` |
+| `POST` | `/exap/observations/query` | `exap.observation.query` |
 
 ### 3.2 Headers
 

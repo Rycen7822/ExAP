@@ -27,7 +27,6 @@
       }
     ],
     "signals": [
-      "mail.message.received",
       "mail.sender.relationship",
       "mail.content.semantic_intent",
       "mail.has_attachment"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://exap.dev/schemas/exap-attention-contract.schema.json",
+  "$id": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json",
   "title": "ExAP Attention Contract",
   "type": "object",
   "required": [
@@ -15,32 +15,32 @@
   "additionalProperties": false,
   "properties": {
     "exap_version": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPVersion"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExAPVersion"
     },
     "contract_id": {
       "type": "string",
       "pattern": "^act_[A-Za-z0-9_-]+$"
     },
     "created_at": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
     },
     "updated_at": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
     },
     "created_by": {
       "type": "string"
     },
     "consumer": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Consumer"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Consumer"
     },
     "provider": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Provider"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Provider"
     },
     "environment": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Environment"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Environment"
     },
     "environment_ref": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPUri"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExAPUri"
     },
     "intent": {
       "type": "string",
@@ -53,14 +53,14 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "https://exap.dev/schemas/exap-rule.schema.json"
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-rule.schema.json"
       }
     },
     "delivery": {
       "$ref": "#/$defs/Delivery"
     },
     "privacy": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/PrivacyPolicy"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/PrivacyPolicy"
     },
     "lifecycle": {
       "$ref": "#/$defs/Lifecycle"
@@ -75,7 +75,11 @@
       "$ref": "#/$defs/IntegrationHints"
     },
     "metadata": {
-      "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExtensionMap"
+      "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExtensionMap"
+    },
+    "capability_ref": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "$defs": {
@@ -111,7 +115,7 @@
           "$ref": "#/$defs/TimeWindow"
         },
         "labels": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/KeyValue"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/KeyValue"
         }
       }
     },
@@ -127,7 +131,7 @@
           "pattern": "^[a-z][a-z0-9._-]*$"
         },
         "ref": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExAPUri"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExAPUri"
         },
         "match": {
           "type": "object",
@@ -167,10 +171,10 @@
       "additionalProperties": false,
       "properties": {
         "starts_at": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
         },
         "ends_at": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
         },
         "timezone": {
           "type": "string"
@@ -190,13 +194,7 @@
           "type": "array",
           "minItems": 1,
           "items": {
-            "type": "string",
-            "enum": [
-              "blocking_wait",
-              "push",
-              "stream",
-              "pull_with_state_compression"
-            ]
+            "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DeliveryMode"
           },
           "uniqueItems": true
         },
@@ -204,10 +202,11 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/Transport"
-          }
+          },
+          "minItems": 1
         },
         "return_policy": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ReturnPolicy"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ReturnPolicy"
         },
         "dedupe": {
           "$ref": "#/$defs/Dedupe"
@@ -233,29 +232,10 @@
       "additionalProperties": false,
       "properties": {
         "transport": {
-          "type": "string",
-          "enum": [
-            "http",
-            "http_webhook",
-            "sse",
-            "websocket",
-            "mqtt",
-            "nats",
-            "kafka",
-            "local_stdio",
-            "local_socket",
-            "mcp",
-            "a2a"
-          ]
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/TransportKind"
         },
         "mode": {
-          "type": "string",
-          "enum": [
-            "blocking_wait",
-            "push",
-            "stream",
-            "pull_with_state_compression"
-          ]
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DeliveryMode"
         },
         "endpoint": {
           "type": "string"
@@ -267,17 +247,13 @@
           "type": "string"
         },
         "content_mode": {
-          "type": "string",
-          "enum": [
-            "structured",
-            "binary"
-          ]
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ContentMode"
         },
         "auth_ref": {
           "type": "string"
         },
         "metadata": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/ExtensionMap"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/ExtensionMap"
         }
       }
     },
@@ -293,7 +269,7 @@
           "uniqueItems": true
         },
         "window": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
         }
       }
     },
@@ -314,10 +290,10 @@
           ]
         },
         "initial_delay": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
         },
         "max_delay": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
         }
       }
     },
@@ -333,7 +309,7 @@
           "type": "boolean"
         },
         "deadline": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
         },
         "snooze_allowed": {
           "type": "boolean"
@@ -363,16 +339,16 @@
       "additionalProperties": false,
       "properties": {
         "status": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Status"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Status"
         },
         "starts_at": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
         },
         "expires_at": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/DateTime"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/DateTime"
         },
         "max_runtime": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
         },
         "auto_revoke_on_completion": {
           "type": "boolean"
@@ -390,7 +366,7 @@
           "type": "boolean"
         },
         "checkpoint_interval": {
-          "$ref": "https://exap.dev/schemas/exap-common.schema.json#/$defs/Duration"
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json#/$defs/Duration"
         }
       }
     },

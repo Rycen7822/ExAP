@@ -6,142 +6,109 @@
       "name": "exap_discover",
       "description": "Return ExAP provider capability documents.",
       "inputSchema": {
-        "type": "object",
-        "properties": {
-          "environment_ref": {
-            "type": "string"
-          },
-          "subject_types": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "additionalProperties": false
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/DiscoverParams"
+      },
+      "outputSchema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/DiscoverResult"
       }
     },
     {
       "name": "exap_contract_create",
-      "description": "Create an ExAP Attention Contract.",
+      "description": "Create or validate an ExAP Attention Contract; validate_only does not activate the contract.",
       "inputSchema": {
-        "type": "object",
-        "required": [
-          "contract"
-        ],
-        "properties": {
-          "contract": {
-            "$ref": "https://exap.dev/schemas/exap-attention-contract.schema.json"
-          }
-        },
-        "additionalProperties": false
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractCreateParams"
+      },
+      "outputSchema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractCreateResult"
       }
     },
     {
       "name": "exap_wait",
       "description": "Block until an attention event, summary, completion, timeout, interruption, expiration, revocation, or provider error.",
       "inputSchema": {
-        "type": "object",
-        "required": [
-          "contract_id",
-          "until",
-          "timeout"
-        ],
-        "properties": {
-          "contract_id": {
-            "type": "string"
-          },
-          "until": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "timeout": {
-            "type": "string"
-          },
-          "min_severity": {
-            "type": "string"
-          },
-          "include": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "additionalProperties": false
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/WaitParams"
+      },
+      "outputSchema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/WaitResult"
+      },
+      "x-exap-semantics": {
+        "blocking": true,
+        "cancellation": "MCP tool cancellation returns interrupted or tool-level cancellation; it does not revoke the contract unless revoke_on_cancel is explicit.",
+        "progress": "Providers may emit progress or keepalive notifications while the tool is waiting.",
+        "cursor_resume": true
       }
     },
     {
       "name": "exap_status",
       "description": "Return compressed state for a contract.",
       "inputSchema": {
-        "type": "object",
-        "required": [
-          "contract_id"
-        ],
-        "properties": {
-          "contract_id": {
-            "type": "string"
-          },
-          "include": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "additionalProperties": false
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/StatusParams"
+      },
+      "outputSchema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/StatusResult"
       }
     },
     {
       "name": "exap_attention_ack",
       "description": "Acknowledge, snooze, dismiss, or escalate an attention event.",
       "inputSchema": {
-        "type": "object",
-        "required": [
-          "attention_id",
-          "action"
-        ],
-        "properties": {
-          "attention_id": {
-            "type": "string"
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "seen",
-              "snooze",
-              "dismiss",
-              "escalate"
-            ]
-          },
-          "snooze_for": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/AttentionAckParams"
+      },
+      "outputSchema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/AttentionAckResult"
       }
     },
     {
       "name": "exap_contract_revoke",
       "description": "Revoke an ExAP contract.",
       "inputSchema": {
-        "type": "object",
-        "required": [
-          "contract_id",
-          "reason"
-        ],
-        "properties": {
-          "contract_id": {
-            "type": "string"
-          },
-          "reason": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractRevokeParams"
+      },
+      "outputSchema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-lifecycle-message.schema.json#/$defs/ContractRevokeResult"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "exap://provider/capability/current",
+      "name": "Current Capability",
+      "mimeType": "application/exap+json",
+      "schema": {
+        "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-capability.schema.json"
+      }
+    },
+    {
+      "uri": "exap://contracts/active",
+      "name": "Active Contracts",
+      "mimeType": "application/json",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-contract.schema.json"
+        }
+      }
+    },
+    {
+      "uri": "exap://attention/recent",
+      "name": "Recent Attention Events",
+      "mimeType": "application/exap+json",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-attention-event.schema.json"
+        }
+      }
+    },
+    {
+      "uri": "exap://profiles",
+      "name": "Domain Profiles",
+      "mimeType": "application/json",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "https://exap.dev/schemas/0.2.0-draft/exap-profile.schema.json"
+        }
       }
     }
   ]

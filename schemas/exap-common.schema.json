@@ -1,12 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://exap.dev/schemas/exap-common.schema.json",
+  "$id": "https://exap.dev/schemas/0.2.0-draft/exap-common.schema.json",
   "title": "ExAP Common Definitions",
   "type": "object",
   "$defs": {
     "ExAPVersion": {
-      "type": "string",
-      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[A-Za-z0-9.-]+)?$"
+      "const": "0.2.0-draft"
     },
     "ExAPUri": {
       "type": "string",
@@ -18,7 +17,7 @@
     },
     "Duration": {
       "type": "string",
-      "pattern": "^P(?!$)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)W)?(?:(\\d+)D)?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
+      "pattern": "^P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)W)?(?:(\\d+)D)?(?:T(?=\\d)(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?$"
     },
     "Severity": {
       "type": "string",
@@ -50,16 +49,7 @@
       ]
     },
     "Status": {
-      "type": "string",
-      "enum": [
-        "draft",
-        "active",
-        "paused",
-        "revoked",
-        "expired",
-        "completed",
-        "failed"
-      ]
+      "$ref": "#/$defs/LifecycleStatus"
     },
     "KeyValue": {
       "type": "object",
@@ -463,6 +453,205 @@
           "type": "string"
         }
       }
+    },
+    "CurrentExAPVersion": {
+      "const": "0.2.0-draft"
+    },
+    "DeliveryMode": {
+      "type": "string",
+      "enum": [
+        "blocking_wait",
+        "push",
+        "stream",
+        "pull_with_state_compression"
+      ]
+    },
+    "TransportKind": {
+      "type": "string",
+      "enum": [
+        "http",
+        "http_webhook",
+        "sse",
+        "websocket",
+        "mqtt",
+        "nats",
+        "kafka",
+        "local_stdio",
+        "local_socket",
+        "mcp",
+        "a2a"
+      ]
+    },
+    "BindingKind": {
+      "type": "string",
+      "enum": [
+        "http",
+        "webhook",
+        "sse",
+        "websocket",
+        "mqtt",
+        "nats",
+        "kafka",
+        "local_stdio",
+        "local_socket",
+        "mcp",
+        "a2a"
+      ]
+    },
+    "ContentMode": {
+      "type": "string",
+      "enum": [
+        "structured",
+        "binary"
+      ]
+    },
+    "SignalOperator": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "exists",
+        "not_exists",
+        "changed",
+        "unchanged",
+        "regex",
+        "contains",
+        "in",
+        "not_in",
+        "rate_gt",
+        "rate_lt",
+        "relative_change_gt",
+        "relative_change_lt",
+        "relative_drop_gt",
+        "semantic_match"
+      ]
+    },
+    "EventOperator": {
+      "type": "string",
+      "enum": [
+        "exists",
+        "count_eq",
+        "count_gt",
+        "count_gte",
+        "count_lt",
+        "count_lte",
+        "field_eq",
+        "field_regex",
+        "field_contains",
+        "semantic_match"
+      ]
+    },
+    "FieldOperator": {
+      "type": "string",
+      "enum": [
+        "eq",
+        "ne",
+        "regex",
+        "contains",
+        "in",
+        "not_in",
+        "semantic_match"
+      ]
+    },
+    "RuleOperator": {
+      "type": "string",
+      "enum": [
+        "changed",
+        "contains",
+        "count_eq",
+        "count_gt",
+        "count_gte",
+        "count_lt",
+        "count_lte",
+        "eq",
+        "exists",
+        "field_contains",
+        "field_eq",
+        "field_regex",
+        "gt",
+        "gte",
+        "in",
+        "lt",
+        "lte",
+        "ne",
+        "not_exists",
+        "not_in",
+        "rate_gt",
+        "rate_lt",
+        "regex",
+        "relative_change_gt",
+        "relative_change_lt",
+        "relative_drop_gt",
+        "semantic_match",
+        "unchanged"
+      ]
+    },
+    "Aggregate": {
+      "type": "string",
+      "enum": [
+        "last",
+        "min",
+        "max",
+        "avg",
+        "sum",
+        "count",
+        "p50",
+        "p90",
+        "p95",
+        "p99",
+        "delta",
+        "rate"
+      ]
+    },
+    "ReturnReason": {
+      "type": "string",
+      "enum": [
+        "attention",
+        "summary",
+        "timeout",
+        "revoked",
+        "expired",
+        "completed",
+        "provider_error",
+        "interrupted"
+      ]
+    },
+    "WaitInclude": {
+      "type": "string",
+      "enum": [
+        "event",
+        "state",
+        "summary"
+      ]
+    },
+    "AckAction": {
+      "type": "string",
+      "enum": [
+        "seen",
+        "snooze",
+        "dismiss",
+        "escalate"
+      ]
+    },
+    "LifecycleStatus": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "revoked",
+        "expired",
+        "completed",
+        "failed"
+      ]
+    },
+    "ExAPErrorCode": {
+      "type": "string",
+      "pattern": "^ExAP-[0-9]{4}$"
     }
   }
 }
