@@ -1,0 +1,15 @@
+{
+  "case_id": "C2-09",
+  "name": "error mapping",
+  "methods": [
+    "exap.contract.get",
+    "exap.contract.create",
+    "exap.contract.update"
+  ],
+  "asserts": [
+    "JSON-RPC integer code",
+    "data.exap_code",
+    "field",
+    "retryable"
+  ]
+}

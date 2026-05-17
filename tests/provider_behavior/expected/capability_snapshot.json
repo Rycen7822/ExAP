@@ -1,0 +1,12 @@
+{
+  "process_capability_id": "cap_local_process_001",
+  "mail_capability_id": "cap_mail_001",
+  "exap_version": "0.2.0-draft",
+  "required_surfaces": [
+    "signals",
+    "event_types",
+    "rule_capabilities.operators",
+    "delivery_capabilities.modes",
+    "profiles"
+  ]
+}

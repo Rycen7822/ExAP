@@ -1,0 +1,177 @@
+{
+  "case_id": "C3-MAIL-01",
+  "name": "email semantic match positive",
+  "profile_file": "profiles/email-priority.exap.json",
+  "capability_file": "examples/06-provider-capability-mail.json",
+  "params": {
+    "important_relationships": [
+      "manager",
+      "client",
+      "frequent_collaborator"
+    ]
+  },
+  "effective_contract_file": "examples/03-email-important-contract.json",
+  "expected_result": "pass",
+  "input_transcript": [
+    {
+      "step": 0,
+      "kind": "state",
+      "data": {
+        "contract_id": "act_email_priority_001",
+        "status": "active"
+      }
+    },
+    {
+      "step": 1,
+      "kind": "event",
+      "data": {
+        "event_type": "mail.message.received",
+        "thread_id": "thr_8292"
+      }
+    },
+    {
+      "step": 2,
+      "kind": "observation",
+      "data": {
+        "signal": "mail.content.semantic_intent",
+        "value": "approval_needed",
+        "score": 0.94
+      }
+    }
+  ],
+  "expected_attention_events": [
+    {
+      "specversion": "1.0",
+      "id": "attn_mail_semantic_001",
+      "source": "exap://personal/provider/mail-provider",
+      "type": "exap.attention.triggered",
+      "subject": "exap://personal/mailbox/primary",
+      "time": "2026-05-16T09:15:00+09:00",
+      "datacontenttype": "application/json",
+      "data": {
+        "exap_version": "0.2.0-draft",
+        "attention_id": "attn_mail_semantic_001",
+        "contract_id": "act_email_priority_001",
+        "status": "triggered",
+        "severity": "warning",
+        "title": "Important email may require action",
+        "reason": "Semantic intent matched approval_needed for an important sender.",
+        "intent": "surface_important_email_without_interrupting_for_noise",
+        "subject": {
+          "ref": "exap://personal/mailbox/primary",
+          "type": "mailbox",
+          "environment_ref": "exap://personal/workspace/default",
+          "display_name": "Primary inbox",
+          "sensitivity": "confidential",
+          "tags": [
+            "email"
+          ]
+        },
+        "rule": {
+          "rule_id": "rule_urgent_work_email",
+          "name": "urgent_work_email",
+          "severity": "warning",
+          "condition_summary": "mail.message.received AND sender relationship in important contacts AND semantic intent in urgent work actions",
+          "matched_at": "2026-05-16T09:15:00+09:00"
+        },
+        "evidence": [
+          {
+            "evidence_id": "ev_mail_event",
+            "kind": "event_match",
+            "subject_ref": "exap://personal/mailbox/primary",
+            "event_type": "mail.message.received",
+            "observed_at": "2026-05-16T09:15:00+09:00",
+            "value": {
+              "thread_id": "thr_8292",
+              "sender_domain": "example.com"
+            },
+            "redacted": true
+          },
+          {
+            "evidence_id": "ev_mail_semantic",
+            "kind": "semantic_score",
+            "subject_ref": "exap://personal/mailbox/primary",
+            "signal": "mail.content.semantic_intent",
+            "observed_at": "2026-05-16T09:15:00+09:00",
+            "value": "approval_needed",
+            "score": 0.94,
+            "redacted": false
+          }
+        ],
+        "payload": {
+          "email": {
+            "thread_id": "thr_8292",
+            "sender_domain": "example.com",
+            "subject_summary": "Approval requested before deadline",
+            "body_summary": "The message requests review and approval before a near deadline."
+          }
+        },
+        "privacy": {
+          "purpose": "urgent_email_notification",
+          "data_minimization_applied": true,
+          "fields_included": [
+            "payload.email.sender_domain",
+            "payload.email.subject_summary",
+            "payload.email.body_summary",
+            "evidence.score"
+          ],
+          "fields_redacted": [
+            "payload.email.sender",
+            "payload.email.body.raw",
+            "payload.email.full_headers"
+          ],
+          "retention": {
+            "event": "P7D",
+            "audit": "P30D"
+          },
+          "redaction_report": [
+            {
+              "field": "payload.email.sender",
+              "method": "domain_only"
+            }
+          ]
+        },
+        "delivery": {
+          "action": "deliver",
+          "requires_ack": true,
+          "ack_deadline": "PT15M",
+          "transport": "http_webhook",
+          "attempt": 1
+        }
+      }
+    }
+  ],
+  "expected_suppressed_events": [
+    {
+      "reason": "cooldown_window",
+      "dedupe_key": "act_email_priority_001:semantic:approval_needed",
+      "window": "PT10M",
+      "count": 1
+    }
+  ],
+  "expected_state_transitions": [
+    {
+      "contract_id": "act_email_priority_001",
+      "from": "active",
+      "to": "active",
+      "action": "rule_evaluated",
+      "rule_state": "matched"
+    }
+  ],
+  "expected_delivery_reports": [
+    {
+      "contract_id": "act_email_priority_001",
+      "attention_id": "attn_mail_semantic_001",
+      "mode": "blocking_wait",
+      "transport": "http_webhook",
+      "attempt": 1,
+      "success": true
+    }
+  ],
+  "expected_coverage": [
+    "semantic_match",
+    "event_condition",
+    "evidence_policy_output",
+    "delivery_report_output"
+  ]
+}

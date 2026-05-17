@@ -1,0 +1,29 @@
+{
+  "case_id": "C3-DL-02",
+  "name": "deep-learning capability mismatch negative",
+  "profile_file": "profiles/deep-learning-training.exap.json",
+  "capability_file": "examples/06-provider-capability-mail.json",
+  "params": {
+    "gpu_idle_threshold": 20,
+    "gpu_idle_duration": "PT5M"
+  },
+  "effective_contract_file": "examples/01-process-wait-contract.json",
+  "expected_result": "capability_mismatch",
+  "input_transcript": [
+    {
+      "step": 0,
+      "kind": "state",
+      "data": {
+        "contract_id": "act_process_wait_001",
+        "status": "draft"
+      }
+    }
+  ],
+  "expected_attention_events": [],
+  "expected_suppressed_events": [],
+  "expected_state_transitions": [],
+  "expected_delivery_reports": [],
+  "expected_coverage": [
+    "capability_mismatch"
+  ]
+}

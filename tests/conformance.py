@@ -520,6 +520,7 @@ def main() -> int:
         record(name, bool(errs), "" if errs else "probe unexpectedly passed")
     lifecycle_accept = {
         "lifecycle error accepts JSON-RPC integer code": {"jsonrpc": "2.0", "id": "probe", "error": {"code": -32602, "message": "Invalid params", "data": {"exap_code": "ExAP-4004", "field": "params.contract.rules[0]"}}},
+        "lifecycle response accepts pause result": {"jsonrpc": "2.0", "id": "probe", "result": {"contract_id": "act_probe", "status": "paused"}},
     }
     for name, inst in lifecycle_accept.items():
         errs = validate(inst, lifecycle_schema, registry)

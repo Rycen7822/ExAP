@@ -1,0 +1,11 @@
+{
+  "case_id": "C2-02",
+  "name": "contract.create activate and idempotency",
+  "methods": [
+    "exap.contract.create"
+  ],
+  "asserts": [
+    "active status",
+    "idempotency key returns same contract_id"
+  ]
+}

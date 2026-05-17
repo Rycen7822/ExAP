@@ -424,7 +424,7 @@
           ]
         },
         "result": {
-          "oneOf": [
+          "anyOf": [
             {
               "$ref": "#/$defs/DiscoverResult"
             },

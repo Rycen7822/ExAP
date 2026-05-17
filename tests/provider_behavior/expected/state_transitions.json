@@ -1,0 +1,11 @@
+{
+  "process": [
+    "create:None->active"
+  ],
+  "email": [
+    "create:None->active",
+    "pause:active->paused",
+    "resume:paused->active",
+    "revoke:active->revoked"
+  ]
+}

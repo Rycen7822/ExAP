@@ -1,0 +1,11 @@
+{
+  "case_id": "C2-08",
+  "name": "observation.query pagination",
+  "methods": [
+    "exap.observation.query"
+  ],
+  "asserts": [
+    "schema-valid observations",
+    "limit/filter"
+  ]
+}

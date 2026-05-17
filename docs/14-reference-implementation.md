@@ -7,22 +7,33 @@
 ## 2. 组件结构
 
 ```text
-exapd/
+reference/exapd/
+  __init__.py
+  common.py
   capability_service.py
   contract_store.py
-  subject_resolver.py
-  collectors/
   rule_engine.py
   evidence_builder.py
-  privacy_filter.py
   delivery_engine.py
+  fake_collectors.py
   audit_logger.py
-exapctl/
+  provider.py
+reference/exapctl/
+  __init__.py
   cli.py
-bindings/
+reference/bindings/
+  __init__.py
   http_server.py
   mcp_server.py
   a2a_agent.py
+reference/smoke/
+  run_reference_smoke.py
+  expected/
+    healthz.json
+    readyz.json
+    metrics.txt
+  reports/
+    reference-smoke-report.md
 ```
 
 ## 3. exapd 功能
@@ -35,9 +46,12 @@ bindings/
 - stream。
 - ack。
 - status。
-- process/file/log collector demo。
-- privacy filter。
-- audit log。
+- observation query。
+- process/file/log/GPU fake collector demo。
+- delivery report 和 in-memory audit log。
+- operations endpoint：`healthz`、`readyz`、`metrics`、DLQ query。
+
+当前 smoke-grade adapter 为 `reference.exapd.provider:ReferenceProviderAdapter`，可直接作为 C2 provider behavior suite 的 target。
 
 ## 4. exapctl 命令
 
@@ -79,4 +93,18 @@ MCP Server MUST 暴露 `exap_discover`、`exap_contract_create`、`exap_wait`、
 
 ## 10. A2A Agent
 
-A2A Agent MUST 在 Agent Card 中声明 create contract 和 wait skill。ExAP Attention Event MUST 作为 `application/exap+json` Artifact 返回。
+A2A Agent MUST 在 Agent Card 中声明 create contract、wait、ack 和 revoke skill。ExAP Attention Event MUST 作为 `application/exap+json` Artifact 返回。`text/plain` intent 返回 validate-only draft；active Contract 创建使用 structured JSON。
+
+## 11. Smoke commands
+
+```bash
+python tests/provider_behavior/run_c2.py --adapter reference.exapd.provider:ReferenceProviderAdapter --report tests/provider_behavior/reports/c2-reference-report.md
+python reference/smoke/run_reference_smoke.py --target all --report reference/smoke/reports/reference-smoke-report.md
+```
+
+当前 R4 smoke 覆盖：
+
+- OpenAPI lifecycle endpoint presence 与 HTTP create/wait/status/ack/revoke smoke。
+- MCP six-tool invocation 与 capability resource。
+- A2A validate-only draft、structured create、wait、ack、revoke artifact。
+- Operations `/healthz`、`/readyz`、`/metrics`、DLQ query。

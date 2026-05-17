@@ -1,0 +1,22 @@
+{
+  "scenario_id": "C4-02",
+  "name": "HTTP SSE + MCP progress stream recovery equivalence",
+  "kind": "stream_push_recovery",
+  "bindings": [
+    "http",
+    "mcp"
+  ],
+  "assertions": [
+    "version",
+    "profile",
+    "delivery_mode",
+    "content_mode",
+    "contract_id",
+    "attention_id",
+    "stream_id",
+    "frame_types",
+    "event.type",
+    "event.status",
+    "push_success"
+  ]
+}

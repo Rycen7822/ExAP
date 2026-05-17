@@ -80,14 +80,24 @@
 |---|---|
 | `reference/openapi-http-binding.yaml` | HTTP Binding OpenAPI 草案。 |
 | `reference/asyncapi-provider.yaml` | Provider event stream AsyncAPI 草案。 |
+| `reference/exapd/*.py` | Smoke-grade reference Provider：capability、contract store、rule compatibility、evidence、delivery、collector、audit、provider adapter。 |
+| `reference/exapctl/cli.py` | Smoke-grade exapctl command facade。 |
+| `reference/bindings/*.py` | HTTP、MCP、A2A reference binding facade。 |
+| `reference/smoke/run_reference_smoke.py` | R4 reference smoke runner。 |
+| `reference/smoke/expected/*` | R4 operations smoke expected outputs。 |
+| `reference/smoke/reports/reference-smoke-report.md` | R4 reference smoke report。 |
 
 ## Tests
 
 | 文件 | 内容 |
 |---|---|
-| `tests/conformance.py` | 可执行一致性测试。 |
-| `tests/conformance-report.md` | 测试报告。 |
+| `tests/conformance.py` | C0/C1 package self-check。 |
+| `tests/conformance-report.md` | C0/C1 package self-check report。 |
 | `tests/fixtures/negative/*.json` | 负面用例。 |
 | `tests/fixtures/profile-instantiations/*.json` | Profile 实例化与 capability compatibility fixture。 |
+| `tests/provider_behavior/` | C2 Provider behavior adapter、fake provider、cases、expected data 与 reports。 |
+| `tests/fixtures/profile-transcripts/*/*.json` | C3 Profile transcript fixtures。 |
+| `tests/profile_evaluation/` | C3 transcript schema、evaluator、runner 与 report。 |
+| `tests/interoperability/` | C4 binding adapters、scenarios、transcript comparator、runner 与 report。 |
 | `tests/audit-notes.md` | 历史修订审计记录，发布时作为 archive/internal 材料处理。 |
 | `tests/draft-plan.md` | 修订计划记录。 |

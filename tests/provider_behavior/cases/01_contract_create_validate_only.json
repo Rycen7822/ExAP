@@ -1,0 +1,12 @@
+{
+  "case_id": "C2-01",
+  "name": "contract.create validate_only",
+  "methods": [
+    "exap.contract.create"
+  ],
+  "asserts": [
+    "draft result",
+    "effective_contract",
+    "no state mutation"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "case_id": "C2-03",
+  "name": "contract get list status",
+  "methods": [
+    "exap.contract.get",
+    "exap.contract.list",
+    "exap.status"
+  ],
+  "asserts": [
+    "consistent contract_id",
+    "state and metrics subset"
+  ]
+}

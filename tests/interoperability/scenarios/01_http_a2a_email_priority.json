@@ -1,0 +1,23 @@
+{
+  "scenario_id": "C4-01",
+  "name": "HTTP + A2A email priority equivalence",
+  "kind": "email_priority",
+  "bindings": [
+    "http",
+    "a2a"
+  ],
+  "assertions": [
+    "version",
+    "profile",
+    "delivery_mode",
+    "content_mode",
+    "draft_status",
+    "contract_id",
+    "attention_id",
+    "return_reason",
+    "event.type",
+    "event.status",
+    "event.rule_id",
+    "event.evidence_count"
+  ]
+}

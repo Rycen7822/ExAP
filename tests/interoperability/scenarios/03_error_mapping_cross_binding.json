@@ -1,0 +1,20 @@
+{
+  "scenario_id": "C4-03",
+  "name": "HTTP + MCP + A2A cross-binding error mapping",
+  "kind": "error_mapping",
+  "bindings": [
+    "http",
+    "mcp",
+    "a2a"
+  ],
+  "assertions": [
+    "version",
+    "profile",
+    "delivery_mode",
+    "content_mode",
+    "errors.code",
+    "errors.exap_code",
+    "errors.field",
+    "errors.retryable"
+  ]
+}

@@ -12,7 +12,16 @@ ExAP 使用分级验收，避免把包级 schema 自检外推为实现互操作�
 | C3 | Rule evaluation transcript | C2 加 Observation/Event transcript，验证 Rule DSL、debounce、cooldown、hysteresis、correlation、semantic operator 与 expected Attention Event。 |
 | C4 | Binding interoperability | C3 加 HTTP、SSE/Webhook、MCP、A2A、Local binding 的 wire compatibility、cancellation、cursor recovery、push/stream artifact schema 和错误响应。 |
 
-`tests/conformance.py` 当前执行 C0 与 C1 包级检查。Provider 只有在通过 C2/C3 对应 adapter 后，才能声明支持相应实现等级。绑定互操作声明需要通过 C4。
+`tests/conformance.py` 当前执行 C0 与 C1 包级检查；当前报告为 `tests/conformance-report.md`，统计为 72/72 PASS。Provider 只有在通过 C2/C3 对应 adapter 后，才能声明支持相应实现等级。绑定互操作声明需要通过 C4。
+
+当前包同时提供以下可执行 runtime suites：
+
+| 等级 | 入口 | 当前报告 |
+|---|---|---|
+| C2 | `python tests/provider_behavior/run_c2.py --adapter tests.provider_behavior.fake_provider:FakeProviderAdapter --report tests/provider_behavior/reports/c2-report.md` | `tests/provider_behavior/reports/c2-report.md` |
+| C3 | `python tests/profile_evaluation/run_c3.py --fixtures tests/fixtures/profile-transcripts --report tests/profile_evaluation/reports/c3-report.md` | `tests/profile_evaluation/reports/c3-report.md` |
+| C4 | `python tests/interoperability/run_c4.py --scenarios tests/interoperability/scenarios --report tests/interoperability/reports/c4-report.md` | `tests/interoperability/reports/c4-report.md` |
+| R4 smoke | `python reference/smoke/run_reference_smoke.py --target all --report reference/smoke/reports/reference-smoke-report.md` | `reference/smoke/reports/reference-smoke-report.md` |
 
 ## 2. C0/C1 包级检查
 
@@ -53,7 +62,7 @@ C3 fixture 由三部分组成：
 2. Attention Contract。
 3. Ordered Observation/Event transcript。
 
-Provider 运行 transcript 后必须输出 expected Attention Events、suppressed/internal event records、state transitions 和 delivery reports。Transcript 必须覆盖 signal、event、field filter、state、correlation、rate、relative change、semantic_match、debounce、cooldown 和 hysteresis。
+Provider 运行 transcript 后必须输出 expected Attention Events、suppressed/internal event records、state transitions 和 delivery reports。C3 等级目标覆盖 signal、event、field filter、state、correlation、rate、relative change、semantic_match、debounce、cooldown 和 hysteresis；当前随包 profile transcript suite 的 coverage matrix 报告 signal、event、field filter、semantic_match、debounce、cooldown、hysteresis、dedupe suppression、evidence policy output、delivery report output 和 capability mismatch。
 
 ## 5. C4 Binding interoperability
 
@@ -75,5 +84,7 @@ C4 fixture 按绑定定义 wire-level 行为：
 - Capability compatibility、profile instantiation、binding example 结果。
 - Cross-reference、版本一致性、命名一致性结果。
 - 失败项、修复说明和重跑命令。
+
+R4 reference smoke report 使用相同报告原则，并额外记录 OpenAPI、MCP、A2A、operations target 的 pass/fail、reference provider adapter identity，以及 shared C2 runner 结果。
 
 本包包含 `tests/conformance.py` 与 `tests/conformance-report.md`，作为 C0/C1 package self-check 的当前可执行入口。

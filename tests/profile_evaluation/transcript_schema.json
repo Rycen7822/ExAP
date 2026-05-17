@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://exap.dev/tests/c3/profile-transcript.schema.json",
+  "title": "ExAP C3 Profile Transcript Fixture",
+  "type": "object",
+  "required": [
+    "case_id",
+    "profile_file",
+    "capability_file",
+    "params",
+    "effective_contract_file",
+    "expected_result",
+    "input_transcript",
+    "expected_attention_events",
+    "expected_suppressed_events",
+    "expected_state_transitions",
+    "expected_delivery_reports",
+    "expected_coverage"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "case_id": {"type": "string"},
+    "name": {"type": "string"},
+    "profile_file": {"type": "string"},
+    "capability_file": {"type": "string"},
+    "params": {"type": "object"},
+    "effective_contract_file": {"type": "string"},
+    "expected_result": {"enum": ["pass", "capability_mismatch"]},
+    "input_transcript": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["step", "kind", "data"],
+        "additionalProperties": false,
+        "properties": {
+          "step": {"type": "integer", "minimum": 0},
+          "kind": {"enum": ["observation", "event", "state"]},
+          "data": {"type": "object"}
+        }
+      }
+    },
+    "expected_attention_events": {"type": "array", "items": {"type": "object"}},
+    "expected_suppressed_events": {"type": "array", "items": {"type": "object"}},
+    "expected_state_transitions": {"type": "array", "items": {"type": "object"}},
+    "expected_delivery_reports": {"type": "array", "items": {"type": "object"}},
+    "expected_coverage": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

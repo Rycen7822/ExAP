@@ -1,0 +1,16 @@
+{
+  "case_id": "C2-00",
+  "name": "discover capability",
+  "methods": [
+    "exap.discover"
+  ],
+  "asserts": [
+    "version",
+    "signals",
+    "event_types",
+    "operators",
+    "delivery",
+    "profiles",
+    "profile filter"
+  ]
+}

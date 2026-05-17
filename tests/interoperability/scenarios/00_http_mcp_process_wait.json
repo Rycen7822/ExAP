@@ -1,0 +1,24 @@
+{
+  "scenario_id": "C4-00",
+  "name": "HTTP + MCP + Local process wait equivalence",
+  "kind": "process_wait",
+  "bindings": [
+    "http",
+    "mcp",
+    "local"
+  ],
+  "assertions": [
+    "version",
+    "profile",
+    "delivery_mode",
+    "content_mode",
+    "contract_id",
+    "attention_id",
+    "return_reason",
+    "event.type",
+    "event.status",
+    "event.rule_id",
+    "event.evidence_count",
+    "ack_status"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "missing_contract": {
+    "code": -32004,
+    "exap_code": "ExAP-4040",
+    "retryable": false
+  },
+  "unsupported_signal_or_operator": {
+    "code": -32602,
+    "exap_code": "ExAP-4006",
+    "retryable": false
+  },
+  "version_conflict": {
+    "code": -32009,
+    "exap_code": "ExAP-4090",
+    "retryable": true
+  }
+}

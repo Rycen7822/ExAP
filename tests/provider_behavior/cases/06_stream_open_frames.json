@@ -1,0 +1,13 @@
+{
+  "case_id": "C2-06",
+  "name": "stream.open frames",
+  "methods": [
+    "exap.stream.open"
+  ],
+  "asserts": [
+    "stream metadata",
+    "keepalive frame",
+    "event frame",
+    "error frame"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "case_id": "C2-05",
+  "name": "wait timeout attention interrupted",
+  "methods": [
+    "exap.wait"
+  ],
+  "asserts": [
+    "timeout result",
+    "attention event result",
+    "interrupted result"
+  ]
+}

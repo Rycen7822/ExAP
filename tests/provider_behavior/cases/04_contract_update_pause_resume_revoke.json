@@ -1,0 +1,14 @@
+{
+  "case_id": "C2-04",
+  "name": "contract update pause resume revoke",
+  "methods": [
+    "exap.contract.update",
+    "exap.contract.pause",
+    "exap.contract.resume",
+    "exap.contract.revoke"
+  ],
+  "asserts": [
+    "optimistic update",
+    "active paused active revoked transitions"
+  ]
+}

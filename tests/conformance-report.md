@@ -1,8 +1,8 @@
 # ExAP Package Self-Check Report
 
-Generated at: 2026-05-17T12:40:58.140998+00:00
-Total checks: 71
-Passed: 71
+Generated at: 2026-05-17T17:28:19.344437+00:00
+Total checks: 72
+Passed: 72
 Failed: 0
 
 ## Results
@@ -55,6 +55,7 @@ Failed: 0
 | lifecycle contract.get rejects unknown params | PASS |  |
 | lifecycle response rejects arbitrary result | PASS |  |
 | lifecycle error accepts JSON-RPC integer code | PASS |  |
+| lifecycle response accepts pause result | PASS |  |
 | lifecycle error requires exap_code | PASS |  |
 | rule rejects exists with value | PASS |  |
 | rule rejects rate missing window | PASS |  |

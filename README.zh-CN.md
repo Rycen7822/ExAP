@@ -15,7 +15,7 @@
   <a href="docs/00-index.md"><img src="https://img.shields.io/badge/Docs-18%20chapters-0969da?style=for-the-badge" alt="Documentation: 18 chapters"></a>
   <a href="schemas"><img src="https://img.shields.io/badge/JSON%20Schema-2020--12-2ea44f?style=for-the-badge" alt="JSON Schema Draft 2020-12"></a>
   <a href="examples"><img src="https://img.shields.io/badge/Examples-contracts%20%7C%20events%20%7C%20bindings-5865F2?style=for-the-badge" alt="Examples"></a>
-  <a href="tests/conformance.py"><img src="https://img.shields.io/badge/Package%20Check-71%2F71%20PASS-blue?style=for-the-badge" alt="Package Check: 71 of 71 passed"></a>
+  <a href="tests/conformance.py"><img src="https://img.shields.io/badge/Package%20Check-72%2F72%20PASS-blue?style=for-the-badge" alt="Package Check: 72 of 72 passed"></a>
   <a href="docs/17-mcp-a2a-integration.md"><img src="https://img.shields.io/badge/Agent%20Bindings-MCP%20%7C%20A2A-ff69b4?style=for-the-badge" alt="Agent bindings: MCP and A2A"></a>
 </p>
 
@@ -90,8 +90,9 @@ ExAP 作为关注契约层，与现有事件、遥测、传输、安全和 agent
 | JSON Schemas | 8 个 Draft 2020-12 schema，canonical `$id` 位于 `https://exap.dev/schemas/0.2.0-draft/`。 |
 | Examples | Contract、Attention Event、Capability Document、Lifecycle request、MCP tools、A2A Agent Card、local CLI 样例。 |
 | Domain Profiles | process monitoring、deep learning training、email priority、calendar focus、file watch、IoT safety、CI/CD monitoring。 |
-| References | HTTP binding 的 OpenAPI 草案与 provider event stream 的 AsyncAPI 草案。 |
+| References | HTTP binding 的 OpenAPI 草案、provider event stream 的 AsyncAPI 草案，以及 `reference/` 下的 smoke-grade Python 参考实现模块。 |
 | Package Check | `tests/conformance.py` 是 C0/C1 包级自检，覆盖 schema、引用、示例、profile、负面用例、capability compatibility、YAML、清单和文档覆盖。 |
+| Runtime Suites | C2 provider behavior、C3 profile transcript evaluation、C4 binding interoperability 与 R4 reference smoke suite 会在 `tests/**/reports/` 和 `reference/smoke/reports/` 生成 Markdown 报告。 |
 
 ## 核心对象
 

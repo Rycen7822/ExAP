@@ -1,0 +1,13 @@
+{
+  "case_id": "C2-07",
+  "name": "attention ack actions",
+  "methods": [
+    "exap.attention.ack"
+  ],
+  "asserts": [
+    "seen",
+    "snooze",
+    "dismiss",
+    "escalate"
+  ]
+}

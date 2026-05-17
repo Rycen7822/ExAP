@@ -1,0 +1,6 @@
+# HELP exap_contracts_total Number of contracts in memory.
+# TYPE exap_contracts_total gauge
+exap_contracts_total
+# HELP exap_audit_records_total Number of lifecycle requests recorded.
+# TYPE exap_audit_records_total counter
+exap_audit_records_total

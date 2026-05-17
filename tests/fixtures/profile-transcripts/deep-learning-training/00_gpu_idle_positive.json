@@ -1,0 +1,181 @@
+{
+  "case_id": "C3-DL-00",
+  "name": "deep-learning GPU idle positive",
+  "profile_file": "profiles/deep-learning-training.exap.json",
+  "capability_file": "examples/05-provider-capability-process.json",
+  "params": {
+    "gpu_idle_threshold": 20,
+    "gpu_idle_duration": "PT5M"
+  },
+  "effective_contract_file": "examples/01-process-wait-contract.json",
+  "expected_result": "pass",
+  "input_transcript": [
+    {
+      "step": 0,
+      "kind": "state",
+      "data": {
+        "contract_id": "act_process_wait_001",
+        "status": "active"
+      }
+    },
+    {
+      "step": 1,
+      "kind": "observation",
+      "data": {
+        "signal": "process.status",
+        "value": "running"
+      }
+    },
+    {
+      "step": 2,
+      "kind": "observation",
+      "data": {
+        "signal": "gpu.util.percent",
+        "window": "PT5M",
+        "avg": 4.2
+      }
+    },
+    {
+      "step": 3,
+      "kind": "state",
+      "data": {
+        "dedupe_key": "act_process_wait_001:rule_gpu_idle",
+        "cooldown": "open"
+      }
+    }
+  ],
+  "expected_attention_events": [
+    {
+      "specversion": "1.0",
+      "id": "attn_gpu_idle_001",
+      "source": "exap://local/provider/local-process-provider",
+      "type": "exap.attention.triggered",
+      "subject": "exap://local/process/18423",
+      "time": "2026-05-16T12:07:00+09:00",
+      "datacontenttype": "application/json",
+      "data": {
+        "exap_version": "0.2.0-draft",
+        "attention_id": "attn_gpu_idle_001",
+        "contract_id": "act_process_wait_001",
+        "status": "triggered",
+        "severity": "warning",
+        "title": "GPU idle while process is still running",
+        "reason": "gpu.util.percent averaged below 20 for PT5M while process.status remained running.",
+        "intent": "monitor_long_running_process_without_polling",
+        "subject": {
+          "ref": "exap://local/process/18423",
+          "type": "process",
+          "environment_ref": "exap://local/machine/workstation-01",
+          "display_name": "python train.py",
+          "attributes": {
+            "pid": 18423,
+            "command": "python train.py"
+          },
+          "sensitivity": "internal",
+          "tags": [
+            "training"
+          ]
+        },
+        "rule": {
+          "rule_id": "rule_gpu_idle",
+          "name": "gpu_idle",
+          "severity": "warning",
+          "condition_summary": "gpu.util.percent avg over PT5M < 20 AND process.status == running",
+          "matched_at": "2026-05-16T12:07:00+09:00"
+        },
+        "evidence": [
+          {
+            "evidence_id": "ev_gpu_window",
+            "kind": "signal_window",
+            "subject_ref": "exap://local/gpu/0",
+            "signal": "gpu.util.percent",
+            "observed_at": "2026-05-16T12:07:00+09:00",
+            "window": "PT5M",
+            "stats": {
+              "avg": 4.2,
+              "min": 0,
+              "max": 11
+            },
+            "unit": "percent",
+            "redacted": false
+          },
+          {
+            "evidence_id": "ev_process_status",
+            "kind": "signal_value",
+            "subject_ref": "exap://local/process/18423",
+            "signal": "process.status",
+            "observed_at": "2026-05-16T12:07:00+09:00",
+            "value": "running",
+            "redacted": false
+          }
+        ],
+        "payload": {
+          "summary": "The process is alive, but GPU utilization is low. Inspect input pipeline, CPU preprocessing, distributed rendezvous, or blocked dataloader."
+        },
+        "privacy": {
+          "purpose": "environment_attention",
+          "data_minimization_applied": true,
+          "fields_included": [
+            "subject.ref",
+            "subject.type",
+            "evidence.stats",
+            "payload.summary"
+          ],
+          "fields_redacted": [],
+          "retention": {
+            "event": "P7D",
+            "audit": "P30D"
+          },
+          "redaction_report": []
+        },
+        "delivery": {
+          "action": "deliver_and_interrupt_wait",
+          "requires_ack": false,
+          "transport": "mcp",
+          "attempt": 1
+        },
+        "trace": {
+          "trace_id": "trace_gpu_idle_001",
+          "span_id": "span_rule_eval_001",
+          "correlation_id": "act_process_wait_001"
+        }
+      }
+    }
+  ],
+  "expected_suppressed_events": [
+    {
+      "reason": "cooldown_window",
+      "dedupe_key": "act_process_wait_001:rule_gpu_idle",
+      "window": "PT10M",
+      "count": 1
+    }
+  ],
+  "expected_state_transitions": [
+    {
+      "contract_id": "act_process_wait_001",
+      "from": "active",
+      "to": "active",
+      "action": "rule_evaluated",
+      "rule_state": "matched"
+    }
+  ],
+  "expected_delivery_reports": [
+    {
+      "contract_id": "act_process_wait_001",
+      "attention_id": "attn_gpu_idle_001",
+      "mode": "blocking_wait",
+      "transport": "mcp",
+      "attempt": 1,
+      "success": true
+    }
+  ],
+  "expected_coverage": [
+    "signal_condition",
+    "debounce",
+    "cooldown",
+    "hysteresis",
+    "dedupe_suppression",
+    "evidence_policy_output",
+    "delivery_report_output"
+  ]
+}
